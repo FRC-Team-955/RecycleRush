@@ -1,5 +1,5 @@
 package util;
 
-public class MyTalon {
-
+public class MyTalon{
+	
 }
