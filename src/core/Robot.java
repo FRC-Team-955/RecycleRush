@@ -1,5 +1,5 @@
 
-package org.usfirst.frc.team955.robot;
+package core;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 
