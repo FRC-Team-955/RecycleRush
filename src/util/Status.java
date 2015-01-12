@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Status {
 	
-	public String[] Status() {
+	public String[] getStatus() {
 	
 		String[] statusTable = new String[7];
 		PowerDistributionPanel pdp = new PowerDistributionPanel();
@@ -15,8 +15,8 @@ public class Status {
 		statusTable[3] = "Right Motor Two:" + Double.toString(pdp.getCurrent(Config.Drive.rightChanOne));
 		statusTable[4] = "Front Motor:" + Double.toString(pdp.getCurrent(Config.Drive.frontChan));
 		statusTable[5] = "Back Motor:" +  Double.toString(pdp.getCurrent(Config.Drive.backChan));
-		statusTable[6] = "Total Current:" + Double.toString(pdp.getTotalCurrent()); 		
-	
+		statusTable[6] = "Total Current:" + Double.toString(pdp.getTotalCurrent()); 
+		
 		return statusTable;
 	}
 }

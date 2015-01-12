@@ -33,51 +33,35 @@ public class Drive {
 		double rightJoyXPos = joy.getRightStickX();
 		
 		//Moving with left joy
-		if(rightJoyXPos < 0.1 || rightJoyXPos > -0.1) {
-		double joyX = joy.getLeftStickX();
-		double joyY = joy.getLeftStickY();
-		
-		double r = (Math.sqrt((joyX * joyX) + (joyY * joyY)));
-		double a = Math.atan2(joyY, joyX);
-		double alpha = Math.toDegrees(a);
-		double b = (getGyro() + (360 - alpha));
-		double beta = toThreeSixty(b);
-		double finalTriAngle = beta - getQuadrental(beta);
-		double frontBackMotors = (r * Math.sin(finalTriAngle));
-		double leftRightMotors = (r * Config.Drive.speedMultiplier * Math.cos(finalTriAngle));
-		
-		setFrontBackSpeed(frontBackMotors);
-		setLeftRightSpeed(leftRightMotors);
+		if(rightJoyXPos < 0.1 && rightJoyXPos > -0.1) {
+			double joyX = joy.getLeftStickX();
+			double joyY = joy.getLeftStickY();
+			
+			double r = Math.sqrt((joyX * joyX) + (joyY * joyY));
+			double a = Math.toDegrees(Math.atan2(joyY, joyX));
+			double b = (getGyro() + (360 - a));
+			double beta = b % 360;	
+			double finalTriAngle = beta - getQuadrental(beta);
+			double centerSpeed = (r * Math.sin(finalTriAngle));
+			double sideSpeed = (r * Config.Drive.speedMultiplier * Math.cos(finalTriAngle));
+			
+			setSpeed(sideSpeed, sideSpeed, centerSpeed, centerSpeed);
 		}
 		//Turning with right joy
 		
-		
-		if(rightJoyXPos > 0.1 || rightJoyXPos < -0.1) {
+		// TODO: PUT NEGATIVES
+		else{
 			rightTalonOne.set(rightJoyXPos);
 			rightTalonTwo.set(rightJoyXPos);
 			
-			leftTalonOne.set(rightJoyXPos);
-			leftTalonTwo.set(rightJoyXPos);
+			leftTalonOne.set(-rightJoyXPos);
+			leftTalonTwo.set(-rightJoyXPos);
 			
 			frontTalon.set(rightJoyXPos);
-			backTalon.set(rightJoyXPos);
+			backTalon.set(-rightJoyXPos);
 		}
 	}
-	public void setFrontBackSpeed(double speed) {
-		frontTalon.set(speed);
-		backTalon.set(speed);
-	}
-	
-	public void setLeftRightSpeed(double speed) {
-		rightTalonOne.set(speed);
-		rightTalonTwo.set(speed);
-		
-		leftTalonOne.set(speed);
-		leftTalonTwo.set(speed);
-	}
-	
 
-	
 	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed) {
 		rightTalonOne.set(rightSpeed);
 		rightTalonTwo.set(rightSpeed);
@@ -115,10 +99,4 @@ public class Drive {
 		return 0;
 	}
 	
-	public double toThreeSixty(double angle) {
-		for(int i = 0; angle > 360; i++) {
-			angle -= 360;
-		}
-		return angle;
-	}
 }
