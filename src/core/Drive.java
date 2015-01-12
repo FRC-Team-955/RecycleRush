@@ -29,31 +29,36 @@ public class Drive {
     }
 	
 	public void fieldCentric() {
+		double rightJoyXPos = joy.getRightStickX();
+		
 		//Moving with left joy
-		double joyX = joy.getLeftStickX();
-		double joyY = joy.getLeftStickY();
-		
-		double r = (Math.sqrt(joyX * joyX) + (joyY * joyY));
-		double a = Math.atan2(joyY, joyX);
-		double b = (getGyro() + (360 - a));
-		double finalTriAngle = b - getQuadrental(b);
-		double frontBackMotors = (r * Math.sin(finalTriAngle));
-		double leftRightMotors = (r * Config.Drive.speedMultiplier * Math.cos(finalTriAngle));
-		
-		setFrontBackSpeed(frontBackMotors);
-		setLeftRightSpeed(leftRightMotors);
-		
+		if(rightJoyXPos < 0.1 || rightJoyXPos > -0.1) {
+			double joyX = joy.getLeftStickX();
+			double joyY = joy.getLeftStickY();
+			
+			double r = (Math.sqrt(joyX * joyX) + (joyY * joyY));
+			double a = Math.atan2(joyY, joyX);
+			double b = (getGyro() + (360 - a));
+			double finalTriAngle = b - getQuadrental(b);
+			double frontBackMotors = (r * Math.sin(finalTriAngle));
+			double leftRightMotors = (r * Config.Drive.speedMultiplier * Math.cos(finalTriAngle));
+			
+			setFrontBackSpeed(frontBackMotors);
+			setLeftRightSpeed(leftRightMotors);
+		}
 		//Turning with right joy
-		double joyXPos = joy.getRightStickX();
 		
-		rightTalonOne.set(joyXPos);
-		rightTalonTwo.set(joyXPos);
 		
-		leftTalonOne.set(joyXPos);
-		leftTalonTwo.set(joyXPos);
-		
-		frontTalon.set(joyXPos);
-		backTalon.set(joyXPos);
+		if(rightJoyXPos > 0.1 || rightJoyXPos < -0.1) {
+			rightTalonOne.set(rightJoyXPos);
+			rightTalonTwo.set(rightJoyXPos);
+			
+			leftTalonOne.set(rightJoyXPos);
+			leftTalonTwo.set(rightJoyXPos);
+			
+			frontTalon.set(rightJoyXPos);
+			backTalon.set(rightJoyXPos);
+		}
 	}
 	public void setFrontBackSpeed(double speed) {
 		frontTalon.set(speed);
