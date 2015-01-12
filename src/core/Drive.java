@@ -23,6 +23,7 @@ public class Drive {
 	Gyro gyro;
 	
 	public Drive (MyJoystick newJoy, int port) {
+
         joy = newJoy;
         gyro = new Gyro(port);
         gyro.reset();
@@ -33,18 +34,20 @@ public class Drive {
 		
 		//Moving with left joy
 		if(rightJoyXPos < 0.1 || rightJoyXPos > -0.1) {
-			double joyX = joy.getLeftStickX();
-			double joyY = joy.getLeftStickY();
-			
-			double r = (Math.sqrt(joyX * joyX) + (joyY * joyY));
-			double a = Math.atan2(joyY, joyX);
-			double b = (getGyro() + (360 - a));
-			double finalTriAngle = b - getQuadrental(b);
-			double frontBackMotors = (r * Math.sin(finalTriAngle));
-			double leftRightMotors = (r * Config.Drive.speedMultiplier * Math.cos(finalTriAngle));
-			
-			setFrontBackSpeed(frontBackMotors);
-			setLeftRightSpeed(leftRightMotors);
+		double joyX = joy.getLeftStickX();
+		double joyY = joy.getLeftStickY();
+		
+		double r = (Math.sqrt((joyX * joyX) + (joyY * joyY)));
+		double a = Math.atan2(joyY, joyX);
+		double alpha = Math.toDegrees(a);
+		double b = (getGyro() + (360 - alpha));
+		double beta = toThreeSixty(b);
+		double finalTriAngle = beta - getQuadrental(beta);
+		double frontBackMotors = (r * Math.sin(finalTriAngle));
+		double leftRightMotors = (r * Config.Drive.speedMultiplier * Math.cos(finalTriAngle));
+		
+		setFrontBackSpeed(frontBackMotors);
+		setLeftRightSpeed(leftRightMotors);
 		}
 		//Turning with right joy
 		
@@ -73,53 +76,7 @@ public class Drive {
 		leftTalonTwo.set(speed);
 	}
 	
-	public void setRightSpeed(double speed) {
-		rightTalonOne.set(speed);
-		rightTalonTwo.set(speed);
-	}
-	
-	public void setLeftSpeed(double speed) {
-		leftTalonOne.set(speed);
-		leftTalonTwo.set(speed);
-	}
-	
-	public void setFrontSpeed(double speed) {
-		frontTalon.set(speed);
-	}
-	
-	public void setBackSpeed(double speed) {
-		backTalon.set(speed);
-	}
-	
-	public void setLinearSpeed(double speed) {
-		rightTalonOne.set(speed);
-		rightTalonTwo.set(speed);
-		
-		leftTalonOne.set(speed);
-		leftTalonTwo.set(speed);
-		
-		frontTalon.set(0);
-		backTalon.set(0);
-	}
-	
-	public void stop() {
-		rightTalonOne.set(0);
-		rightTalonTwo.set(0);
-		
-		leftTalonOne.set(0);
-		leftTalonTwo.set(0);
-		
-		frontTalon.set(0);		
-		backTalon.set(0);	
-	}
-	
-	public void linearTurn(double speed) {
-		rightTalonOne.set(speed);
-		rightTalonTwo.set(speed);
-		
-		leftTalonOne.set(-speed);
-		leftTalonTwo.set(-speed);
-	}
+
 	
 	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed) {
 		rightTalonOne.set(rightSpeed);
@@ -156,5 +113,12 @@ public class Drive {
 		//Stuff got messed up and doesn't work and we need to change stuff
 		System.out.println("Stuff got messed up and doesn't work and we need to change stuff");
 		return 0;
+	}
+	
+	public double toThreeSixty(double angle) {
+		for(int i = 0; angle > 360; i++) {
+			angle -= 360;
+		}
+		return angle;
 	}
 }
