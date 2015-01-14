@@ -33,23 +33,20 @@ public class Drive {
 		double rightJoyXPos = joy.getRightStickX();
 		
 		//Moving with left joy
-		if(rightJoyXPos < 0.1 && rightJoyXPos > -0.1) {
+		if(rightJoyXPos < Config.Drive.tolerance && rightJoyXPos > -Config.Drive.tolerance) {
 			double joyX = joy.getLeftStickX();
 			double joyY = joy.getLeftStickY();
 			
-			double r = Math.sqrt((joyX * joyX) + (joyY * joyY));
-			double a = Math.toDegrees(Math.atan2(joyY, joyX));
-			double b = (getGyro() + (360 - a));
-			double beta = b % 360;	
-			double finalTriAngle = beta - getQuadrental(beta);
-			double centerSpeed = (r * Math.sin(finalTriAngle));
-			double sideSpeed = (r * Config.Drive.speedMultiplier * Math.cos(finalTriAngle));
+			double joyMag = Math.sqrt((joyX * joyX) + (joyY * joyY));
+			double joyAng = (450 - Math.toDegrees(Math.atan2(1, 0))) % 360;
+			double angDiff = getGyro() - joyAng;
+			double centerSpeed = joyMag * Math.sin(Math.toRadians(angDiff));
+			double sideSpeed = joyMag * Math.cos(Math.toRadians(angDiff));
 			
 			setSpeed(sideSpeed, sideSpeed, centerSpeed, centerSpeed);
 		}
-		//Turning with right joy
 		
-		// TODO: PUT NEGATIVES
+		//Turning with right joy
 		else{
 			rightTalonOne.set(rightJoyXPos);
 			rightTalonTwo.set(rightJoyXPos);
@@ -60,7 +57,9 @@ public class Drive {
 			frontTalon.set(rightJoyXPos);
 			backTalon.set(-rightJoyXPos);
 		}
-	}
+		
+		
+	} 
 
 	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed) {
 		rightTalonOne.set(rightSpeed);
@@ -75,28 +74,7 @@ public class Drive {
 	
 	public double getGyro() {
 		double finalAngle = (90 + (gyro.getAngle() - 360));
-		for(int i = 0; finalAngle > 360; i++) {
-			finalAngle -= 360;
-		}
+		finalAngle = finalAngle % 360; 
 		return finalAngle;
 	}
-	
-	public int getQuadrental(double angle) {
-		if(angle <= 90 && angle > 0) {
-			return 0;
-		}
-		if(angle <= 180 && angle > 90) {
-			return 90;
-		}
-		if(angle <= 270 && angle > 180) {
-			return 180;
-		}
-		if(angle <= 360 && angle > 270) {
-			return 270;
-		}
-		//Stuff got messed up and doesn't work and we need to change stuff
-		System.out.println("Stuff got messed up and doesn't work and we need to change stuff");
-		return 0;
-	}
-	
 }

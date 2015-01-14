@@ -25,6 +25,9 @@ public class Config {
 		public static final int frontChan = 0;
 		
 		public static final double speedMultiplier = 1;
+	
+		public static final double tolerance = .1;
+	
 	}
 	
 	public class Intake {
