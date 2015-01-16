@@ -2,44 +2,40 @@ package core;
 
 import edu.wpi.first.wpilibj.Talon;
 import util.Config;
-import util.MyJoystick;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Gyro;
+import util.MyGyro;
 import java.lang.Math;
+import util.Controller;
 
 public class Drive {
-	Talon rightTalonOne;
-	Talon rightTalonTwo;
+	private Talon mtRightOne = new Talon(Config.Drive.chnMtRightOne);
+	private Talon mtRightTwo = new Talon(Config.Drive.chnMtRightTwo);
+	private Talon mtLeftOne = new Talon(Config.Drive.chnMtLeftOne);
+	private Talon mtLeftTwo = new Talon(Config.Drive.chnMtLeftTwo);
+	private Talon mtFront = new Talon(Config.Drive.chnMtFront);
+	private Talon mtBack = new Talon(Config.Drive.chnMtBack);
+	private Controller contr;
+	private MyGyro gyro = new MyGyro(1, 0.0);
 	
-	Talon leftTalonOne;
-	Talon leftTalonTwo;
-	
-	Talon frontTalon;
-	
-	Talon backTalon;
-	
-	MyJoystick joy;
-	
-	Gyro gyro;
-	
-	public Drive (MyJoystick newJoy, int port) {
-
-        joy = newJoy;
-        gyro = new Gyro(port);
+	public Drive (Controller newContr) 
+	{
+        contr = newContr;
         gyro.reset();
     }
 	
-	public void fieldCentric() {
-		double rightJoyXPos = joy.getRightStickX();
+	/**
+	 * Moves the robot in relation to the field instead of the robot
+	 */
+	public void fieldCentric() 
+	{
+		double rightJoyXPos = contr.getRightX();
 		
 		//Moving with left joy
 		if(rightJoyXPos < Config.Drive.tolerance && rightJoyXPos > -Config.Drive.tolerance) {
-			double joyX = joy.getLeftStickX();
-			double joyY = joy.getLeftStickY();
-			
+			double joyX = contr.getLeftX();
+			double joyY = contr.getLeftY();
 			double joyMag = Math.sqrt((joyX * joyX) + (joyY * joyY));
-			double joyAng = (450 - Math.toDegrees(Math.atan2(1, 0))) % 360;
-			double angDiff = getGyro() - joyAng;
+			double joyAng = (450 - Math.toDegrees(Math.atan2(joyY, joyX))) % 360;
+			double angDiff = gyro.getAngle() - joyAng;
 			double centerSpeed = joyMag * Math.sin(Math.toRadians(angDiff));
 			double sideSpeed = joyMag * Math.cos(Math.toRadians(angDiff));
 			
@@ -47,34 +43,34 @@ public class Drive {
 		}
 		
 		//Turning with right joy
-		else{
-			rightTalonOne.set(rightJoyXPos);
-			rightTalonTwo.set(rightJoyXPos);
-			
-			leftTalonOne.set(-rightJoyXPos);
-			leftTalonTwo.set(-rightJoyXPos);
-			
-			frontTalon.set(rightJoyXPos);
-			backTalon.set(-rightJoyXPos);
-		}
-		
-		
+		else
+		{
+			mtRightOne.set(rightJoyXPos);
+			mtRightTwo.set(rightJoyXPos);
+			mtLeftOne.set(-rightJoyXPos);
+			mtLeftTwo.set(-rightJoyXPos);
+			mtFront.set(rightJoyXPos);
+			mtBack.set(-rightJoyXPos);
+		}		
 	} 
 
-	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed) {
-		rightTalonOne.set(rightSpeed);
-		rightTalonTwo.set(rightSpeed);
-		
-		leftTalonOne.set(leftSpeed);
-		leftTalonTwo.set(leftSpeed);
-		
-		frontTalon.set(frontSpeed);		
-		backTalon.set(backSpeed);	
+	/**
+	 * Sets the speed of all motors
+	 * @param leftSpeed speed for the left motor
+	 * @param rightSpeed speed for the right motor
+	 * @param frontSpeed speed for the front motor
+	 * @param backSpeed speed for the back motor
+	 */
+	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed)
+	{
+		leftSpeed = -leftSpeed;
+		frontSpeed = -frontSpeed;
+		mtRightOne.set(rightSpeed);
+		mtRightTwo.set(rightSpeed);		
+		mtLeftOne.set(leftSpeed);
+		mtLeftTwo.set(leftSpeed);		
+		mtFront.set(frontSpeed);		
+		mtBack.set(backSpeed);	
 	}
 	
-	public double getGyro() {
-		double finalAngle = (90 + (gyro.getAngle() - 360));
-		finalAngle = finalAngle % 360; 
-		return finalAngle;
-	}
 }

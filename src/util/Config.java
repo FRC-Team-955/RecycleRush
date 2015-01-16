@@ -27,5 +27,6 @@ public class Config
         public static final int chnMtBack = 5;
         public static final int chnGyro = 0;
         public static final double gyroAngOffset = 0;
+        public static final double tolerance = .01;
     }  
 }

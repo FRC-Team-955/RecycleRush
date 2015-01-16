@@ -61,21 +61,37 @@ public class Controller extends Joystick
         return buttonState[button - 1];
     }
     
+    /**
+     * Gets the x value of the left joystick
+     * @return the x value of the Left joystick
+     */
     public double getRawLeftX()
     {
     	return super.getRawAxis(chnLeftX) * (flipLeftX ? -1 : 1);
     }
     
+    /**
+     * Gets the y value of the left joystick
+     * @return the y value of the left joystick
+     */
     public double getRawLeftY()
     {
     	return super.getRawAxis(chnLeftY) * (flipLeftY ? -1 : 1);
     }
     
+    /**
+     * Gets the x valueof the right joystick
+     * @return the x value of the right joystick
+     */
     public double getRawRightX()
     {
     	return super.getRawAxis(chnRightX) * (flipRightX ? -1 : 1);
     }
     
+    /**
+     * Gets the y value of the right joystick
+     * @return the y value of the right joystick
+     */
     public double getRawRightY()
     {
     	return super.getRawAxis(chnRightY) * (flipRightY ? -1 : 1);
