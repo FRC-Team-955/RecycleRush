@@ -1,6 +1,9 @@
 
 package core;
 
+import util.Config;
+import util.Controller;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -16,7 +19,7 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-
+    	Controller contrDrive = new Controller(Config.contrDrive.chn, Config.contrDrive.maxButtons, Config.contrDrive.linearity);
     }
 
     /**
@@ -38,6 +41,5 @@ public class Robot extends IterativeRobot {
      */
     public void testPeriodic() {
     
-    }
-    
+    }   
 }
