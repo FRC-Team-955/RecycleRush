@@ -28,5 +28,6 @@ public class Config
         public static final int chnGyro = 0;
         public static final double gyroAngOffset = 0;
         public static final double tolerance = .01;
+        public static final double negInteriaAdjust = 1;
     }  
 }
