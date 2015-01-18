@@ -1,6 +1,6 @@
 package util;
 
-public class negInertia {
+public class NegInertia {
 	double negInertiaScalar = Config.Drive.negInteriaAdjust;
 	double negInertiaAccumulator;
 	double prevTurnSpeed;

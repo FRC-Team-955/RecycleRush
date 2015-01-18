@@ -3,7 +3,10 @@ package core;
 import edu.wpi.first.wpilibj.Talon;
 import util.Config;
 import util.MyGyro;
+
 import java.lang.Math;
+
+import libs.Matrix;
 import util.Controller;
 
 public class Drive {
@@ -33,11 +36,19 @@ public class Drive {
 		if(rightJoyXPos < Config.Drive.tolerance && rightJoyXPos > -Config.Drive.tolerance) {
 			double joyX = contr.getLeftX();
 			double joyY = contr.getLeftY();
-			double joyMag = Math.sqrt((joyX * joyX) + (joyY * joyY));
-			double joyAng = (450 - Math.toDegrees(Math.atan2(joyY, joyX))) % 360;
-			double angDiff = gyro.getAngle() - joyAng;
-			double centerSpeed = joyMag * Math.sin(Math.toRadians(angDiff));
-			double sideSpeed = joyMag * Math.cos(Math.toRadians(angDiff));
+			
+			Matrix m = new Matrix(1 , 2);
+			m.set(0, 0,  (Math.sqrt((joyX * joyX) + (joyY * joyY))) *
+					      Math.cos((450 - Math.toDegrees(Math.atan2(joyY, joyX))) % 360));
+			
+			m.set(0, 1,  (Math.sqrt((joyX * joyX) + (joyY * joyY))) *
+				      Math.sin((450 - Math.toDegrees(Math.atan2(joyY, joyX))) % 360));
+		
+			
+			Matrix finalVelocityVector = m.times(gyro.getDirectionalCosineMatrix());
+			
+			double centerSpeed = finalVelocityVector.get(0, 0);
+			double sideSpeed = finalVelocityVector.get(0, 1);
 			
 			setSpeed(sideSpeed, sideSpeed, centerSpeed, centerSpeed);
 		}
