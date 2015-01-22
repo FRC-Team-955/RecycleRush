@@ -15,6 +15,36 @@ public class Config
         public static final int chnLeftY = 1;
         public static final int chnRightX = 2;
         public static final int chnRightY = 3;
+        public static final int elevatorUp = 5;
+        public static final int elevatorDown = 6;
+    }
+    
+    public class Claw
+    {
+    	public static final int chnSolOne = 5;
+    	public static final int chnSolTwo = 6;
+    	public static final int btOpen = 3;
+    	public static final int btClose = 4;
+    }
+    
+    public class Elevator
+    {
+    	public static final int chnMtElevator = 8;
+    	public static final int chnLimitSwitchBottom = 1;
+    	public static final int chnLimitSwitchTop = 9;
+    	public static final int chnEncOne = 0;
+    	public static final int chnEncTwo = 7;
+    	public static final double encDistance = 5;
+    	public static final double mtElevatorSpeed = .7;
+    	public static final int btLvlOne = 1;
+    	public static final int btLvlTwo = 2;
+    	public static final int btLvlThree = 3;
+    	public static final int btLvlFour = 4;
+    	public static final int btLvlFive = 5;
+    	public static final int btLvlSix = 6;
+        public static final int btModeSwitch = 12;
+        public static final int pulsesPerInch = 212;
+        public static final int pulsesPerTote = 130;
     }
 
     public class Drive 
