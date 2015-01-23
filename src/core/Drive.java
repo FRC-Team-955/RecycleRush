@@ -1,6 +1,7 @@
 package core;
 
 import edu.wpi.first.wpilibj.Talon;
+import util.NegInertia;
 import util.Config;
 import util.MyGyro;
 import java.lang.Math;
@@ -15,6 +16,7 @@ public class Drive {
 	private Talon mtBack = new Talon(Config.Drive.chnMtBack);
 	private Controller contr;
 	private MyGyro gyro = new MyGyro(1, 0.0);
+	private NegInertia negInertia;
 	
 	public Drive (Controller newContr) 
 	{
@@ -45,12 +47,12 @@ public class Drive {
 		//Turning with right joy
 		else
 		{
-			mtRightOne.set(rightJoyXPos);
-			mtRightTwo.set(rightJoyXPos);
-			mtLeftOne.set(-rightJoyXPos);
-			mtLeftTwo.set(-rightJoyXPos);
-			mtFront.set(rightJoyXPos);
-			mtBack.set(-rightJoyXPos);
+			mtRightOne.set(negInertia.getTurn(rightJoyXPos));
+			mtRightTwo.set(negInertia.getTurn(rightJoyXPos));
+			mtLeftOne.set(negInertia.getTurn(-rightJoyXPos));
+			mtLeftTwo.set(negInertia.getTurn(-rightJoyXPos));
+			mtFront.set(negInertia.getTurn(rightJoyXPos));
+			mtBack.set(negInertia.getTurn(-rightJoyXPos));
 		}		
 	} 
 

@@ -9,15 +9,16 @@ import edu.wpi.first.wpilibj.CANTalon;
 
 public class Elevator 
 {
-	CANTalon mtElevator = new CANTalon(Config.Elevator.chnMtElevator);
-	LimitSwitch limitBottom = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom);
-	LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop);
-	Encoder enc = new Encoder(Config.Elevator.chnEncOne, Config.Elevator.chnEncTwo);
-	Controller contr;
-	boolean mode = false;
-	int baseValue = 0;
+	private CANTalon mtElevator = new CANTalon(Config.Elevator.chnMtElevator);
+	private LimitSwitch limitBottom = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom);
+	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop);
+	private Encoder enc = new Encoder(Config.Elevator.chnEncOne, Config.Elevator.chnEncTwo);
+	private Controller contr;
+	private boolean mode = false;
+	private double baseValue = 0;
+	private int level= 0;
 	//Button number array
-	int [] levels = {Config.Elevator.btLvlOne,Config.Elevator.btLvlTwo,Config.Elevator.btLvlThree,Config.Elevator.btLvlFour,Config.Elevator.btLvlFive,Config.Elevator.btLvlSix};
+	private int [] levels = {Config.Elevator.btLvlOne,Config.Elevator.btLvlTwo,Config.Elevator.btLvlThree,Config.Elevator.btLvlFour,Config.Elevator.btLvlFive,Config.Elevator.btLvlSix};
 	
 	/**
 	 * Constructor
@@ -38,32 +39,49 @@ public class Elevator
 		// If the switch mode button is pressed set the lowest position on the elevator to six inches
 		baseValue = 0;
 		if(contr.getButton(Config.Elevator.btModeSwitch))
+		{
 			mode = !mode;
-		if(mode)
-			baseValue = Config.Elevator.pulsesPerInch * 6;
+			
+			if(mode)
+				baseValue = Config.Elevator.adjustedBaseHeight;
+		}
 			
 		// Checks all elevator buttons
 		for(int i = 0; i < levels.length; i++)
-		{
 			if(contr.getButton(levels[i]))
-				elevatorMove(levels[i]);
-		}	
+			{
+				level = levels[i];
+				elevatorMove();
+			}
 	}
 	
 	/**
 	 * Moves the elevator to the specific indexing location
 	 * @param level
 	 */
-	public void elevatorMove(int level)
+	public void elevatorMove()
 	{
-		switch(level)
-		{
-			case 1: mtElevator.setPosition(baseValue);
-			case 2: mtElevator.setPosition(baseValue + Config.Elevator.pulsesPerTote * level);
-			case 3: mtElevator.setPosition(baseValue + Config.Elevator.pulsesPerTote * level);
-			case 4: mtElevator.setPosition(baseValue + Config.Elevator.pulsesPerTote * level);
-			case 5: mtElevator.setPosition(baseValue + Config.Elevator.pulsesPerTote * level);
-			case 6: mtElevator.setPosition(baseValue + Config.Elevator.pulsesPerTote * level);
-		}
+		if(!limitBottom.get() || !limitTop.get())
+			mtElevator.setPosition(baseValue + level * Config.Elevator.toteHeight);
+		else
+			mtElevator.set(0);
+	}
+	
+	/**
+	 * Gets the current level of the Elevator
+	 * @return Elevator level
+	 */
+	public int getLevel()
+	{
+		return level; 
+	}
+	
+	/**
+	 * Gets the distance form the current Elevator position to the base
+	 * @return distance from the current position to the base
+	 */
+	public double getDistanceFromBase()
+	{
+		return level * Config.Elevator.toteHeight;
 	}
 }
