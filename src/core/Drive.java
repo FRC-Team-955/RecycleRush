@@ -1,6 +1,6 @@
 package core;
 
-import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.CANTalon;
 import util.NegInertia;
 import util.Config;
 import util.MyGyro;
@@ -8,12 +8,12 @@ import java.lang.Math;
 import util.Controller;
 
 public class Drive {
-	private Talon mtRightOne = new Talon(Config.Drive.chnMtRightOne);
-	private Talon mtRightTwo = new Talon(Config.Drive.chnMtRightTwo);
-	private Talon mtLeftOne = new Talon(Config.Drive.chnMtLeftOne);
-	private Talon mtLeftTwo = new Talon(Config.Drive.chnMtLeftTwo);
-	private Talon mtFront = new Talon(Config.Drive.chnMtFront);
-	private Talon mtBack = new Talon(Config.Drive.chnMtBack);
+	private CANTalon mtRightOne = new CANTalon(Config.Drive.chnMtRightOne);
+	private CANTalon mtRightTwo = new CANTalon(Config.Drive.chnMtRightTwo);
+	private CANTalon mtLeftOne = new CANTalon(Config.Drive.chnMtLeftOne);
+	private CANTalon mtLeftTwo = new CANTalon(Config.Drive.chnMtLeftTwo);
+	private CANTalon mtFront = new CANTalon(Config.Drive.chnMtFront);
+	private CANTalon mtBack = new CANTalon(Config.Drive.chnMtBack);
 	private Controller contr;
 	private MyGyro gyro = new MyGyro(1, 0.0);
 	private NegInertia negInertia;
@@ -75,4 +75,23 @@ public class Drive {
 		mtBack.set(backSpeed);	
 	}
 	
+	/**
+	 * Returns Voltage of the asked talon
+	 * @param talonNum Numbers :mtRightOne 1, mtRightTwo, mtLeftOne 3, mtLeftTwo 4, mtFront 5, mtBack 6
+	 * @return Voltage of the talon
+	 */
+	public double getVoltage(int talonNum)
+	{
+		switch(talonNum)
+		{
+			case 1: return mtRightOne.getBusVoltage();
+			case 2: return mtRightTwo.getBusVoltage();
+			case 3: return mtLeftOne.getBusVoltage();
+			case 4: return mtLeftTwo.getBusVoltage();
+			case 5: return mtFront.getBusVoltage();
+			case 6: return mtBack.getBusVoltage();
+		}
+		
+		return 0;
+	}
 }
