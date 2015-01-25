@@ -1,24 +1,20 @@
 package core;
 
-import edu.wpi.first.wpilibj.hal.PDPJNI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import util.Controller;
 import util.Config;
 
 public class Dashboard {
-	Controller contr;
 	Elevator elevator;
 	Drive drive;
 	Claw claw;
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 	
-	public Dashboard(Controller newContr)
+	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw)
 	{
-		contr = newContr;
-		elevator = new Elevator(contr);
-		drive = new Drive(contr);
-		claw = new Claw(contr);
+		drive = newDrive;
+		elevator = newElevator;
+		claw = newClaw;
 	}
 	
 	public void update()

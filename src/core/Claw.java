@@ -6,8 +6,8 @@ import util.Controller;
 
 
 public class Claw {
-	DoubleSolenoid noid = new DoubleSolenoid(Config.Claw.chnSolOne, Config.Claw.chnSolTwo);
-	Controller contr;
+	private DoubleSolenoid noid = new DoubleSolenoid(Config.Claw.chnSolOne, Config.Claw.chnSolTwo);
+	private Controller contr;
 	
 	/**
 	 * Constructor
@@ -24,9 +24,19 @@ public class Claw {
 	public void run()
 	{
 		if (contr.getButton(Config.Claw.btOpen))
-			noid.set(DoubleSolenoid.Value.kForward);
+			openClaw();
 		
 		else if(contr.getButton(Config.Claw.btClose))
-			noid.set(DoubleSolenoid.Value.kReverse); 
+			closeClaw();
+	}
+	
+	public void openClaw()
+	{
+		noid.set(DoubleSolenoid.Value.kForward);
+	}
+	
+	public void closeClaw()
+	{
+		noid.set(DoubleSolenoid.Value.kReverse); 
 	}
 }

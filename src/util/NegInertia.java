@@ -1,9 +1,9 @@
 package util;
 
 public class NegInertia {
-	double negInertiaScalar = Config.Drive.negInteriaAdjust;
-	double negInertiaAccumulator;
-	double prevTurnSpeed;
+	private double negInertiaScalar = Config.Drive.negInteriaAdjust;
+	private double negInertiaAccumulator;
+	private double prevTurnSpeed;
 	
 	/**
 	 * Gets an adjusted turn speed to account for the robot's inertia

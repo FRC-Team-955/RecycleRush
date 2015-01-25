@@ -1,10 +1,10 @@
 package core;
 
 import util.Config;
-import edu.wpi.first.wpilibj.Encoder;
-import util.Controller; 
+import util.Controller;
 import util.LimitSwitch;
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.Encoder;
 
 
 public class Elevator 
@@ -83,5 +83,10 @@ public class Elevator
 	public double getDistanceFromBase()
 	{
 		return level * Config.Elevator.toteHeight;
+	}
+	
+	public void setLevel(int wantedLevel)
+	{
+		mtElevator.setPosition(baseValue + wantedLevel * Config.Elevator.toteHeight );
 	}
 }

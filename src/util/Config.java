@@ -44,8 +44,8 @@ public class Config
     	public static final int chnEncTwo = 7;
     	public static final double encDistance = 5;
     	public static final double ElevatorSpeed = .7;
-        public static final int adjustedBaseHeight = 212;
-        public static final int toteHeight = 130;
+        public static final double adjustedBaseHeight = 212;
+        public static final double toteHeight = 130;
     }
 
     public class Drive 
