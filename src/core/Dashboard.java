@@ -1,20 +1,24 @@
 package core;
 
+import auto.AutoType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import util.Config;
 
 public class Dashboard {
-	Elevator elevator;
-	Drive drive;
-	Claw claw;
-	PowerDistributionPanel pdp = new PowerDistributionPanel();
+	private Elevator elevator;
+	private Drive drive;
+	private Claw claw;
+	private SendableChooser chooser = new SendableChooser();
+	private PowerDistributionPanel pdp = new PowerDistributionPanel();
 	
 	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw)
 	{
 		drive = newDrive;
 		elevator = newElevator;
 		claw = newClaw;
+		
 	}
 	
 	public void update()
@@ -39,5 +43,20 @@ public class Dashboard {
 		SmartDashboard.putString("Left Talon Two", String.valueOf(drive.getVoltage(4)));
 		SmartDashboard.putString("Front Talon", String.valueOf(drive.getVoltage(5)));
 		SmartDashboard.putString("Back Talon", String.valueOf(drive.getVoltage(6)));
+		
+		// Autonomous Routines
+		chooser.addDefault("Do Nothing", new AutoType(Config.Auto.idDoNothing));
+		chooser.addObject("Drive Foward Timer", new AutoType(Config.Auto.idDriveForwardTimer));
+		chooser.addObject("Drive Foward Encoder", new AutoType(Config.Auto.idDriveForwardEnc));
+		chooser.addObject("Get One Tote Timer", new AutoType(Config.Auto.idGetOneToteTimer));
+		chooser.addObject("Get One Tote Encoder", new AutoType(Config.Auto.idGetOneToteEnc));
+		chooser.addObject("Get All Totes Timer", new AutoType(Config.Auto.idGetAllTotesTimer));
+		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesEnc));
+		
+	}
+	
+	public int getAutoType()
+	{
+		return ((AutoType) chooser.getSelected()).getId();
 	}
 }

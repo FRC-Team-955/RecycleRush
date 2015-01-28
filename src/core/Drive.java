@@ -1,6 +1,7 @@
 package core;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.Encoder;
 import util.NegInertia;
 import util.Config;
 import util.MyGyro;
@@ -14,6 +15,12 @@ public class Drive {
 	private CANTalon mtLeftTwo = new CANTalon(Config.Drive.chnMtLeftTwo);
 	private CANTalon mtFront = new CANTalon(Config.Drive.chnMtFront);
 	private CANTalon mtBack = new CANTalon(Config.Drive.chnMtBack);
+	
+	private Encoder frontEnc = new Encoder(Config.Drive.chnFrontEncA, Config.Drive.chnFrontEncB); 
+	private Encoder backEnc = new Encoder(Config.Drive.chnBackEncA, Config.Drive.chnBackEncB);
+	private Encoder leftEnc = new Encoder(Config.Drive.chnLeftEncA, Config.Drive.chnLeftEncB);
+	private Encoder rightEnc = new Encoder(Config.Drive.chnRightEncA, Config.Drive.chnRightEncB);
+	
 	private Controller contr;
 	private MyGyro gyro = new MyGyro(1, 0.0);
 	private NegInertia negInertia;
@@ -93,5 +100,53 @@ public class Drive {
 		}
 		
 		return 0;
+	}
+	
+	public double getFrontEncDist() 
+	{
+		return frontEnc.getDistance();
+	}
+	
+	public double getBackEncDist() 
+	{
+		return backEnc.getDistance();
+	}
+	
+	public double getLeftEncDist() 
+	{
+		return leftEnc.getDistance();
+	}
+	
+	public double getRightEncDist() 
+	{
+		return rightEnc.getDistance();
+	}
+	
+	/**
+	 * Return the position of the requested Talon
+	 * @param talonNum Numbers :mtRightOne 1, mtRightTwo, mtLeftOne 3, mtLeftTwo 4, mtFront 5, mtBack 6
+	 * @return Position of the Talon
+	 */
+	public double getPosition(int talonNum)
+	{
+		switch(talonNum)
+		{
+			case 1: return mtRightOne.getPosition();
+			case 2: return mtRightTwo.getPosition();
+			case 3: return mtLeftOne.getPosition();
+			case 4: return mtLeftTwo.getPosition();
+			case 5: return mtFront.getPosition();
+			case 6: return mtBack.getPosition();
+		}
+		
+		return 0;
+	}
+	
+	public void encReset()
+	{
+		leftEnc.reset();
+		rightEnc.reset();
+		frontEnc.reset();
+		backEnc.reset();
 	}
 }

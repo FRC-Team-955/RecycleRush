@@ -6,7 +6,21 @@ package util;
  */
 public class Config
 {
-    public class contrDrive
+	public class Auto
+	{
+		public static final int idDoNothing = 0;
+		public static final int idDriveForwardTimer = 1;
+		public static final int idDriveForwardEnc = 2;
+		public static final int idGetOneToteTimer = 3;
+		public static final int idGetOneToteEnc = 4;
+		public static final int idGetAllTotesTimer = 5;
+		public static final int idGetAllTotesEnc = 6;
+		public static final double encDriveForwardDistance = 800;
+		public static final double encDistanceBetweenTotes = 400;
+		public static final double encDistanceForwardToTote = 100;
+	}
+	
+    public class ContrDrive
     {
     	public static final double linearity = 1.5;
         public static final int maxButtons = 12;
@@ -57,6 +71,14 @@ public class Config
         public static final int chnMtFront = 4;
         public static final int chnMtBack = 5;
         public static final int chnGyro = 0;
+        public static final int chnFrontEncA = 5;
+        public static final int chnFrontEncB = 5;
+        public static final int chnBackEncA = 5;
+        public static final int chnBackEncB = 5;
+        public static final int chnLeftEncA = 5;
+        public static final int chnLeftEncB = 5;
+        public static final int chnRightEncA = 5;
+        public static final int chnRightEncB = 5; 
         public static final double gyroAngOffset = 0;
         public static final double tolerance = .01;
         public static final double negInteriaAdjust = 1;

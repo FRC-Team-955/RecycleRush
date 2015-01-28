@@ -1,10 +1,12 @@
 package core;
 
 import util.Config;
+import util.LIDAR;
 import util.Controller;
 import util.LimitSwitch;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.I2C.Port;
 
 
 public class Elevator 
@@ -17,6 +19,7 @@ public class Elevator
 	private boolean mode = false;
 	private double baseValue = 0;
 	private int level= 0;
+	LIDAR lidar = new LIDAR(Port.kMXP);
 	//Button number array
 	private int [] levels = {Config.Elevator.btLvlOne,Config.Elevator.btLvlTwo,Config.Elevator.btLvlThree,Config.Elevator.btLvlFour,Config.Elevator.btLvlFive,Config.Elevator.btLvlSix};
 	
@@ -82,7 +85,7 @@ public class Elevator
 	 */
 	public double getDistanceFromBase()
 	{
-		return level * Config.Elevator.toteHeight;
+		return lidar.getDistance();
 	}
 	
 	public void setLevel(int wantedLevel)

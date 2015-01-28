@@ -19,7 +19,7 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	Controller contrDrive = new Controller(Config.contrDrive.chn, Config.contrDrive.maxButtons, Config.contrDrive.linearity);
+    	Controller contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons, Config.ContrDrive.linearity);
     }
 
     /**
