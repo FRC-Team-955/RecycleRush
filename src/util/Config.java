@@ -18,6 +18,14 @@ public class Config
 		public static final double encDriveForwardDistance = 800;
 		public static final double encDistanceBetweenTotes = 400;
 		public static final double encDistanceForwardToTote = 100;
+		public static final double driveForwardTime = 2;
+		public static final double strafeTime = 2;
+		public static final double intakeTime = .5;
+		public static final double driveTowardToteTime = .5;
+		public static final double driveForwardSpeed = 2;
+		public static final double strafeSpeed = 2;
+		public static final double intakeSpeed = .5;
+		public static final double driveTowardToteSpeed = .5;
 	}
 	
     public class ContrDrive
