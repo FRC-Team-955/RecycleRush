@@ -107,4 +107,9 @@ public class Auto {
 	{
 		
 	}
+	
+	public void pickUpTote()
+	{
+		//drive.setSpeed(0, 0, Config.Drive., backSpeed);
+	}
 }
