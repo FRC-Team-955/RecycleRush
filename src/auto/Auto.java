@@ -85,7 +85,7 @@ public class Auto
 	
 	private void driveForwardEnc()
 	{
-			drive.setSpeed(Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance, 0, 0);
+			drive.setPos(Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance, 0, 0);
 	}
 	
 	private void driveForwardTimer()
@@ -139,7 +139,7 @@ public class Auto
 			
 			case 5:
 			{
-				drive.setSpeed(Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance, 0, 0);
+				drive.setPos(Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance, 0, 0);
 				break;
 			}
 		}	
@@ -205,7 +205,7 @@ public class Auto
 			
 			case 2:
 			{
-				drive.setSpeed(Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance, 0, 0);
+				drive.setPos(Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance, 0, 0);
 				break;
 			}
 		}
@@ -237,12 +237,12 @@ public class Auto
 	
 	public void pickUpToteEnc()
 	{
-		drive.setSpeed(Config.Auto.encDistanceForwardToTote, Config.Auto.encDistanceForwardToTote, 0, 0);
-		if(drive.getLeftEncDist() == Config.Auto.encDistanceForwardToTote && drive.getRightEncDist() == Config.Auto.encDistanceForwardToTote)
+		drive.setPos(Config.Auto.encDistanceForwardToTote, Config.Auto.encDistanceForwardToTote, 0, 0);
+		if(Math.abs(drive.getLeftEncDist() - Config.Auto.encDistanceForwardToTote) < Config.Auto.tolerance && Math.abs(drive.getRightEncDist() - Config.Auto.encDistanceForwardToTote) < Config.Auto.tolerance)
 		{
 			claw.openClaw();
 			claw.closeClaw();
-			drive.setSpeed(0, 0, 0, 0);
+			drive.setPos(0, 0, 0, 0);
 			if(drive.getLeftEncDist() == 0 && drive.getRightEncDist() == 0)
 					autoStep++;
 		}
@@ -250,8 +250,8 @@ public class Auto
 	
 	public void strafeEnc()
 	{
-		drive.setSpeed(0, 0, Config.Auto.encDistanceBetweenTotes, Config.Auto.encDistanceBetweenTotes);
-		if(drive.getFrontEncDist() == Config.Auto.encDistanceBetweenTotes && drive.getBackEncDist() == Config.Auto.encDistanceBetweenTotes)
+		drive.setPos(0, 0, Config.Auto.encDistanceBetweenTotes, Config.Auto.encDistanceBetweenTotes);
+		if(Math.abs(drive.getFrontEncDist() - Config.Auto.encDistanceBetweenTotes) == Config.Auto.tolerance && Math.abs(drive.getBackEncDist() - Config.Auto.encDistanceBetweenTotes) == Config.Auto.tolerance)
 		{
 				autoStep++;
 				drive.encReset();

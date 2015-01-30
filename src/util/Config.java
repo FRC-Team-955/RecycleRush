@@ -27,6 +27,7 @@ public class Config
 		public static final double driveForwardSpeed = 1;
 		public static final double strafeSpeed = 1;
 		public static final double driveTowardToteSpeed = .5;
+		public static final double tolerance = 10;
 	}
 	
     public class ContrDrive
