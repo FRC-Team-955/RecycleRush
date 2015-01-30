@@ -90,53 +90,152 @@ public class Auto
 	
 	private void driveForwardTimer()
 	{
+		timer.start();
 		
+		if(timer.get() < Config.Auto.driveForwardTime)
+			drive.setSpeed(Config.Auto.driveForwardSpeed, Config.Auto.driveForwardSpeed, 0, 0);
+		else
+		{
+			drive.setSpeed(0, 0, 0, 0);
+			timer.stop();
+			timer.reset();
+			autoStep++;
+		}
 	}
 	
 	private void getAllTotesEnc()
 	{
-//		pickUpTote(1);
-//		if(isFinishedPickUpOne)
-//		{
-//			strafe(1);
-//			if(isFinishedStrafeOne)
-//			{
-//				pickUpTote(2);
-//				if(isFinishedPickUpTwo)
-//				{
-//					strafe(2);
-//					if(isFinishedStrafeTwo)
-//					{
-//						pickUpTote(3);
-//						if(isFinishedPickUpThree)
-//							drive.setSpeed(Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance, 0, 0);
-//					}
-//				}
-//			}
-//		}
-		
-		switch
-		
+		switch(autoStep)
+		{
+			case 0:
+			{
+				pickUpToteEnc();
+				break;
+			}
+			
+			case 1:
+			{
+				strafeEnc();
+				break;
+			}
+			
+			case 2:
+			{
+				pickUpToteEnc();
+				break;
+			}
+			
+			case 3:
+			{
+				strafeEnc();
+				break;
+			}
+			
+			case 4:
+			{
+				pickUpToteEnc();
+				break;
+			}
+			
+			case 5:
+			{
+				drive.setSpeed(Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance, 0, 0);
+				break;
+			}
+		}	
 	}
 	
 	private void getAllTotesTimer()
 	{
-		
+		switch(autoStep)
+		{
+			case 0:
+			{
+				pickUpToteTimer();
+				break;
+			}
+			
+			case 1:
+			{
+				strafeTimer();
+				break;
+			}
+			
+			case 2:
+			{
+				pickUpToteTimer();
+				break;
+			}
+			
+			case 3:
+			{
+				strafeTimer();
+				break;
+			}
+			
+			case 4:
+			{
+				pickUpToteTimer();
+				break;
+			}
+			
+			case 5:
+			{
+				driveForwardTimer();
+				break;
+			}
+		}	
 	}
 	
 	private void getOneToteEnc()
 	{
-//		pickUpTote(1);
-//			if(isFinishedPickUpOne)
-//				drive.setSpeed(Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance, 0, 0);
+		switch(autoStep)
+		{
+			case 0:
+			{
+				pickUpToteEnc();
+				break;
+			}
+			
+			case 1:
+			{
+				strafeEnc();
+				break;
+			}
+			
+			case 2:
+			{
+				drive.setSpeed(Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance, 0, 0);
+				break;
+			}
+		}
 	}
 	
 	private void getOneToteTimer()
 	{
-		
+		switch(autoStep)
+		{
+			case 0:
+			{
+				pickUpToteTimer();
+				break;
+			}
+			
+			case 1:
+			{
+				strafeTimer();
+				break;
+			}
+			
+			case 2:
+			{
+				driveForwardTimer();
+				break;
+			}
+		}	
 	}
 	
-	public void pickUpTote(int num)
+	public void pickUpToteEnc()
 	{
 		drive.setSpeed(Config.Auto.encDistanceForwardToTote, Config.Auto.encDistanceForwardToTote, 0, 0);
 		if(drive.getLeftEncDist() == Config.Auto.encDistanceForwardToTote && drive.getRightEncDist() == Config.Auto.encDistanceForwardToTote)
@@ -145,31 +244,53 @@ public class Auto
 			claw.closeClaw();
 			drive.setSpeed(0, 0, 0, 0);
 			if(drive.getLeftEncDist() == 0 && drive.getRightEncDist() == 0)
-				if(num == 1)
-					autoStep++;
-				else if(num == 2)
-					autoStep++;
-				else 
 					autoStep++;
 		}
-		
 	}
 	
-	public void strafe(int num)
+	public void strafeEnc()
 	{
 		drive.setSpeed(0, 0, Config.Auto.encDistanceBetweenTotes, Config.Auto.encDistanceBetweenTotes);
 		if(drive.getFrontEncDist() == Config.Auto.encDistanceBetweenTotes && drive.getBackEncDist() == Config.Auto.encDistanceBetweenTotes)
-			if(num == 1)
-			{
-				isFinishedStrafeOne = true;
+		{
+				autoStep++;
 				drive.encReset();
-			}
-			else
-			{
-				isFinishedStrafeTwo = true;
-				drive.encReset();
-			}
+		}
 	}
 	
+	public void pickUpToteTimer()
+	{
+		timer.start();
+		
+		if(timer.get() < Config.Auto.driveTowardToteTime)
+			drive.setSpeed(Config.Auto.driveTowardToteSpeed, Config.Auto.driveTowardToteSpeed, 0, 0);
+		else if(timer.get() < Config.Auto.intakeOpenTime)
+			claw.openClaw();
+		else if(timer.get() < Config.Auto.intakeCloseTime)
+			claw.closeClaw();
+		else if(timer.get() < Config.Auto.driveAwayToteTime)
+			drive.setSpeed(-Config.Auto.driveTowardToteSpeed, -Config.Auto.driveTowardToteSpeed, 0, 0);
+		else
+		{
+			drive.setSpeed(0, 0, 0, 0);
+			timer.stop();
+			timer.reset();
+			autoStep++;
+		}
+	}
 	
+	public void strafeTimer()
+	{
+		timer.start();
+		
+		if(timer.get() < Config.Auto.strafeTime)
+			drive.setSpeed(0, 0, Config.Auto.strafeSpeed, Config.Auto.strafeSpeed);
+		else
+		{
+			drive.setSpeed(0, 0, 0, 0);
+			timer.stop();
+			timer.reset();
+			autoStep++;
+		}
+	}
 }

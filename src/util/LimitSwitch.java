@@ -10,10 +10,10 @@ public class LimitSwitch {
 	 * Constructor
 	 * @param chn the channel for the limit switch
 	 */
-	public LimitSwitch(int chn)
+	public LimitSwitch(int chn, boolean isFlipped)
 	{
 		limit = new DigitalInput(chn);
-		flipped= false;
+		flipped= isFlipped;
 	}
 	
 	/**

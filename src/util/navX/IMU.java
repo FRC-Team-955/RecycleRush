@@ -8,7 +8,7 @@
 /* in the root directory of the project.                                      */
 /*----------------------------------------------------------------------------*/
 
-package navX;
+package util.navX;
 
 import java.util.Arrays;
 import edu.wpi.first.wpilibj.PIDSource;

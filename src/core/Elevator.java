@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.I2C.Port;
 public class Elevator 
 {
 	private CANTalon mtElevator = new CANTalon(Config.Elevator.chnMtElevator);
-	private LimitSwitch limitBottom = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom);
-	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop);
+	private LimitSwitch limitBottom = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom, false);
+	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop, false);
 	private Encoder enc = new Encoder(Config.Elevator.chnEncOne, Config.Elevator.chnEncTwo);
 	private Controller contr;
 	private boolean mode = false;

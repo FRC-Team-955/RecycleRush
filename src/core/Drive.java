@@ -2,11 +2,12 @@ package core;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Encoder;
-import util.NegInertia;
+import edu.wpi.first.wpilibj.SerialPort;
+import util.navX.IMUAdvanced;
 import util.Config;
-import util.MyGyro;
-import java.lang.Math;
 import util.Controller;
+
+import java.lang.Math;
 
 public class Drive {
 	private CANTalon mtRightOne = new CANTalon(Config.Drive.chnMtRightOne);
@@ -21,14 +22,15 @@ public class Drive {
 	private Encoder leftEnc = new Encoder(Config.Drive.chnLeftEncA, Config.Drive.chnLeftEncB);
 	private Encoder rightEnc = new Encoder(Config.Drive.chnRightEncA, Config.Drive.chnRightEncB);
 	
+	private SerialPort serial = new SerialPort(Config.Drive.navXBaudRate, SerialPort.Port.kMXP); 
+	private IMUAdvanced navX;
+	
 	private Controller contr;
-	private MyGyro gyro = new MyGyro(1, 0.0);
-	private NegInertia negInertia;
 	
 	public Drive (Controller newContr) 
 	{
         contr = newContr;
-        gyro.reset();
+        navX = new IMUAdvanced(serial, (byte) 50);
     }
 	
 	/**
@@ -44,7 +46,7 @@ public class Drive {
 			double joyY = contr.getLeftY();
 			double joyMag = Math.sqrt((joyX * joyX) + (joyY * joyY));
 			double joyAng = (450 - Math.toDegrees(Math.atan2(joyY, joyX))) % 360;
-			double angDiff = gyro.getAngle() - joyAng;
+			double angDiff = navX.getYaw() - joyAng;
 			double centerSpeed = joyMag * Math.sin(Math.toRadians(angDiff));
 			double sideSpeed = joyMag * Math.cos(Math.toRadians(angDiff));
 			
@@ -54,12 +56,12 @@ public class Drive {
 		//Turning with right joy
 		else
 		{
-			mtRightOne.set(negInertia.getTurn(rightJoyXPos));
-			mtRightTwo.set(negInertia.getTurn(rightJoyXPos));
-			mtLeftOne.set(negInertia.getTurn(-rightJoyXPos));
-			mtLeftTwo.set(negInertia.getTurn(-rightJoyXPos));
-			mtFront.set(negInertia.getTurn(rightJoyXPos));
-			mtBack.set(negInertia.getTurn(-rightJoyXPos));
+			mtRightOne.set(rightJoyXPos);
+			mtRightTwo.set(rightJoyXPos);
+			mtLeftOne.set(-rightJoyXPos);
+			mtLeftTwo.set(-rightJoyXPos);
+			mtFront.set(rightJoyXPos);
+			mtBack.set(-rightJoyXPos);
 		}		
 	} 
 

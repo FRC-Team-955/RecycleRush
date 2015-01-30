@@ -21,7 +21,7 @@
  THE SOFTWARE.
  ===============================================
  */
-package navX;
+package util.navX;
 
 public class IMUProtocol {
 
