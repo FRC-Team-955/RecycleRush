@@ -39,4 +39,18 @@ public class Claw {
 	{
 		noid.set(DoubleSolenoid.Value.kReverse); 
 	}
+	
+	
+	/**
+	 * Gets the status of claw, open or closed
+	 * @return If the solenoid is closed, it returns true, else false
+	 */
+	public boolean getClawStatus () {
+		if (noid.get() == DoubleSolenoid.Value.kReverse) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 }

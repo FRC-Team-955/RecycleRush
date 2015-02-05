@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import util.Config;
+import util.LIDAR;
+import util.navX.IMUAdvanced;
 
 public class Dashboard {
 	private Elevator elevator;
@@ -12,23 +14,36 @@ public class Dashboard {
 	private Claw claw;
 	private SendableChooser chooser = new SendableChooser();
 	private PowerDistributionPanel pdp = new PowerDistributionPanel();
+	private IMUAdvanced navX;
+	private LIDAR rangeFinder;
 	
-	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw)
+	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw, IMUAdvanced newNavXValues, LIDAR newLIDAR)
 	{
 		drive = newDrive;
 		elevator = newElevator;
 		claw = newClaw;
-		
+		navX = newNavXValues;
+		rangeFinder = newLIDAR;
 	}
 	
 	public void update()
 	{
+		
 		// Elevator Data
 		SmartDashboard.putString("Elevator Level", String.valueOf(elevator.getLevel()));
 		SmartDashboard.putString("Elevator Distance From Base", String.valueOf(elevator.getDistanceFromBase()));
 		
+		//Gyrosope
+		SmartDashboard.putString("Gyro", String.valueOf(navX.getYaw()));
+		
+		//LIDAR
+		SmartDashboard.putString("LIDAR", String.valueOf(rangeFinder.getDistance()));
+		
+		//Claw
+		SmartDashboard.putString("Claw", String.valueOf(claw.getClawStatus())); //True if closed
+		
 		// Drive Data
-		// Currents
+		//		Currents
 		SmartDashboard.putString("Right Talon One", String.valueOf(pdp.getCurrent(Config.Drive.chnMtRightOne)));
 		SmartDashboard.putString("Right Talon Two", String.valueOf(pdp.getCurrent(Config.Drive.chnMtRightTwo)));
 		SmartDashboard.putString("Left Talon One", String.valueOf(pdp.getCurrent(Config.Drive.chnMtLeftOne)));
@@ -36,7 +51,7 @@ public class Dashboard {
 		SmartDashboard.putString("Front Talon", String.valueOf(pdp.getCurrent(Config.Drive.chnMtFront)));
 		SmartDashboard.putString("Back Talon", String.valueOf(pdp.getCurrent(Config.Drive.chnMtBack)));
 		
-		//Voltages
+		//		Voltages
 		SmartDashboard.putString("Right Talon One", String.valueOf(drive.getVoltage(1)));
 		SmartDashboard.putString("Right Talon Two", String.valueOf(drive.getVoltage(2)));
 		SmartDashboard.putString("Left Talon One", String.valueOf(drive.getVoltage(3)));
@@ -52,6 +67,8 @@ public class Dashboard {
 		chooser.addObject("Get One Tote Encoder", new AutoType(Config.Auto.idGetOneToteEnc));
 		chooser.addObject("Get All Totes Timer", new AutoType(Config.Auto.idGetAllTotesTimer));
 		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesEnc));
+		
+		
 		
 	}
 	
