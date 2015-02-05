@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import util.navX.IMUAdvanced;
 import util.Config;
 import util.Controller;
+import util.navX.NavX;
 
 import java.lang.Math;
 
@@ -24,14 +25,14 @@ public class Drive {
 	private Encoder rightEnc = new Encoder(Config.Drive.chnRightEncA, Config.Drive.chnRightEncB);
 	
 	private SerialPort serial = new SerialPort(Config.Drive.navXBaudRate, SerialPort.Port.kMXP); 
-	private IMUAdvanced navX;
+	private NavX navX;
 	
 	private Controller contr;
 	
-	public Drive (Controller newContr) 
+	public Drive (Controller newContr, double angleOffset) 
 	{
         contr = newContr;
-        navX = new IMUAdvanced(serial, (byte) 50);
+        navX = new NavX(serial, (byte) 50, angleOffset );
     }
 	
 	/**
@@ -46,8 +47,8 @@ public class Drive {
 			double joyX = contr.getLeftX();
 			double joyY = contr.getLeftY();
 			double joyMag = Math.sqrt((joyX * joyX) + (joyY * joyY));
-			double joyAng = (450 - Math.toDegrees(Math.atan2(joyY, joyX))) % 360;
-			double angDiff = navX.getYaw() - joyAng;
+			double joyAng = ((450 - Math.toDegrees(Math.atan2(joyY, joyX))) % 360) ;
+			double angDiff = navX.getAngle() - joyAng;
 			double centerSpeed = joyMag * Math.sin(Math.toRadians(angDiff));
 			double sideSpeed = joyMag * Math.cos(Math.toRadians(angDiff));
 			
