@@ -52,8 +52,8 @@ public class Config
     
     public class Claw
     {
-    	public static final int chnSolOne = 5;
-    	public static final int chnSolTwo = 6;
+    	public static final int chnSolOne = 0;
+    	public static final int chnSolTwo = 1;
     	public static final int btOpen = 3;
     	public static final int btClose = 4;
     }
@@ -79,21 +79,21 @@ public class Config
 
     public class Drive 
     {
-        public static final int chnMtLeftOne = 6;
-        public static final int chnMtLeftTwo = 7;
-        public static final int chnMtRightOne = 2;
-        public static final int chnMtRightTwo = 3;
-        public static final int chnMtFront = 4;
-        public static final int chnMtBack = 5;
+    	public static final int chnMtLeftOne = 1;
+        public static final int chnMtLeftTwo = 2;
+        public static final int chnMtRightOne = 3;
+        public static final int chnMtRightTwo = 4;
+        public static final int chnMtFront = 5;
+        public static final int chnMtBack = 6;
         public static final int chnNavX = 0;
-        public static final int chnFrontEncA = 5;
-        public static final int chnFrontEncB = 5;
-        public static final int chnBackEncA = 5;
-        public static final int chnBackEncB = 5;
-        public static final int chnLeftEncA = 5;
-        public static final int chnLeftEncB = 5;
-        public static final int chnRightEncA = 5;
-        public static final int chnRightEncB = 5; 
+        public static final int chnFrontEncA = 10;
+        public static final int chnFrontEncB = 11;
+        public static final int chnBackEncA = 12;
+        public static final int chnBackEncB = 13;
+        public static final int chnLeftEncA = 14;
+        public static final int chnLeftEncB = 15;
+        public static final int chnRightEncA = 16;
+        public static final int chnRightEncB = 17; 
         public static final double tolerance = .01;
         public static final int navXBaudRate = 57600;
         public static final int idFieldCentric = 0;

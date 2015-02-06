@@ -1,30 +1,30 @@
 package core;
 
 import auto.AutoType;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import util.Config;
 import util.LIDAR;
-import util.navX.IMUAdvanced;
+import util.navX.NavX;
 
 public class Dashboard {
 	private Elevator elevator;
 	private Drive drive;
 	private Claw claw;
+	private NavX navX;
 	private SendableChooser chooser = new SendableChooser();
 	private SendableChooser driveChooser = new SendableChooser();
 	private PowerDistributionPanel pdp = new PowerDistributionPanel();
-	private IMUAdvanced navX;
 	private LIDAR rangeFinder;
 	
-	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw, IMUAdvanced newNavXValues, LIDAR newLIDAR)
+	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw, NavX newNavX)
 	{
 		drive = newDrive;
 		elevator = newElevator;
 		claw = newClaw;
-		navX = newNavXValues;
-		rangeFinder = newLIDAR;
+		navX = newNavX;
 	}
 	
 	public void update()
@@ -36,9 +36,6 @@ public class Dashboard {
 		
 		//Gyrosope
 		SmartDashboard.putString("Gyro", String.valueOf(navX.getYaw()));
-		
-		//LIDAR
-		SmartDashboard.putString("LIDAR", String.valueOf(rangeFinder.getDistance()));
 		
 		//Claw
 		SmartDashboard.putString("Claw", String.valueOf(claw.getClawStatus())); //True if closed
@@ -72,10 +69,12 @@ public class Dashboard {
 		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesLeftEnc));
 		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesCenterEnc));
 		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesRightEnc));
+		SmartDashboard.putData("AutoMode", chooser);
 		
 		// Drive Mode
 		driveChooser.addDefault("Field Centric Drive", new DriveType(Config.Drive.idFieldCentric));
 		driveChooser.addObject("Robo Centric Drive", new DriveType(Config.Drive.idRoboCentric));
+		SmartDashboard.putData("Drive Mode", driveChooser);
 		
 		// Angle Offset
 		SmartDashboard.putNumber("Angle Offset", 0);
@@ -84,6 +83,7 @@ public class Dashboard {
 	
 	public int getAutoType()
 	{
+		System.out.println(((AutoType) chooser.getSelected()).getId() + " HALLA @ ME");
 		return ((AutoType) chooser.getSelected()).getId();
 	}
 	

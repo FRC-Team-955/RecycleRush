@@ -19,11 +19,13 @@ public class Auto
 	private int autoStep = 0;
 	private int elevatorLevel = 1;
 	
-	public Auto(Drive newDrive, Claw newClaw, Elevator newElevator)
+	public Auto(Drive newDrive, Claw newClaw, Elevator newElevator, Dashboard newDash)
 	{
 		claw = newClaw;
 		elevator = newElevator;
 		drive = newDrive;
+		dash = newDash;
+		
 	}
 	
 	public void getAutoMode()
@@ -446,19 +448,19 @@ public class Auto
 		if(timer.get() < Config.Auto.timeIntakeClose)
 		{
 			System.out.println("in first if");
-			claw.closeClaw();
+			//claw.closeClaw();
 		}
 		
 		else if(timer.get() < Config.Auto.timeIntakeOpen)
 		{
-			claw.openClaw();
+			//claw.openClaw();
 			System.out.println("in second if");
 		}
 		
 		else if(timer.get() < Config.Auto.timeElevatorStack)
 		{
-			elevator.setLevel(elevatorLevel);
-			elevatorLevel++;
+			//elevator.setLevel(elevatorLevel);
+			//elevatorLevel++;
 		}
 		
 		else

@@ -26,15 +26,14 @@ public class Drive {
 	private Encoder leftEnc = new Encoder(Config.Drive.chnLeftEncA, Config.Drive.chnLeftEncB);
 	private Encoder rightEnc = new Encoder(Config.Drive.chnRightEncA, Config.Drive.chnRightEncB);
 	
-	private SerialPort serial = new SerialPort(Config.Drive.navXBaudRate, SerialPort.Port.kMXP); 
 	private NavX navX;
 	
 	private Controller contr;
 	
-	public Drive (Controller newContr, double angleOffset) 
+	public Drive (Controller newContr, double angleOffset, NavX newNavX) 
 	{
         contr = newContr;
-        navX = new NavX(serial, (byte) 50, angleOffset);
+        navX = newNavX;
     }
 	
 	/**

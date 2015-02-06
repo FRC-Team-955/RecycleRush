@@ -12,6 +12,7 @@ public class SimpleNavigationSystem {
 	double positionX;
 	double positionY;
 	
+	//TODO Switch to NavX accelerometer
 	BuiltInAccelerometer accel = new BuiltInAccelerometer();
 	
 	

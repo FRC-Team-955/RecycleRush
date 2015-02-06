@@ -4,8 +4,9 @@ package core;
 import util.Config;
 import auto.Auto;
 import util.Controller;
-
+import util.navX.NavX;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.SerialPort;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -17,11 +18,13 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 public class Robot extends IterativeRobot 
 {
 	private Controller contrDrive;
-	private Dashboard dash;
-	private Drive drive = new Drive(contrDrive, dash.getAngelOffset());
+	private SerialPort serial = new SerialPort(Config.Drive.navXBaudRate, SerialPort.Port.kMXP); 
+	private NavX navX = new NavX(serial, (byte) 50, 0);
+	private Drive drive = new Drive(contrDrive, 0, navX);
 	private Claw claw = new Claw (contrDrive);
-	private Elevator elev = new Elevator(contrDrive);
-	private Auto auto = new Auto(drive, claw, elev);
+	private Elevator elevator = new Elevator(contrDrive);
+	private Dashboard dash = new Dashboard(drive, elevator, claw, navX);
+	private Auto auto = new Auto(drive, claw, elevator, dash);
 	
     /**
      * This function is run when the robot is first started up and should be
@@ -29,16 +32,21 @@ public class Robot extends IterativeRobot
      */
     public void robotInit() 
     {
-    	auto.getAutoMode();
     	contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons, Config.ContrDrive.linearity);
+    	dash.update();
     }
-
+    
+    public void autonomousInit()
+    {
+    	auto.getAutoMode();
+    }
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() 
     {
     	auto.run();
+    	dash.update();
     }
 
     /**
@@ -47,6 +55,7 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {     
     	drive.run();
+    	dash.update();
     }
     
     /**
