@@ -50,8 +50,12 @@ public class Dashboard {
 		chooser.addObject("Drive Foward Encoder", new AutoType(Config.Auto.idDriveForwardEnc));
 		chooser.addObject("Get One Tote Timer", new AutoType(Config.Auto.idGetOneToteTimer));
 		chooser.addObject("Get One Tote Encoder", new AutoType(Config.Auto.idGetOneToteEnc));
-		chooser.addObject("Get All Totes Timer", new AutoType(Config.Auto.idGetAllTotesTimer));
-		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesEnc));
+		chooser.addObject("Get All Totes Timer", new AutoType(Config.Auto.idGetAllTotesLeftTimer));
+		chooser.addObject("Get All Totes Timer", new AutoType(Config.Auto.idGetAllTotesCenterTimer));
+		chooser.addObject("Get All Totes Timer", new AutoType(Config.Auto.idGetAllTotesRightTimer));
+		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesLeftEnc));
+		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesCenterEnc));
+		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesRightEnc));
 		
 	}
 	

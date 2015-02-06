@@ -32,7 +32,7 @@ public class Drive {
 	public Drive (Controller newContr, double angleOffset) 
 	{
         contr = newContr;
-        navX = new NavX(serial, (byte) 50, angleOffset );
+        navX = new NavX(serial, (byte) 50, angleOffset);
     }
 	
 	/**

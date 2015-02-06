@@ -1,5 +1,7 @@
 package util.navX;
 
+import edu.wpi.first.wpilibj.SerialPort;
+
 public class NavX extends IMUAdvanced {
 
 	double offsetAngle;
