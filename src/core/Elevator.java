@@ -32,6 +32,7 @@ public class Elevator
 		contr = newContr;
 		enc.reset();
 		mtElevator.changeControlMode(CANTalon.ControlMode.Position);
+		enc.setDistancePerPulse(360.0/265);
 	}
 	
 	/**

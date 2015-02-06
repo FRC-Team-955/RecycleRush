@@ -1,19 +1,21 @@
 package core;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SerialPort;
 import util.navX.IMUAdvanced;
 import util.Config;
 import util.Controller;
+import util.navX.NavX;
 
 import java.lang.Math;
 
 public class Drive {
-	private CANTalon mtRightOne = new CANTalon(Config.Drive.chnMtRightOne);
-	private CANTalon mtRightTwo = new CANTalon(Config.Drive.chnMtRightTwo);
 	private CANTalon mtLeftOne = new CANTalon(Config.Drive.chnMtLeftOne);
-	private CANTalon mtLeftTwo = new CANTalon(Config.Drive.chnMtLeftTwo);
+	private Talon mtLeftTwo = new Talon(Config.Drive.chnMtLeftTwo);
+	private CANTalon mtRightOne = new CANTalon(Config.Drive.chnMtRightOne);
+	private Talon mtRightTwo = new Talon(Config.Drive.chnMtRightTwo);
 	private CANTalon mtFront = new CANTalon(Config.Drive.chnMtFront);
 	private CANTalon mtBack = new CANTalon(Config.Drive.chnMtBack);
 	
@@ -23,14 +25,14 @@ public class Drive {
 	private Encoder rightEnc = new Encoder(Config.Drive.chnRightEncA, Config.Drive.chnRightEncB);
 	
 	private SerialPort serial = new SerialPort(Config.Drive.navXBaudRate, SerialPort.Port.kMXP); 
-	private IMUAdvanced navX;
+	private NavX navX;
 	
 	private Controller contr;
 	
-	public Drive (Controller newContr) 
+	public Drive (Controller newContr, double angleOffset) 
 	{
         contr = newContr;
-        navX = new IMUAdvanced(serial, (byte) 50);
+        navX = new NavX(serial, (byte) 50, angleOffset);
     }
 	
 	/**
@@ -45,8 +47,8 @@ public class Drive {
 			double joyX = contr.getLeftX();
 			double joyY = contr.getLeftY();
 			double joyMag = Math.sqrt((joyX * joyX) + (joyY * joyY));
-			double joyAng = (450 - Math.toDegrees(Math.atan2(joyY, joyX))) % 360;
-			double angDiff = navX.getYaw() - joyAng;
+			double joyAng = ((450 - Math.toDegrees(Math.atan2(joyY, joyX))) % 360) ;
+			double angDiff = navX.getAngle() - joyAng;
 			double centerSpeed = joyMag * Math.sin(Math.toRadians(angDiff));
 			double sideSpeed = joyMag * Math.cos(Math.toRadians(angDiff));
 			
@@ -56,10 +58,11 @@ public class Drive {
 		//Turning with right joy
 		else
 		{
-			mtRightOne.set(rightJoyXPos);
-			mtRightTwo.set(rightJoyXPos);
+
 			mtLeftOne.set(-rightJoyXPos);
 			mtLeftTwo.set(-rightJoyXPos);
+			mtRightOne.set(rightJoyXPos);
+			mtRightTwo.set(rightJoyXPos);
 			mtFront.set(rightJoyXPos);
 			mtBack.set(-rightJoyXPos);
 		}		
@@ -76,17 +79,26 @@ public class Drive {
 	{
 		leftSpeed = -leftSpeed;
 		frontSpeed = -frontSpeed;
-		mtRightOne.set(rightSpeed);
-		mtRightTwo.set(rightSpeed);		
 		mtLeftOne.set(leftSpeed);
-		mtLeftTwo.set(leftSpeed);		
+		mtLeftTwo.set(leftSpeed);
+		mtRightOne.set(rightSpeed);
+		mtRightTwo.set(rightSpeed);				
 		mtFront.set(frontSpeed);		
 		mtBack.set(backSpeed);	
 	}
 	
+	public void setPos(double leftPos, double rightPos, double frontPos, double backPos)
+	{
+		mtLeftOne.setPosition(leftPos);
+		mtLeftTwo.set(mtLeftOne.getBusVoltage());
+		mtRightOne.setPosition(rightPos);
+		mtRightTwo.set(mtRightOne.getBusVoltage());
+		mtFront.setPosition(frontPos);
+		mtBack.setPosition(backPos);
+	}
 	/**
 	 * Returns Voltage of the asked talon
-	 * @param talonNum Numbers :mtRightOne 1, mtRightTwo, mtLeftOne 3, mtLeftTwo 4, mtFront 5, mtBack 6
+	 * @param talonNum Numbers :mtRightOne 1, mtLeftOne 3, mtFront 5, mtBack 6
 	 * @return Voltage of the talon
 	 */
 	public double getVoltage(int talonNum)
@@ -94,9 +106,7 @@ public class Drive {
 		switch(talonNum)
 		{
 			case 1: return mtRightOne.getBusVoltage();
-			case 2: return mtRightTwo.getBusVoltage();
 			case 3: return mtLeftOne.getBusVoltage();
-			case 4: return mtLeftTwo.getBusVoltage();
 			case 5: return mtFront.getBusVoltage();
 			case 6: return mtBack.getBusVoltage();
 		}
