@@ -95,6 +95,9 @@ public class Config
         public static final int chnRightEncB = 5; 
         public static final double tolerance = .01;
         public static final int navXBaudRate = 57600;
+        public static final int idFieldCentric = 0;
+        public static final int idRoboCentric = 1;
+        public static final double roboCentricTurningScalar = 1;
     }
     
     public class CameraFeed

@@ -13,6 +13,7 @@ public class Dashboard {
 	private Drive drive;
 	private Claw claw;
 	private SendableChooser chooser = new SendableChooser();
+	private SendableChooser driveChooser = new SendableChooser();
 	private PowerDistributionPanel pdp = new PowerDistributionPanel();
 	private IMUAdvanced navX;
 	private LIDAR rangeFinder;
@@ -72,12 +73,27 @@ public class Dashboard {
 		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesCenterEnc));
 		chooser.addObject("Get All Totes Encoder", new AutoType(Config.Auto.idGetAllTotesRightEnc));
 		
+		// Drive Mode
+		driveChooser.addDefault("Field Centric Drive", new DriveType(Config.Drive.idFieldCentric));
+		driveChooser.addObject("Robo Centric Drive", new DriveType(Config.Drive.idRoboCentric));
 		
+		// Angle Offset
+		SmartDashboard.putNumber("Angle Offset", 0);
 		
 	}
 	
 	public int getAutoType()
 	{
 		return ((AutoType) chooser.getSelected()).getId();
+	}
+	
+	public int getDriveType()
+	{
+		return ((DriveType) driveChooser.getSelected()).getId();
+	}
+	
+	public double getAngelOffset()
+	{
+		return  ((double)SmartDashboard.getNumber("Angle Offset"));
 	}
 }

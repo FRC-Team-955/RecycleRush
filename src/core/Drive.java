@@ -18,6 +18,8 @@ public class Drive {
 	private Talon mtRightTwo = new Talon(Config.Drive.chnMtRightTwo);
 	private CANTalon mtFront = new CANTalon(Config.Drive.chnMtFront);
 	private CANTalon mtBack = new CANTalon(Config.Drive.chnMtBack);
+	private Dashboard dash;
+	private int driveId;
 	
 	private Encoder frontEnc = new Encoder(Config.Drive.chnFrontEncA, Config.Drive.chnFrontEncB); 
 	private Encoder backEnc = new Encoder(Config.Drive.chnBackEncA, Config.Drive.chnBackEncB);
@@ -38,6 +40,20 @@ public class Drive {
 	/**
 	 * Moves the robot in relation to the field instead of the robot
 	 */
+	public void run() 
+	{
+		driveId = dash.getDriveType();
+		
+		if(driveId == 0) 
+		{
+			fieldCentric();
+		}
+		else
+		{
+			roboCentric();
+		}
+	}
+	
 	public void fieldCentric() 
 	{
 		double rightJoyXPos = contr.getRightX();
@@ -67,6 +83,17 @@ public class Drive {
 			mtBack.set(-rightJoyXPos);
 		}		
 	} 
+	
+	public void roboCentric() 
+	{
+		double joyX = contr.getLeftX();
+		double joyY = contr.getLeftY();
+		double x = Math.abs(joyX) * joyX;
+        double y = Math.abs(joyY) * joyY;
+        
+        x *= Config.Drive.roboCentricTurningScalar;
+        setSpeed(-x + y, x + y, 0, 0);
+	}
 
 	/**
 	 * Sets the speed of all motors
