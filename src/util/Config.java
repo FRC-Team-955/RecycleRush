@@ -30,6 +30,7 @@ public class Config
 		public static final double timeDriveTowardTote = timeStrafe + 1;
 		public static final double timeStrafeBackwards = timeDriveTowardTote + .75;
 		public static final double timeDriveForward = 1;
+		public static final double timeElevatorStack = .5;
 		
 		public static final double driveForwardSpeed = 1;
 		public static final double strafeSpeed = 1;

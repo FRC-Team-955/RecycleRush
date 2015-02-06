@@ -13,11 +13,11 @@ public class Auto
 	private Elevator elevator;
 	private Drive drive;
 	private Dashboard dash;
-	private int autoId;
-	private int autoStep = 0;
 	private Timer timer = new Timer();
 	
-	
+	private int autoId;
+	private int autoStep = 0;
+	private int elevatorLevel = 1;
 	
 	public Auto(Drive newDrive, Claw newClaw, Elevator newElevator)
 	{
@@ -107,7 +107,7 @@ public class Auto
 	
 	private void driveForwardEnc()
 	{
-			drive.setPos(0, 0, Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance);
+		drive.setPos(0, 0, Config.Auto.encDriveForwardDistance, Config.Auto.encDriveForwardDistance);
 	}
 	
 	private void driveForwardTimer()
@@ -453,6 +453,12 @@ public class Auto
 		{
 			claw.openClaw();
 			System.out.println("in second if");
+		}
+		
+		else if(timer.get() < Config.Auto.timeElevatorStack)
+		{
+			elevator.setLevel(elevatorLevel);
+			elevatorLevel++;
 		}
 		
 		else
