@@ -1,10 +1,10 @@
-package auto;
+package util;
 
-public class AutoType 
-{
+public class Type {
+	
 	private int id;
 	
-	public AutoType(int newId)
+	public Type(int newId)
 	{
 		id = newId;
 	}

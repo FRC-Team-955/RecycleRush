@@ -22,9 +22,6 @@ public class LimitSwitch {
 	 */
 	public boolean get()
 	{
-		if(flipped)
-			return !limit.get();
-		else
-			return limit.get();	
+		return flipped ? limit.get(): false;
 	}
 }

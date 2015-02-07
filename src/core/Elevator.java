@@ -19,7 +19,7 @@ public class Elevator
 	private boolean mode = false;
 	private double baseValue = 0;
 	private int level= 0;
-	LIDAR lidar = new LIDAR(Port.kMXP);
+	private LIDAR lidar = new LIDAR(Port.kMXP);
 	//Button number array
 	private int [] levels = {Config.Elevator.btLvlOne,Config.Elevator.btLvlTwo,Config.Elevator.btLvlThree,Config.Elevator.btLvlFour,Config.Elevator.btLvlFive,Config.Elevator.btLvlSix};
 	
@@ -65,7 +65,7 @@ public class Elevator
 	 */
 	public void elevatorMove()
 	{
-		if(!limitBottom.get() || !limitTop.get())
+		if(!limitBottom.get() && !limitTop.get())
 			mtElevator.set(baseValue + level * Config.Elevator.toteHeight);
 		else
 			mtElevator.set(mtElevator.get());

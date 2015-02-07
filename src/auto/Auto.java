@@ -19,25 +19,18 @@ public class Auto
 	private int autoStep = 0;
 	private int elevatorLevel = 1;
 	
-	public Auto(Drive newDrive, Claw newClaw, Elevator newElevator, Dashboard newDash)
+	public Auto(Drive newDrive, Claw newClaw, Elevator newElevator)
 	{
 		claw = newClaw;
 		elevator = newElevator;
 		drive = newDrive;
-		dash = newDash;
-		
-	}
-	
-	public void getAutoMode()
-	{
-		autoId = dash.getAutoType();
 	}
 	
 	public void startTimer() {
 		timer.start();
 	}
 	
-	public void run()
+	public void run(int autoId)
 	{
 		switch(autoId)
 		{
@@ -49,6 +42,7 @@ public class Auto
 			
 			case Config.Auto.idDriveForwardEnc:
 			{
+				drive.setTalonMode(true);
 				driveForwardEnc();
 				break;
 			}
@@ -61,18 +55,21 @@ public class Auto
 
 			case Config.Auto.idGetAllTotesLeftEnc:
 			{
+				drive.setTalonMode(true);
 				getAllTotesLeftEnc();
 				break;
 			}
 			
 			case Config.Auto.idGetAllTotesCenterEnc:
 			{
+				drive.setTalonMode(true);
 				getAllTotesCenterEnc();
 				break;
 			}
 			
 			case Config.Auto.idGetAllTotesRightEnc:
 			{
+				drive.setTalonMode(true);
 				getAllTotesRightEnc();
 				break;
 			}
@@ -116,7 +113,7 @@ public class Auto
 	private void driveForwardTimer()
 	{
 		if(timer.get() < Config.Auto.timeDriveForward){
-			drive.setSpeed(Config.Auto.driveForwardSpeed, Config.Auto.driveForwardSpeed, 0, 0);
+			drive.setSpeed(0, 0, Config.Auto.driveForwardSpeed, Config.Auto.driveForwardSpeed);
 			System.out.println(timer.get());}
 		
 		else

@@ -17,14 +17,14 @@ import edu.wpi.first.wpilibj.SerialPort;
  */
 public class Robot extends IterativeRobot 
 {
-	private Controller contrDrive;
+	private Controller contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons, Config.ContrDrive.linearity);;
 	private SerialPort serial = new SerialPort(Config.Drive.navXBaudRate, SerialPort.Port.kMXP); 
 	private NavX navX = new NavX(serial, (byte) 50, 0);
 	private Drive drive = new Drive(contrDrive, 0, navX);
 	private Claw claw = new Claw (contrDrive);
 	private Elevator elevator = new Elevator(contrDrive);
 	private Dashboard dash = new Dashboard(drive, elevator, claw, navX);
-	private Auto auto = new Auto(drive, claw, elevator, dash);
+	private Auto auto = new Auto(drive, claw, elevator);
 	
     /**
      * This function is run when the robot is first started up and should be
@@ -32,13 +32,11 @@ public class Robot extends IterativeRobot
      */
     public void robotInit() 
     {
-    	contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons, Config.ContrDrive.linearity);
     	dash.update();
     }
     
     public void autonomousInit()
     {
-    	auto.getAutoMode();
     	auto.startTimer();
     }
     /**
@@ -46,8 +44,13 @@ public class Robot extends IterativeRobot
      */
     public void autonomousPeriodic() 
     {
-    	auto.run();
+    	auto.run(dash.getAutoType());
     	dash.update();
+    }
+    
+    public void teleopInit()
+    {
+    	drive.setTalonMode(false);
     }
 
     /**
@@ -55,7 +58,7 @@ public class Robot extends IterativeRobot
      */
     public void teleopPeriodic() 
     {     
-    	drive.run();
+    	drive.run(dash.getDriveType());
     	dash.update();
     }
     

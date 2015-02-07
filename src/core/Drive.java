@@ -17,9 +17,7 @@ public class Drive {
 	private CANTalon mtRightOne = new CANTalon(Config.Drive.chnMtRightOne);
 	private Talon mtRightTwo = new Talon(Config.Drive.chnMtRightTwo);
 	private CANTalon mtFront = new CANTalon(Config.Drive.chnMtFront);
-	private CANTalon mtBack = new CANTalon(Config.Drive.chnMtBack);
-	private Dashboard dash;
-	private int driveId;
+	private CANTalon mtBack = new CANTalon(Config.Drive.chnMtBack);;
 	
 	private Encoder frontEnc = new Encoder(Config.Drive.chnFrontEncA, Config.Drive.chnFrontEncB); 
 	private Encoder backEnc = new Encoder(Config.Drive.chnBackEncA, Config.Drive.chnBackEncB);
@@ -38,59 +36,35 @@ public class Drive {
 	
 	/**
 	 * Moves the robot in relation to the field instead of the robot
-	 */
-	public void run() 
+	 */	
+	public void run(int driveId) 
 	{
-		driveId = dash.getDriveType();
-		
-		if(driveId == 0) 
-		{
-			fieldCentric();
-		}
+		if(driveId == Config.Drive.idRobotCentric) 
+			robotCentric();
 		else
-		{
-			roboCentric();
-		}
+			fieldCentric();
 	}
 	
 	public void fieldCentric() 
-	{
-		double rightJoyXPos = contr.getRightX();
+	{		
+		double joyMag = getJoyMag(); 
+		double joyAng = getJoyAng(); 
+		double angDiff = navX.getYaw() - joyAng;
+		double centerSpeed = joyMag * Math.sin(Math.toRadians(angDiff));
+		double sideSpeed = joyMag * Math.cos(Math.toRadians(angDiff));
+		double turnSpeed = Math.pow(contr.getRawRightX(), 2) * (contr.getRawRightX() > 0 ? 1 : -1);
 		
-		//Moving with left joy
-		if(rightJoyXPos < Config.Drive.tolerance && rightJoyXPos > -Config.Drive.tolerance) {
-			double joyX = contr.getLeftX();
-			double joyY = contr.getLeftY();
-			double joyMag = Math.sqrt((joyX * joyX) + (joyY * joyY));
-			double joyAng = ((450 - Math.toDegrees(Math.atan2(joyY, joyX))) % 360) ;
-			double angDiff = navX.getAngle() - joyAng;
-			double centerSpeed = joyMag * Math.sin(Math.toRadians(angDiff));
-			double sideSpeed = joyMag * Math.cos(Math.toRadians(angDiff));
-			
-			setSpeed(sideSpeed, sideSpeed, centerSpeed, centerSpeed);
-		}
-		
-		//Turning with right joy
-		else
-		{
-
-			mtLeftOne.set(-rightJoyXPos);
-			mtLeftTwo.set(-rightJoyXPos);
-			mtRightOne.set(rightJoyXPos);
-			mtRightTwo.set(rightJoyXPos);
-			mtFront.set(rightJoyXPos);
-			mtBack.set(-rightJoyXPos);
-		}		
+		setSpeed(sideSpeed + turnSpeed, sideSpeed - turnSpeed, centerSpeed + turnSpeed, centerSpeed - turnSpeed);
 	} 
 	
-	public void roboCentric() 
+	public void robotCentric() 
 	{
 		double joyX = contr.getLeftX();
 		double joyY = contr.getLeftY();
 		double x = Math.abs(joyX) * joyX;
         double y = Math.abs(joyY) * joyY;
         
-        x *= Config.Drive.roboCentricTurningScalar;
+        x *= Config.Drive.robotCentricTurningScalar;
         setSpeed(-x + y, x + y, 0, 0);
 	}
 
@@ -111,6 +85,25 @@ public class Drive {
 		mtRightTwo.set(rightSpeed);				
 		mtFront.set(frontSpeed);		
 		mtBack.set(backSpeed);	
+	}
+	
+	public void setTalonMode(boolean encMode)
+	{
+		if(encMode)
+		{
+			mtLeftOne.changeControlMode(CANTalon.ControlMode.Position);
+			mtRightOne.changeControlMode(CANTalon.ControlMode.Position);
+			mtFront.changeControlMode(CANTalon.ControlMode.Position);
+			mtBack.changeControlMode(CANTalon.ControlMode.Position);
+		}
+		
+		else
+		{
+			mtLeftOne.changeControlMode(CANTalon.ControlMode.Speed);
+			mtRightOne.changeControlMode(CANTalon.ControlMode.Speed);
+			mtFront.changeControlMode(CANTalon.ControlMode.Speed);
+			mtBack.changeControlMode(CANTalon.ControlMode.Speed);
+		}
 	}
 	
 	public void setPos(double leftPos, double rightPos, double frontPos, double backPos)
@@ -154,7 +147,7 @@ public class Drive {
 	{
 		return leftEnc.getDistance();
 	}
-	
+
 	public double getRightEncDist() 
 	{
 		return rightEnc.getDistance();
@@ -187,4 +180,29 @@ public class Drive {
 		frontEnc.reset();
 		backEnc.reset();
 	}
+	
+	public double getJoyMag()
+	{
+		return Math.sqrt(Math.pow(contr.getRawLeftX(), 2) + Math.pow(contr.getRawLeftY(), 2));
+	}
+	
+	public double getJoyAng()
+	{
+		double x = contr.getRawLeftX();
+		double y = contr.getRawLeftY();
+		
+		if(x == 0 && y == 0)
+			return  0;
+		
+		return convertAngBound((450 - Math.toDegrees(Math.atan2(y, x))) % 360);
+	}
+	
+	public double convertAngBound(double ang)
+	{
+		if(ang > 180)
+			return -(360 - ang);
+		
+		return ang;
+	}
 }
+	
