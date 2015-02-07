@@ -66,9 +66,9 @@ public class Elevator
 	public void elevatorMove()
 	{
 		if(!limitBottom.get() || !limitTop.get())
-			mtElevator.setPosition(baseValue + level * Config.Elevator.toteHeight);
+			mtElevator.set(baseValue + level * Config.Elevator.toteHeight);
 		else
-			mtElevator.set(0);
+			mtElevator.set(mtElevator.get());
 	}
 	
 	/**
@@ -91,6 +91,6 @@ public class Elevator
 	
 	public void setLevel(int wantedLevel)
 	{
-		mtElevator.setPosition(baseValue + wantedLevel * Config.Elevator.toteHeight );
+		mtElevator.set(baseValue + wantedLevel * Config.Elevator.toteHeight );
 	}
 }

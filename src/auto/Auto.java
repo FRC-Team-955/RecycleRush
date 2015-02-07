@@ -33,11 +33,12 @@ public class Auto
 		autoId = dash.getAutoType();
 	}
 	
+	public void startTimer() {
+		timer.start();
+	}
+	
 	public void run()
 	{
-		if(autoStep == 0)
-			timer.start();
-
 		switch(autoId)
 		{
 			case Config.Auto.idDoNothing:
@@ -114,10 +115,11 @@ public class Auto
 	
 	private void driveForwardTimer()
 	{
-		if(timer.get() < Config.Auto.timeDriveForward)
+		if(timer.get() < Config.Auto.timeDriveForward){
 			drive.setSpeed(Config.Auto.driveForwardSpeed, Config.Auto.driveForwardSpeed, 0, 0);
+			System.out.println(timer.get());}
 		
-		else if(timer.get() >= Config.Auto.timeDriveForward)
+		else
 		{
 			drive.setSpeed(0, 0, 0, 0);
 			autoStep++;

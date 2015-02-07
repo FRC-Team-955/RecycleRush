@@ -1,11 +1,11 @@
 package core;
 
 import auto.AutoType;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import util.Config;
+import util.DriveType;
 import util.LIDAR;
 import util.navX.NavX;
 

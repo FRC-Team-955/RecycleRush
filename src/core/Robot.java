@@ -39,6 +39,7 @@ public class Robot extends IterativeRobot
     public void autonomousInit()
     {
     	auto.getAutoMode();
+    	auto.startTimer();
     }
     /**
      * This function is called periodically during autonomous
