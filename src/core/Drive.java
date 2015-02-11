@@ -12,12 +12,22 @@ import util.navX.NavX;
 import java.lang.Math;
 
 public class Drive {
+	
+	//CAN Talons
 	private CANTalon mtLeftOne = new CANTalon(Config.Drive.chnMtLeftOne);
 	private Talon mtLeftTwo = new Talon(Config.Drive.chnMtLeftTwo);
 	private CANTalon mtRightOne = new CANTalon(Config.Drive.chnMtRightOne);
 	private Talon mtRightTwo = new Talon(Config.Drive.chnMtRightTwo);
 	private CANTalon mtFront = new CANTalon(Config.Drive.chnMtFront);
 	private CANTalon mtBack = new CANTalon(Config.Drive.chnMtBack);;
+	
+	//Old Talons (For practice bot)
+	private Talon mtLeftOneOld = new Talon(Config.Drive.chnMtLeftOne);
+	private Talon mtRightOneOld = new Talon(Config.Drive.chnMtRightOne);
+	private Talon mtFrontOld = new Talon(Config.Drive.chnMtFront);
+	private Talon mtBackOld = new Talon(Config.Drive.chnMtBack);
+	
+	
 	
 	private Encoder frontEnc = new Encoder(Config.Drive.chnFrontEncA, Config.Drive.chnFrontEncB); 
 	private Encoder backEnc = new Encoder(Config.Drive.chnBackEncA, Config.Drive.chnBackEncB);
@@ -27,6 +37,8 @@ public class Drive {
 	private NavX navX;
 	
 	private Controller contr;
+	
+	private Dashboard dash;
 	
 	public Drive (Controller newContr, double angleOffset, NavX newNavX) 
 	{
@@ -77,14 +89,28 @@ public class Drive {
 	 */
 	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed)
 	{
-		leftSpeed = -leftSpeed;
-		frontSpeed = -frontSpeed;
-		mtLeftOne.set(leftSpeed);
-		mtLeftTwo.set(leftSpeed);
-		mtRightOne.set(rightSpeed);
-		mtRightTwo.set(rightSpeed);				
-		mtFront.set(frontSpeed);		
-		mtBack.set(backSpeed);	
+		if (dash.getTalonModeType() == 0)
+		{
+			leftSpeed = -leftSpeed;
+			frontSpeed = -frontSpeed;
+			mtLeftOne.set(leftSpeed);
+			mtLeftTwo.set(leftSpeed);
+			mtRightOne.set(rightSpeed);
+			mtRightTwo.set(rightSpeed);				
+			mtFront.set(frontSpeed);		
+			mtBack.set(backSpeed);
+		}
+		else
+		{
+			leftSpeed = -leftSpeed;
+			frontSpeed = -frontSpeed;
+			mtLeftOneOld.set(leftSpeed);
+			mtLeftTwo.set(leftSpeed);
+			mtRightOneOld.set(rightSpeed);
+			mtRightTwo.set(rightSpeed);				
+			mtFrontOld.set(frontSpeed);		
+			mtBackOld.set(backSpeed);
+		}
 	}
 	
 	public void setTalonMode(boolean encMode)
@@ -108,12 +134,24 @@ public class Drive {
 	
 	public void setPos(double leftPos, double rightPos, double frontPos, double backPos)
 	{
-		mtLeftOne.setPosition(leftPos);
-		mtLeftTwo.set(mtLeftOne.getBusVoltage());
-		mtRightOne.setPosition(rightPos);
-		mtRightTwo.set(mtRightOne.getBusVoltage());
-		mtFront.setPosition(frontPos);
-		mtBack.setPosition(backPos);
+		if (dash.getTalonModeType() == 0)
+		{
+			mtLeftOne.setPosition(leftPos);
+			mtLeftTwo.set(mtLeftOne.getBusVoltage());
+			mtRightOne.setPosition(rightPos);
+			mtRightTwo.set(mtRightOne.getBusVoltage());
+			mtFront.setPosition(frontPos);
+			mtBack.setPosition(backPos);
+		}
+		else
+		{
+			mtLeftOneOld.setPosition(leftPos);
+			mtLeftTwo.set(mtLeftOneOld.get());
+			mtRightOneOld.setPosition(rightPos);
+			mtRightTwo.set(mtRightOneOld.get());
+			mtFrontOld.setPosition(frontPos);
+			mtBackOld.setPosition(backPos);
+		}
 	}
 	/**
 	 * Returns Voltage of the asked talon
@@ -160,14 +198,29 @@ public class Drive {
 	 */
 	public double getPosition(int talonNum)
 	{
-		switch(talonNum)
+		if (dash.getTalonModeType() == 0)
 		{
-			case 1: return mtRightOne.getPosition();
-			case 2: return mtRightTwo.getPosition();
-			case 3: return mtLeftOne.getPosition();
-			case 4: return mtLeftTwo.getPosition();
-			case 5: return mtFront.getPosition();
-			case 6: return mtBack.getPosition();
+			switch(talonNum)
+			{
+				case 1: return mtRightOne.getPosition();
+				case 2: return mtRightTwo.getPosition();
+				case 3: return mtLeftOne.getPosition();
+				case 4: return mtLeftTwo.getPosition();
+				case 5: return mtFront.getPosition();
+				case 6: return mtBack.getPosition();
+			}
+		}
+		else
+		{
+			switch(talonNum)
+			{
+				case 1: return mtRightOneOld.getPosition();
+				case 2: return mtRightTwo.getPosition();
+				case 3: return mtLeftOneOld.getPosition();
+				case 4: return mtLeftTwo.getPosition();
+				case 5: return mtFrontOld.getPosition();
+				case 6: return mtBackOld.getPosition();
+			}
 		}
 		
 		return 0;

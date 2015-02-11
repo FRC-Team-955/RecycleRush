@@ -13,6 +13,7 @@ public class Dashboard {
 	private Drive drive;
 	private Claw claw;
 	private NavX navX;
+	private SendableChooser talonModeChooser = new SendableChooser();
 	private SendableChooser chooser = new SendableChooser();
 	private SendableChooser driveChooser = new SendableChooser();
 	private PowerDistributionPanel pdp = new PowerDistributionPanel();
@@ -70,6 +71,10 @@ public class Dashboard {
 		chooser.addObject("Get All Totes Center Encoder", new Type(Config.Auto.idGetAllTotesCenterEnc));
 		chooser.addObject("Get All Totes Right Encoder", new Type(Config.Auto.idGetAllTotesRightEnc));
 		
+		//Talon mode (SRX inclusion or not)
+		talonModeChooser.addDefault("TalonSRX", new Type(Config.Drive.idTalonSRX));
+		talonModeChooser.addObject("TalonOLD", new Type(Config.Drive.idTalon));
+		
 		// Drive Mode
 		driveChooser.addDefault("Field Centric Drive", new Type(Config.Drive.idFieldCentric));
 		driveChooser.addObject("Robo Centric Drive", new Type(Config.Drive.idRobotCentric));
@@ -83,6 +88,11 @@ public class Dashboard {
 	{
 		System.out.println(((Type) chooser.getSelected()).getId() + " HALLA @ ME");
 		return ((Type) chooser.getSelected()).getId();
+	}
+	
+	public int getTalonModeType()
+	{
+		return ((Type) talonModeChooser.getSelected()).getId();
 	}
 	
 	public int getDriveType()
