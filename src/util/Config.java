@@ -117,7 +117,10 @@ public class Config
         public static final int idTalonSRX = 0;
         public static final int idTalon = 1;
         
+        public static final double minRightJoyValue = .05;
+        
         public static final double robotCentricTurningScalar = 1;
+        public static final double turnAdjustment = .02;
     }
     
     public class CameraFeed

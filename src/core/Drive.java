@@ -34,6 +34,8 @@ public class Drive {
 	private Encoder leftEnc = new Encoder(Config.Drive.chnLeftEncA, Config.Drive.chnLeftEncB);
 	private Encoder rightEnc = new Encoder(Config.Drive.chnRightEncA, Config.Drive.chnRightEncB);
 	
+	private double prevGyroAng = 0;
+	
 	private NavX navX;
 	
 	private Controller contr;
@@ -66,7 +68,16 @@ public class Drive {
 		double sideSpeed = joyMag * Math.cos(Math.toRadians(angDiff));
 		double turnSpeed = Math.pow(contr.getRawRightX(), 2) * (contr.getRawRightX() > 0 ? 1 : -1);
 		
-		setSpeed(sideSpeed + turnSpeed, sideSpeed - turnSpeed, centerSpeed + turnSpeed, centerSpeed - turnSpeed);
+		if(Math.abs(contr.getRawRightX()) > Config.Drive.minRightJoyValue)
+		{
+			prevGyroAng = navX.getAngle();
+			setSpeed(sideSpeed + turnSpeed, sideSpeed - turnSpeed, centerSpeed + turnSpeed, centerSpeed - turnSpeed);
+		} 
+		
+		else
+		{
+			setSpeed(sideSpeed, sideSpeed, centerSpeed + strafeAdjust(), centerSpeed - strafeAdjust());
+		}
 	} 
 	
 	public void robotCentric() 
@@ -169,6 +180,14 @@ public class Drive {
 		}
 		
 		return 0;
+	}
+	
+	public double strafeAdjust()
+	{
+		if(navX.getAngle() - prevGyroAng < 180)	
+			return (navX.getAngle() - prevGyroAng) * Config.Drive.turnAdjustment;
+		else
+			return (360 - (navX.getAngle() - prevGyroAng)) * Config.Drive.turnAdjustment;
 	}
 	
 	public double getFrontEncDist() 

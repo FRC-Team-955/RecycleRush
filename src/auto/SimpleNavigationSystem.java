@@ -30,22 +30,23 @@ public class SimpleNavigationSystem {
 		
 	}
 	
-	public void getXposition(){
+	public double getXPosition(){
 		
 		int currentTime = ((int) System.currentTimeMillis()) - previousTime;
 		previousTime = (int) (System.currentTimeMillis());
 		
 		
-		double postion = ((.5 * accel.getX()) * (currentTime * currentTime)) + totalAccelerationX + positionX;
+		double postion = ((.5 * accel.getX()) * ((currentTime * currentTime)/1000)) + totalAccelerationX + positionX;
 		
 		totalAccelerationX += accel.getX();		
 		positionX = postion;
 		
+		return positionX;
 		
 	}
 	
 	
-	public void getYPosition(){
+	public double getYPosition(){
 		int currentTime = ((int) System.currentTimeMillis()) - previousTime;
 		previousTime = (int) (System.currentTimeMillis());
 		
@@ -55,7 +56,7 @@ public class SimpleNavigationSystem {
 		totalAccelerationY += accel.getY();		
 		positionY = postion;
 		
-		
+		return positionY;
 		
 	}
 	
