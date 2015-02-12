@@ -80,7 +80,7 @@ public class Controller extends Joystick
     }
     
     /**
-     * Gets the x valueof the right joystick
+     * Gets the x value of the right joystick
      * @return the x value of the right joystick
      */
     public double getRawRightX()
@@ -97,86 +97,155 @@ public class Controller extends Joystick
     	return super.getRawAxis(chnRightY) * (flipRightY ? -1 : 1);
     }
     
+    /**
+     * Gets the adjusted x value of the left joystick
+     * @return the adjusted x value of the left joystick
+     */
     public double getLeftX()
     {
     	return altInput(getRawLeftX());
     }
     
+    /**
+     * Gets the adjusted y value of the left joystick
+     * @return the adjusted y value of the left joystick
+     */
     public double getLeftY()
     {
     	return altInput(getRawLeftY());
     }
     
+    /**
+     * Gets the adjusted x value of the right joystick
+     * @return the adjusted x value of the right joystick
+     */
     public double getRightX()
     {
     	return altInput(getRawRightX());
     }
     
+    /**
+     * Gets the adjusted y value of the right joystick
+     * @return the adjusted y value of the right joystick
+     */
     public double getRightY()
     {
     	return altInput(getRawRightX());
     }
     
+    /**
+     * Flips the left x coordinates
+     * @param flip whether the coordinates need to be flipped
+     */
     public void flipLeftX(boolean flip)
     {
     	flipLeftX = flip;
     }
     
+    /**
+     * Flips the left y coordinates
+     * @param flip whether the coordinates need to be flipped
+     */
     public void flipLeftY(boolean flip)
     {
     	flipLeftY = flip;
     }
     
+    /**
+     * Flips the right x coordinates
+     * @param flip whether the coordinates need to be flipped
+     */
     public void flipRightX(boolean flip)
     {
     	flipRightX = flip;
     }
     
+    /**
+     * Flips the right y coordinates
+     * @param flip whether the coordinates need to be flipped
+     */
     public void flipRightY(boolean flip)
     {
     	flipRightY = flip;
     }
     
+    /**
+     * Sets the channel of the left x stick
+     * @param chn channel number
+     */
     public void setChnLeftX(int chn)
     {
     	chnLeftX = chn;
     }
     
+    /**
+     * Sets the channel of the left y stick
+     * @param chn channel number
+     */
     public void setChnLeftY(int chn)
     {
     	chnLeftY = chn;
     }
     
+    /**
+     * Sets the channel of the right x stick
+     * @param chn channel number
+     */
     public void setChnRightX(int chn)
     {
     	chnRightX = chn;
     }
     
+    /**
+     * Sets the channel of the right y stick
+     * @param chn channel number
+     */
     public void setChnRightY(int chn)
     {
     	chnRightY = chn;
     }
     
+    /**
+     * Checks if the dpad is pressed in the up direction 
+     * @return is the dpad is pressed
+     */
     public boolean getDpadUp()
     {
     	return super.getPOV(0) == 0;
     }
     
+    /**
+     * Checks if the dpad is pressed in the right direction 
+     * @return is the dpad is pressed
+     */
     public boolean getDpadRight()
     {
     	return super.getPOV(0) == 90;
     }
-    
+
+    /**
+     * Checks if the dpad is pressed in the down direction 
+     * @return is the dpad is pressed
+     */
     public boolean getDpadDown()
     {
     	return super.getPOV(0) == 180;
     }
     
+    /**
+     * Checks if the dpad is pressed in the left direction 
+     * @return is the dpad is pressed
+     */
     public boolean getDpadLeft()
     {
     	return super.getPOV(0) == 270;
     }
     
+    /**
+     * Adjusts the tangent function to better fit the joystick input
+     * @param input the value to be adjusted
+     * @return the adjusted value
+     */
     private double altInput(double input)
     {
     	return Math.tan((Math.PI / 4) * linearity * input) / Math.tan((Math.PI / 4) * linearity);

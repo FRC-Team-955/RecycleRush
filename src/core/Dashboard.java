@@ -70,6 +70,8 @@ public class Dashboard {
 		chooser.addObject("Get All Totes Left Encoder", new Type(Config.Auto.idGetAllTotesLeftEnc));
 		chooser.addObject("Get All Totes Center Encoder", new Type(Config.Auto.idGetAllTotesCenterEnc));
 		chooser.addObject("Get All Totes Right Encoder", new Type(Config.Auto.idGetAllTotesRightEnc));
+		chooser.addObject("Get Recycle Bin and Tote Encoder", new Type(Config.Auto.idGetRecycleBinEnc));
+		chooser.addObject("Get Recycle Bin and Tote Timer", new Type(Config.Auto.idGetRecycleBinTimer));
 		
 		//Talon mode (SRX inclusion or not)
 		talonModeChooser.addDefault("TalonSRX", new Type(Config.Drive.idTalonSRX));

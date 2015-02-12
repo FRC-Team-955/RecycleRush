@@ -89,6 +89,10 @@ public class Elevator
 		return lidar.getDistance();
 	}
 	
+	/**
+	 * Sets the elevator level to the specified level
+	 * @param wantedLevel the level you want to set the elevator to
+	 */
 	public void setLevel(int wantedLevel)
 	{
 		mtElevator.set(baseValue + wantedLevel * Config.Elevator.toteHeight );

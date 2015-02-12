@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.SerialPort;
  */
 public class Robot extends IterativeRobot 
 {
-	private Controller contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons, Config.ContrDrive.linearity);;
+	private Controller contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons, Config.ContrDrive.linearity);
 	private SerialPort serial = new SerialPort(Config.Drive.navXBaudRate, SerialPort.Port.kMXP); 
 	private NavX navX = new NavX(serial, (byte) 50, 0);
 	private Drive drive = new Drive(contrDrive, 0, navX);

@@ -20,6 +20,8 @@ public class Config
 		public static final int idGetAllTotesLeftEnc = 8;
 		public static final int idGetAllTotesCenterEnc = 9;
 		public static final int idGetAllTotesRightEnc = 10;
+		public static final int idGetRecycleBinEnc = 11;
+		public static final int idGetRecycleBinTimer = 12;
 		
 		// Encoder distance values
 		public static final double encStrafeDistance = 2;

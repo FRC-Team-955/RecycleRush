@@ -1,6 +1,7 @@
 package core;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -27,7 +28,7 @@ public class Drive {
 	private Talon mtFrontOld = new Talon(Config.Drive.chnMtFront);
 	private Talon mtBackOld = new Talon(Config.Drive.chnMtBack);
 	
-	
+	private Timer timer = new Timer();
 	
 	private Encoder frontEnc = new Encoder(Config.Drive.chnFrontEncA, Config.Drive.chnFrontEncB); 
 	private Encoder backEnc = new Encoder(Config.Drive.chnBackEncA, Config.Drive.chnBackEncB);
@@ -59,6 +60,44 @@ public class Drive {
 			fieldCentric();
 	}
 	
+	/**
+	 * Moves the robot on the set course with encoders
+	 * @param encDistance distance needed to be traveled
+	 * @param angle Angle you want to travel with Straight ahead from the driver station as 0
+	 */
+	public void autoMove(double encDistance, double angle) 
+	{
+		// North is 0 degrees
+		setTalonMode(true);
+		
+		double centerSpeed = (encDistance * Math.sin(angle));
+		double sideSpeed = (encDistance * Math.cos(angle));
+
+		setPos(sideSpeed, sideSpeed, centerSpeed, centerSpeed);
+	}
+	
+	/**
+	 * Moves the robot on the set course with a timer
+	 * @param encDistance distance needed to be traveled
+	 * @param angle Angle you want to travel with right from the driver station as 0
+	 * @param magnitude the speed you want to travel at
+	 */
+	public void autoMove(double time, double angle, double magnitude)
+	{
+		
+		timer.start();
+		
+		double angDiff = navX.getYaw() - angle;
+		double centerSpeed = magnitude * Math.sin(Math.toRadians(angDiff));
+		double sideSpeed = magnitude * Math.cos(Math.toRadians(angDiff));
+		double turnSpeed = Math.pow(contr.getRawRightX(), 2) * (contr.getRawRightX() > 0 ? 1 : -1);
+		
+		setSpeed(sideSpeed, sideSpeed, centerSpeed, centerSpeed);
+	}
+	
+	/**
+	 * Moves the robot in relation to the field
+	 */
 	public void fieldCentric() 
 	{		
 		double joyMag = getJoyMag(); 
@@ -80,6 +119,9 @@ public class Drive {
 		}
 	} 
 	
+	/**
+	 * Moves the robot in relation to itself
+	 */
 	public void robotCentric() 
 	{
 		double joyX = contr.getLeftX();
@@ -124,6 +166,10 @@ public class Drive {
 		}
 	}
 	
+	/**
+	 * Sets the talons to work with standard or encoder values
+	 * @param encMode whether you want to set the talon to take encoder value
+	 */
 	public void setTalonMode(boolean encMode)
 	{
 		if(encMode)
@@ -143,6 +189,13 @@ public class Drive {
 		}
 	}
 	
+	/**
+	 * Sets the talons with encoder values
+	 * @param leftPos left encoder value
+	 * @param rightPos right encoder value
+	 * @param frontPos front encoder value
+	 * @param backPos back encoder value
+	 */
 	public void setPos(double leftPos, double rightPos, double frontPos, double backPos)
 	{
 		if (dash.getTalonModeType() == 0)
@@ -182,29 +235,46 @@ public class Drive {
 		return 0;
 	}
 	
+	/**
+	 * Adjusts the robot angle for inconsistent strafing
+	 * @return the adjusted angle
+	 */
 	public double strafeAdjust()
 	{
-		if(navX.getAngle() - prevGyroAng < 180)	
-			return (navX.getAngle() - prevGyroAng) * Config.Drive.turnAdjustment;
-		else
-			return (360 - (navX.getAngle() - prevGyroAng)) * Config.Drive.turnAdjustment;
+			return convertAngBound(navX.getAngle() - prevGyroAng) * Config.Drive.turnAdjustment;
 	}
 	
+	/**
+	 * Gets the front encoder value
+	 * @return the front encoder value
+	 */
 	public double getFrontEncDist() 
 	{
 		return frontEnc.getDistance();
 	}
 	
+	/**
+	 * Gets the back encoder value
+	 * @return the back encoder value
+	 */
 	public double getBackEncDist() 
 	{
 		return backEnc.getDistance();
 	}
 	
+	/**
+	 * Gets the left encoder value
+	 * @return the left encoder value
+	 */
 	public double getLeftEncDist() 
 	{
 		return leftEnc.getDistance();
 	}
 
+	/**
+	 * Gets the right encoder value
+	 * @return the right encoder value
+	 */
 	public double getRightEncDist() 
 	{
 		return rightEnc.getDistance();
@@ -245,6 +315,9 @@ public class Drive {
 		return 0;
 	}
 	
+	/**
+	 * Resets all the encoders
+	 */
 	public void encReset()
 	{
 		leftEnc.reset();
@@ -253,11 +326,19 @@ public class Drive {
 		backEnc.reset();
 	}
 	
+	/**
+	 * gets the speed you want to travel at during field centric mode
+	 * @return the speed component for the vector of travel
+	 */
 	public double getJoyMag()
 	{
 		return Math.sqrt(Math.pow(contr.getRawLeftX(), 2) + Math.pow(contr.getRawLeftY(), 2));
 	}
 	
+	/**
+	 * Gets the angle the joystick was at
+	 * @return returns the joystick angle
+	 */
 	public double getJoyAng()
 	{
 		double x = contr.getRawLeftX();
@@ -269,6 +350,11 @@ public class Drive {
 		return convertAngBound((450 - Math.toDegrees(Math.atan2(y, x))) % 360);
 	}
 	
+	/**
+	 * Converts angles greater than 180 to their opposite coterminal angle
+	 * @param ang the angle to be converted
+	 * @return adjusted angle
+	 */
 	public double convertAngBound(double ang)
 	{
 		if(ang > 180)
