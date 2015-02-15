@@ -21,8 +21,16 @@ public class Elevator
 	private int level= 0;
 	private LIDAR lidar = new LIDAR(Port.kMXP);
 	//Button number array
-	private int [] levels = {Config.Elevator.btLvlOne,Config.Elevator.btLvlTwo,Config.Elevator.btLvlThree,Config.Elevator.btLvlFour,Config.Elevator.btLvlFive,Config.Elevator.btLvlSix};
-	
+	private int [] levels = 
+	{
+			Config.Elevator.btLvlOne,
+			Config.Elevator.btLvlTwo,
+			Config.Elevator.btLvlThree,
+			Config.Elevator.btLvlFour,
+			Config.Elevator.btLvlFive,
+			Config.Elevator.btLvlSix
+	};
+
 	/**
 	 * Constructor
 	 * @param newContr controller
@@ -33,6 +41,7 @@ public class Elevator
 		enc.reset();
 		mtElevator.changeControlMode(CANTalon.ControlMode.Position);
 		enc.setDistancePerPulse(360.0/265);
+		baseValue = 0;
 	}
 	
 	/**
@@ -41,22 +50,21 @@ public class Elevator
 	public void run()
 	{
 		// If the switch mode button is pressed set the lowest position on the elevator to six inches
-		baseValue = 0;
 		if(contr.getButton(Config.Elevator.btModeSwitch))
-		{
 			mode = !mode;
-			
-			if(mode)
-				baseValue = Config.Elevator.adjustedBaseHeight;
-		}
+		
+		if(mode)
+			baseValue = Config.Elevator.adjustedBaseHeight;
 			
 		// Checks all elevator buttons
 		for(int i = 0; i < levels.length; i++)
+		{
 			if(contr.getButton(levels[i]))
 			{
 				level = levels[i];
 				elevatorMove();
 			}
+		}
 	}
 	
 	/**
@@ -86,7 +94,7 @@ public class Elevator
 	 */
 	public double getDistanceFromBase()
 	{
-		return lidar.getDistance();
+		return lidar.getDistance() * 2.54;
 	}
 	
 	/**

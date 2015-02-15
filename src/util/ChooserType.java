@@ -1,10 +1,10 @@
 package util;
 
-public class Type {
+public class ChooserType {
 	
 	private int id;
 	
-	public Type(int newId)
+	public ChooserType(int newId)
 	{
 		id = newId;
 	}

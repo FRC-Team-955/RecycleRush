@@ -4,15 +4,14 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SerialPort;
-import util.navX.IMUAdvanced;
 import util.Config;
 import util.Controller;
 import util.navX.NavX;
 
 import java.lang.Math;
 
-public class Drive {
+public class Drive 
+{
 	
 	//CAN Talons
 	private CANTalon mtLeftOne = new CANTalon(Config.Drive.chnMtLeftOne);
@@ -23,10 +22,10 @@ public class Drive {
 	private CANTalon mtBack = new CANTalon(Config.Drive.chnMtBack);;
 	
 	//Old Talons (For practice bot)
-	private Talon mtLeftOneOld = new Talon(Config.Drive.chnMtLeftOne);
-	private Talon mtRightOneOld = new Talon(Config.Drive.chnMtRightOne);
-	private Talon mtFrontOld = new Talon(Config.Drive.chnMtFront);
-	private Talon mtBackOld = new Talon(Config.Drive.chnMtBack);
+//	private Talon mtLeftOne = new Talon(Config.Drive.chnMtLeftOne);
+//	private Talon mtRightOne = new Talon(Config.Drive.chnMtRightOne);
+//	private Talon mtFront = new Talon(Config.Drive.chnMtFront);
+//	private Talon mtBack = new Talon(Config.Drive.chnMtBack);
 	
 	private Timer timer = new Timer();
 	
@@ -157,12 +156,12 @@ public class Drive {
 		{
 			leftSpeed = -leftSpeed;
 			frontSpeed = -frontSpeed;
-			mtLeftOneOld.set(leftSpeed);
+			mtLeftOne.set(leftSpeed);
 			mtLeftTwo.set(leftSpeed);
-			mtRightOneOld.set(rightSpeed);
+			mtRightOne.set(rightSpeed);
 			mtRightTwo.set(rightSpeed);				
-			mtFrontOld.set(frontSpeed);		
-			mtBackOld.set(backSpeed);
+			mtFront.set(frontSpeed);		
+			mtBack.set(backSpeed);
 		}
 	}
 	
@@ -209,12 +208,12 @@ public class Drive {
 		}
 		else
 		{
-			mtLeftOneOld.setPosition(leftPos);
-			mtLeftTwo.set(mtLeftOneOld.get());
-			mtRightOneOld.setPosition(rightPos);
-			mtRightTwo.set(mtRightOneOld.get());
-			mtFrontOld.setPosition(frontPos);
-			mtBackOld.setPosition(backPos);
+			mtLeftOne.setPosition(leftPos);
+			mtLeftTwo.set(mtLeftOne.get());
+			mtRightOne.setPosition(rightPos);
+			mtRightTwo.set(mtRightOne.get());
+			mtFront.setPosition(frontPos);
+			mtBack.setPosition(backPos);
 		}
 	}
 	/**
@@ -303,12 +302,12 @@ public class Drive {
 		{
 			switch(talonNum)
 			{
-				case 1: return mtRightOneOld.getPosition();
+				case 1: return mtRightOne.getPosition();
 				case 2: return mtRightTwo.getPosition();
-				case 3: return mtLeftOneOld.getPosition();
+				case 3: return mtLeftOne.getPosition();
 				case 4: return mtLeftTwo.getPosition();
-				case 5: return mtFrontOld.getPosition();
-				case 6: return mtBackOld.getPosition();
+				case 5: return mtFront.getPosition();
+				case 6: return mtBack.getPosition();
 			}
 		}
 		

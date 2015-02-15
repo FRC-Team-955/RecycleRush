@@ -27,14 +27,6 @@ public class Auto
 	}
 	
 	/**
-	 * Starts the auto timer outside of main
-	 */
-	public void startTimer() 
-	{
-		timer.start();
-	}
-	
-	/**
 	 * Switches which auto routine you are doing 
 	 * @param autoId the id of the routine you want to run
 	 */

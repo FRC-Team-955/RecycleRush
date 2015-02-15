@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import util.Config;
-import util.Type;
+import util.ChooserType;
 import util.LIDAR;
 import util.navX.NavX;
 
@@ -59,27 +59,27 @@ public class Dashboard {
 		SmartDashboard.putNumber("Back Talon", drive.getVoltage(6));
 		
 		// Autonomous Routines
-		chooser.addDefault("Do Nothing", new Type(Config.Auto.idDoNothing));
-		chooser.addObject("Drive Foward Timer", new Type(Config.Auto.idDriveForwardTimer));
-		chooser.addObject("Drive Foward Encoder", new Type(Config.Auto.idDriveForwardEnc));
-		chooser.addObject("Get One Tote Timer", new Type(Config.Auto.idGetOneToteTimer));
-		chooser.addObject("Get One Tote Encoder", new Type(Config.Auto.idGetOneToteEnc));
-		chooser.addObject("Get All Totes Left Timer", new Type(Config.Auto.idGetAllTotesLeftTimer));
-		chooser.addObject("Get All Totes Center Timer", new Type(Config.Auto.idGetAllTotesCenterTimer));
-		chooser.addObject("Get All Totes Right Timer", new Type(Config.Auto.idGetAllTotesRightTimer));
-		chooser.addObject("Get All Totes Left Encoder", new Type(Config.Auto.idGetAllTotesLeftEnc));
-		chooser.addObject("Get All Totes Center Encoder", new Type(Config.Auto.idGetAllTotesCenterEnc));
-		chooser.addObject("Get All Totes Right Encoder", new Type(Config.Auto.idGetAllTotesRightEnc));
-		chooser.addObject("Get Recycle Bin and Tote Encoder", new Type(Config.Auto.idGetRecycleBinEnc));
-		chooser.addObject("Get Recycle Bin and Tote Timer", new Type(Config.Auto.idGetRecycleBinTimer));
+		chooser.addDefault("Do Nothing", new ChooserType(Config.Auto.idDoNothing));
+		chooser.addObject("Drive Foward Timer", new ChooserType(Config.Auto.idDriveForwardTimer));
+		chooser.addObject("Drive Foward Encoder", new ChooserType(Config.Auto.idDriveForwardEnc));
+		chooser.addObject("Get One Tote Timer", new ChooserType(Config.Auto.idGetOneToteTimer));
+		chooser.addObject("Get One Tote Encoder", new ChooserType(Config.Auto.idGetOneToteEnc));
+		chooser.addObject("Get All Totes Left Timer", new ChooserType(Config.Auto.idGetAllTotesLeftTimer));
+		chooser.addObject("Get All Totes Center Timer", new ChooserType(Config.Auto.idGetAllTotesCenterTimer));
+		chooser.addObject("Get All Totes Right Timer", new ChooserType(Config.Auto.idGetAllTotesRightTimer));
+		chooser.addObject("Get All Totes Left Encoder", new ChooserType(Config.Auto.idGetAllTotesLeftEnc));
+		chooser.addObject("Get All Totes Center Encoder", new ChooserType(Config.Auto.idGetAllTotesCenterEnc));
+		chooser.addObject("Get All Totes Right Encoder", new ChooserType(Config.Auto.idGetAllTotesRightEnc));
+		chooser.addObject("Get Recycle Bin and Tote Encoder", new ChooserType(Config.Auto.idGetRecycleBinEnc));
+		chooser.addObject("Get Recycle Bin and Tote Timer", new ChooserType(Config.Auto.idGetRecycleBinTimer));
 		
 		//Talon mode (SRX inclusion or not)
-		talonModeChooser.addDefault("TalonSRX", new Type(Config.Drive.idTalonSRX));
-		talonModeChooser.addObject("TalonOLD", new Type(Config.Drive.idTalon));
+		talonModeChooser.addDefault("TalonSRX", new ChooserType(Config.Drive.idTalonSRX));
+		talonModeChooser.addObject("Talon", new ChooserType(Config.Drive.idTalon));
 		
 		// Drive Mode
-		driveChooser.addDefault("Field Centric Drive", new Type(Config.Drive.idFieldCentric));
-		driveChooser.addObject("Robo Centric Drive", new Type(Config.Drive.idRobotCentric));
+		driveChooser.addDefault("Field Centric Drive", new ChooserType(Config.Drive.idFieldCentric));
+		driveChooser.addObject("Robo Centric Drive", new ChooserType(Config.Drive.idRobotCentric));
 		
 		// Angle Offset
 		SmartDashboard.putNumber("Angle Offset", 0);
@@ -88,18 +88,17 @@ public class Dashboard {
 	
 	public int getAutoType()
 	{
-		System.out.println(((Type) chooser.getSelected()).getId() + " HALLA @ ME");
-		return ((Type) chooser.getSelected()).getId();
+		return ((ChooserType) chooser.getSelected()).getId();
 	}
 	
 	public int getTalonModeType()
 	{
-		return ((Type) talonModeChooser.getSelected()).getId();
+		return ((ChooserType) talonModeChooser.getSelected()).getId();
 	}
 	
 	public int getDriveType()
 	{
-		return ((Type) driveChooser.getSelected()).getId();
+		return ((ChooserType) driveChooser.getSelected()).getId();
 	}
 	
 	public double getAngelOffset()

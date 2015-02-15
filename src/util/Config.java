@@ -91,10 +91,14 @@ public class Config
 
     public class Drive 
     {
-    	public static final int chnMtLeftOne = 1;
+    	public static final int chnMtLeftOne = 2;
+    	
+    	// Access from roboRio
         public static final int chnMtLeftTwo = 2;
         public static final int chnMtRightOne = 3;
-        public static final int chnMtRightTwo = 4;
+        
+        // Access from roboRio
+        public static final int chnMtRightTwo = 1;
         public static final int chnMtFront = 5;
         public static final int chnMtBack = 6;
         
