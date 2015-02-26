@@ -1,36 +1,32 @@
 package core;
 
-import util.Config;
-import util.LIDAR;
-import util.Controller;
-import util.LimitSwitch;
+import lib.Config;
+import lib.Controller;
+import lib.LimitSwitch;
+import lib.PID;
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.I2C.Port;
-
+import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator 
 {
-	private CANTalon mtElevator = new CANTalon(Config.Elevator.chnMtElevator);
-	private LimitSwitch limitBottom = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom, false);
+	private CANTalon mtElevatorOne = new CANTalon(Config.Elevator.idMtElevatorOne);
+	private CANTalon mtElevatorTwo = new CANTalon(Config.Elevator.idMtElevatorTwo);
+	
+	private DoubleSolenoid noid = new DoubleSolenoid(Config.Elevator.chnNoidOne, Config.Elevator.chnNoidTwo);
 	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop, false);
-	private Encoder enc = new Encoder(Config.Elevator.chnEncOne, Config.Elevator.chnEncTwo);
+	private LimitSwitch limitBot = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom, false);
+	private Encoder enc = new Encoder(Config.ElevatorEnc.chnEncOne, Config.ElevatorEnc.chnEncTwo);
+	
+	private Timer timerBrake = new Timer();
+	private Timer testTimer = new Timer();
 	private Controller contr;
-	private boolean mode = false;
-	private double baseValue = 0;
-	private int level= 0;
-	private LIDAR lidar = new LIDAR(Port.kMXP);
-	//Button number array
-	private int [] levels = 
-	{
-			Config.Elevator.btLvlOne,
-			Config.Elevator.btLvlTwo,
-			Config.Elevator.btLvlThree,
-			Config.Elevator.btLvlFour,
-			Config.Elevator.btLvlFive,
-			Config.Elevator.btLvlSix
-	};
-
+	
+	private boolean wasMoving = false;
+	private int prevEnc = 0;
+	//private PID pid = new PID(Config.Elevator.kP, Config.Elevator.kI, Config.Elevator.kP);
+	
 	/**
 	 * Constructor
 	 * @param newContr controller
@@ -38,71 +34,154 @@ public class Elevator
 	public Elevator(Controller newContr)
 	{
 		contr = newContr;
+		enc.setDistancePerPulse(Config.ElevatorEnc.distancePerPulse);
 		enc.reset();
-		mtElevator.changeControlMode(CANTalon.ControlMode.Position);
-		enc.setDistancePerPulse(360.0/265);
-		baseValue = 0;
 	}
-	
+
 	/**
-	 * Runs the elevatorMove function while adjusting parameters
+	 * Runs the elevator motor depending on joystick inputs
 	 */
 	public void run()
-	{
-		// If the switch mode button is pressed set the lowest position on the elevator to six inches
-		if(contr.getButton(Config.Elevator.btModeSwitch))
-			mode = !mode;
+	{		
+//		System.out.println("Encoder " + enc.getDistance());
+//		System.out.println("Encoder Count: " + enc.get());
 		
-		if(mode)
-			baseValue = Config.Elevator.adjustedBaseHeight;
-			
-		// Checks all elevator buttons
-		for(int i = 0; i < levels.length; i++)
+		System.out.println("Limit Top" + limitTop.get());
+		System.out.println("Limit Bot" + limitBot.get());
+		
+		if(contr.getRawButton(Config.Elevator.btUp) && !limitTop.get())
 		{
-			if(contr.getButton(levels[i]))
+			// Auto disengages brakes if the brakes are engaged
+			if(getBrake())
 			{
-				level = levels[i];
-				elevatorMove();
+				timerBrake.start();
+				unBrake();
 			}
+			
+			// Moves the elevator motor after the piston disengages 
+			else if(timerBrake.get() > Config.Elevator.minTimerVal)
+			{
+				setSpeed(Config.Elevator.elevatorUpSpeed);
+				System.out.println("1 SPEED");
+			}
+		}
+		
+		else if(contr.getRawButton(Config.Elevator.btDown) && !limitBot.get())
+		{
+			// Auto disengages brakes if the brakes are engaged
+			if(getBrake())
+			{
+				unBrake();
+				timerBrake.start();
+			}
+			
+			// Moves the elevator motor after the piston disengages
+			else if(timerBrake.get() > Config.Elevator.minTimerVal)
+			{
+				setSpeed(Config.Elevator.elevatorDownSpeed);
+				System.out.println("-1 SPEED");
+			}
+		}
+		
+		else
+		{		
+			setSpeed(0);
+			
+			// Auto brakes after the motor stops
+			if(!getBrake())
+			{
+				brake();
+				timerBrake.reset();
+			}
+		
+			System.out.println("0 SPEED");
+		}
+	}
+	
+	public void runXBox()
+	{		
+		System.out.println("Encoder " + enc.getDistance());
+		System.out.println("Encoder Count: " + enc.get());
+		
+		System.out.println("Limit Top" + limitTop.get());
+		System.out.println("Limit Bot" + limitBot.get());
+//		
+		if(contr.getRawButton(Config.ContrXBox.btElevatorUp) && !limitTop.get())
+		{
+			if(getBrake())
+			{
+				timerBrake.start();
+				unBrake();
+			}
+			
+			else if(timerBrake.get() > Config.Elevator.minTimerVal)
+			{
+				setSpeed(Config.Elevator.elevatorUpSpeed);
+				System.out.println("1 SPEED");
+			}
+		}
+		
+		else if(contr.getRawButton(Config.ContrXBox.btElevatorDown) && !limitBot.get())
+		{
+			if(getBrake())
+			{
+				unBrake();
+				timerBrake.start();
+			}
+			
+			else if(timerBrake.get() > Config.Elevator.minTimerVal)
+			{
+				setSpeed(Config.Elevator.elevatorDownSpeed);
+				System.out.println("-1 SPEED");
+			}
+		}
+		
+		else
+		{		
+			setSpeed(0);
+			
+			if(!getBrake())
+			{
+				brake();
+				timerBrake.reset();
+			}
+		
+			System.out.println("0 SPEED");
 		}
 	}
 	
 	/**
-	 * Moves the elevator to the specific indexing location
-	 * @param level
+	 * Sets both elevator motors to the wanted speed
+	 * @param speed the speed wanted
 	 */
-	public void elevatorMove()
+	public void setSpeed(double speed)
 	{
-		if(!limitBottom.get() && !limitTop.get())
-			mtElevator.set(baseValue + level * Config.Elevator.toteHeight);
-		else
-			mtElevator.set(mtElevator.get());
+		mtElevatorOne.set(speed);
+		mtElevatorTwo.set(speed);
 	}
 	
 	/**
-	 * Gets the current level of the Elevator
-	 * @return Elevator level
+	 * Engages brake
 	 */
-	public int getLevel()
+	public void brake()
 	{
-		return level; 
+		noid.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	/**
-	 * Gets the distance form the current Elevator position to the base
-	 * @return distance from the current position to the base
+	 * Disengages brake
 	 */
-	public double getDistanceFromBase()
+	public void unBrake()
 	{
-		return lidar.getDistance() * 2.54;
+		noid.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	/**
-	 * Sets the elevator level to the specified level
-	 * @param wantedLevel the level you want to set the elevator to
+	 * Checks if the brake is engaged or not
+	 * @return the brake position 
 	 */
-	public void setLevel(int wantedLevel)
+	public boolean getBrake()
 	{
-		mtElevator.set(baseValue + wantedLevel * Config.Elevator.toteHeight );
+		return noid.get() == DoubleSolenoid.Value.kReverse;
 	}
 }

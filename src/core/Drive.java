@@ -4,95 +4,93 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Encoder;
-import util.Config;
-import util.Controller;
-import util.navX.NavX;
+import lib.Util;
+//import util.Config;
+//import util.Controller;
 
 import java.lang.Math;
 
+import lib.Config;
+import lib.Controller;
+import lib.navX.NavX;
+
 public class Drive 
 {
-	
-	//CAN Talons
-	private CANTalon mtLeftOne = new CANTalon(Config.Drive.chnMtLeftOne);
-	private Talon mtLeftTwo = new Talon(Config.Drive.chnMtLeftTwo);
-	private CANTalon mtRightOne = new CANTalon(Config.Drive.chnMtRightOne);
-	private Talon mtRightTwo = new Talon(Config.Drive.chnMtRightTwo);
-	private CANTalon mtFront = new CANTalon(Config.Drive.chnMtFront);
-	private CANTalon mtBack = new CANTalon(Config.Drive.chnMtBack);;
-	
-	//Old Talons (For practice bot)
-//	private Talon mtLeftOne = new Talon(Config.Drive.chnMtLeftOne);
-//	private Talon mtRightOne = new Talon(Config.Drive.chnMtRightOne);
-//	private Talon mtFront = new Talon(Config.Drive.chnMtFront);
-//	private Talon mtBack = new Talon(Config.Drive.chnMtBack);
-	
-	private Timer timer = new Timer();
-	
+	//Encoders
 	private Encoder frontEnc = new Encoder(Config.Drive.chnFrontEncA, Config.Drive.chnFrontEncB); 
 	private Encoder backEnc = new Encoder(Config.Drive.chnBackEncA, Config.Drive.chnBackEncB);
 	private Encoder leftEnc = new Encoder(Config.Drive.chnLeftEncA, Config.Drive.chnLeftEncB);
 	private Encoder rightEnc = new Encoder(Config.Drive.chnRightEncA, Config.Drive.chnRightEncB);
+		
 	
-	private double prevGyroAng = 0;
+	// CAN Talons
+	private CANTalon mtLeftCAN = new CANTalon(Config.Drive.idMtLeftCAN);
+	private CANTalon mtRightCAN = new CANTalon(Config.Drive.idMtRightCAN);
+	private CANTalon mtFrontCAN = new CANTalon(Config.Drive.idMtFrontCAN);
+	private CANTalon mtBackCAN = new CANTalon(Config.Drive.idMtBackCAN);
+	// REG Talons
+	private Talon mtLeft = new Talon(Config.Drive.chnMtLeft);
+	private Talon mtRight = new Talon(Config.Drive.chnMtRight);
 	
 	private NavX navX;
-	
 	private Controller contr;
 	
-	private Dashboard dash;
+	private boolean fieldCentricMode = true;
+	private double prevGyroAng = 0;
 	
-	public Drive (Controller newContr, double angleOffset, NavX newNavX) 
+	public Drive (Controller newContr, NavX newNavX) 
 	{
         contr = newContr;
         navX = newNavX;
+        
+        // Param not used
+        //setTalonMode(false);
     }
+	
+	public void init(int driveId, double offsetAng)
+	{
+		if(driveId == Config.Drive.idRobotCentric) 
+			fieldCentricMode = false;
+		
+		else
+			fieldCentricMode = true;
+		
+		navX.setOffsetAngle(offsetAng);
+	}
 	
 	/**
 	 * Moves the robot in relation to the field instead of the robot
 	 */	
-	public void run(int driveId) 
+	public void run() 
 	{
-		if(driveId == Config.Drive.idRobotCentric) 
-			robotCentric();
-		else
+		if(contr.getButton(Config.Drive.btFieldCentricMode))
+			fieldCentricMode = true;
+		
+		else if(contr.getButton(Config.Drive.btRobotCentricMode))
+				fieldCentricMode = false;
+		
+		if(fieldCentricMode)
 			fieldCentric();
+		
+		else
+			robotCentric();
 	}
 	
-	/**
-	 * Moves the robot on the set course with encoders
-	 * @param encDistance distance needed to be traveled
-	 * @param angle Angle you want to travel with Straight ahead from the driver station as 0
-	 */
-	public void autoMove(double encDistance, double angle) 
-	{
-		// North is 0 degrees
-		setTalonMode(true);
-		
-		double centerSpeed = (encDistance * Math.sin(angle));
-		double sideSpeed = (encDistance * Math.cos(angle));
-
-		setPos(sideSpeed, sideSpeed, centerSpeed, centerSpeed);
-	}
-	
-	/**
-	 * Moves the robot on the set course with a timer
-	 * @param encDistance distance needed to be traveled
-	 * @param angle Angle you want to travel with right from the driver station as 0
-	 * @param magnitude the speed you want to travel at
-	 */
-	public void autoMove(double time, double angle, double magnitude)
-	{
-		
-		timer.start();
-		
-		double angDiff = navX.getYaw() - angle;
-		double centerSpeed = magnitude * Math.sin(Math.toRadians(angDiff));
-		double sideSpeed = magnitude * Math.cos(Math.toRadians(angDiff));
-		double turnSpeed = Math.pow(contr.getRawRightX(), 2) * (contr.getRawRightX() > 0 ? 1 : -1);
-		
-		setSpeed(sideSpeed, sideSpeed, centerSpeed, centerSpeed);
-	}
+//	/**
+//	 * Moves the robot on the set course with a timer
+//	 * @param encDistance distance needed to be traveled
+//	 * @param angle Angle you want to travel with right from the driver station as 0
+//	 * @param magnitude the speed you want to travel at
+//	 */
+//	public void autoMove(double time, double angle, double magnitude)
+//	{
+//		double angDiff = navX.getYaw() - angle;
+//		double centerSpeed = magnitude * Math.sin(Math.toRadians(angDiff));
+//		double sideSpeed = magnitude * Math.cos(Math.toRadians(angDiff));
+//		double turnSpeed = Math.pow(contr.getRawRightX(), 2) * (contr.getRawRightX() > 0 ? 1 : -1);
+//		
+//		setSpeed(sideSpeed, sideSpeed, centerSpeed, centerSpeed);
+//	}
 	
 	/**
 	 * Moves the robot in relation to the field
@@ -101,21 +99,22 @@ public class Drive
 	{		
 		double joyMag = getJoyMag(); 
 		double joyAng = getJoyAng(); 
-		double angDiff = navX.getYaw() - joyAng;
+		double angDiff = navX.getAngle() - joyAng;
 		double centerSpeed = joyMag * Math.sin(Math.toRadians(angDiff));
 		double sideSpeed = joyMag * Math.cos(Math.toRadians(angDiff));
-		double turnSpeed = Math.pow(contr.getRawRightX(), 2) * (contr.getRawRightX() > 0 ? 1 : -1);
+		double turnSpeed = Math.abs(contr.getRawRightX()) * contr.getRawRightX();
 		
-		if(Math.abs(contr.getRawRightX()) > Config.Drive.minRightJoyValue)
-		{
+//		if(Math.abs(contr.getRawRightX()) > Config.Drive.minRightJoyValue)
+//			prevGyroAng = navX.getAngle();
+		
+		if(Math.abs(turnSpeed) > Config.Drive.minTurnSpeed)
 			prevGyroAng = navX.getAngle();
-			setSpeed(sideSpeed + turnSpeed, sideSpeed - turnSpeed, centerSpeed + turnSpeed, centerSpeed - turnSpeed);
-		} 
 		
-		else
-		{
-			setSpeed(sideSpeed, sideSpeed, centerSpeed + strafeAdjust(), centerSpeed - strafeAdjust());
-		}
+		else if(Math.abs(joyMag) > Config.Drive.minLeftJoyVal)
+			turnSpeed = strafeAdjust();
+		
+		System.out.println(sideSpeed + " : " + centerSpeed + " : " + turnSpeed);
+		setSpeed(sideSpeed + turnSpeed, sideSpeed - turnSpeed, centerSpeed + turnSpeed, centerSpeed - turnSpeed);
 	} 
 	
 	/**
@@ -123,13 +122,11 @@ public class Drive
 	 */
 	public void robotCentric() 
 	{
-		double joyX = contr.getLeftX();
-		double joyY = contr.getLeftY();
-		double x = Math.abs(joyX) * joyX;
-        double y = Math.abs(joyY) * joyY;
-        
-        x *= Config.Drive.robotCentricTurningScalar;
-        setSpeed(-x + y, x + y, 0, 0);
+		double centerSpeed = Math.abs(contr.getLeftX()) * contr.getLeftX();
+        double sideSpeed = Math.abs(contr.getLeftY()) * contr.getLeftY();
+        double turnSpeed = Math.abs(contr.getRawRightX()) * contr.getRawRightX();
+        centerSpeed *= Config.Drive.robotCentricStrafingScalar;
+        setSpeed(sideSpeed + turnSpeed, sideSpeed - turnSpeed , centerSpeed + turnSpeed, centerSpeed - turnSpeed);
 	}
 
 	/**
@@ -141,28 +138,27 @@ public class Drive
 	 */
 	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed)
 	{
-		if (dash.getTalonModeType() == 0)
-		{
-			leftSpeed = -leftSpeed;
-			frontSpeed = -frontSpeed;
-			mtLeftOne.set(leftSpeed);
-			mtLeftTwo.set(leftSpeed);
-			mtRightOne.set(rightSpeed);
-			mtRightTwo.set(rightSpeed);				
-			mtFront.set(frontSpeed);		
-			mtBack.set(backSpeed);
-		}
-		else
-		{
-			leftSpeed = -leftSpeed;
-			frontSpeed = -frontSpeed;
-			mtLeftOne.set(leftSpeed);
-			mtLeftTwo.set(leftSpeed);
-			mtRightOne.set(rightSpeed);
-			mtRightTwo.set(rightSpeed);				
-			mtFront.set(frontSpeed);		
-			mtBack.set(backSpeed);
-		}
+		leftSpeed = Util.ramp(mtLeftCAN.get(), -leftSpeed, Config.Drive.maxRampRate);
+		rightSpeed = Util.ramp(mtRightCAN.get(), rightSpeed, Config.Drive.maxRampRate);
+		frontSpeed = Util.ramp(mtFrontCAN.get(), -frontSpeed, Config.Drive.maxRampRate);
+		backSpeed = Util.ramp(mtBackCAN.get(), backSpeed, Config.Drive.maxRampRate);
+		
+		mtLeftCAN.set(leftSpeed);
+		mtLeft.set(leftSpeed);
+		mtRightCAN.set(rightSpeed);
+		mtRight.set(rightSpeed);				
+		mtFrontCAN.set(frontSpeed);		
+		mtBackCAN.set(backSpeed);
+		
+//		leftSpeed = -leftSpeed;
+//		frontSpeed = -frontSpeed;
+//		
+//		mtLeftCAN.set(leftSpeed);
+//		mtLeft.set(leftSpeed);
+//		mtRightCAN.set(rightSpeed);
+//		mtRight.set(rightSpeed);				
+//		mtFrontCAN.set(frontSpeed);		
+//		mtBackCAN.set(backSpeed);
 	}
 	
 	/**
@@ -171,51 +167,23 @@ public class Drive
 	 */
 	public void setTalonMode(boolean encMode)
 	{
-		if(encMode)
-		{
-			mtLeftOne.changeControlMode(CANTalon.ControlMode.Position);
-			mtRightOne.changeControlMode(CANTalon.ControlMode.Position);
-			mtFront.changeControlMode(CANTalon.ControlMode.Position);
-			mtBack.changeControlMode(CANTalon.ControlMode.Position);
-		}
-		
-		else
-		{
-			mtLeftOne.changeControlMode(CANTalon.ControlMode.Speed);
-			mtRightOne.changeControlMode(CANTalon.ControlMode.Speed);
-			mtFront.changeControlMode(CANTalon.ControlMode.Speed);
-			mtBack.changeControlMode(CANTalon.ControlMode.Speed);
-		}
+//		if(encMode)
+//		{
+//			mtLeftOne.changeControlMode(CANTalon.ControlMode.Position);
+//			mtRightOne.changeControlMode(CANTalon.ControlMode.Position);
+//			mtFront.changeControlMode(CANTalon.ControlMode.Position);
+//			mtBack.changeControlMode(CANTalon.ControlMode.Position);
+//		}
+//		
+//		else
+//		{
+			mtLeftCAN.changeControlMode(CANTalon.ControlMode.Voltage);
+			mtRightCAN.changeControlMode(CANTalon.ControlMode.Voltage);
+			mtFrontCAN.changeControlMode(CANTalon.ControlMode.Voltage);
+			mtBackCAN.changeControlMode(CANTalon.ControlMode.Voltage);
+//		}
 	}
 	
-	/**
-	 * Sets the talons with encoder values
-	 * @param leftPos left encoder value
-	 * @param rightPos right encoder value
-	 * @param frontPos front encoder value
-	 * @param backPos back encoder value
-	 */
-	public void setPos(double leftPos, double rightPos, double frontPos, double backPos)
-	{
-		if (dash.getTalonModeType() == 0)
-		{
-			mtLeftOne.setPosition(leftPos);
-			mtLeftTwo.set(mtLeftOne.getBusVoltage());
-			mtRightOne.setPosition(rightPos);
-			mtRightTwo.set(mtRightOne.getBusVoltage());
-			mtFront.setPosition(frontPos);
-			mtBack.setPosition(backPos);
-		}
-		else
-		{
-			mtLeftOne.setPosition(leftPos);
-			mtLeftTwo.set(mtLeftOne.get());
-			mtRightOne.setPosition(rightPos);
-			mtRightTwo.set(mtRightOne.get());
-			mtFront.setPosition(frontPos);
-			mtBack.setPosition(backPos);
-		}
-	}
 	/**
 	 * Returns Voltage of the asked talon
 	 * @param talonNum Numbers :mtRightOne 1, mtLeftOne 3, mtFront 5, mtBack 6
@@ -225,10 +193,13 @@ public class Drive
 	{
 		switch(talonNum)
 		{
-			case 1: return mtRightOne.getBusVoltage();
-			case 3: return mtLeftOne.getBusVoltage();
-			case 5: return mtFront.getBusVoltage();
-			case 6: return mtBack.getBusVoltage();
+			case Config.Drive.idMtLeftCAN: return mtLeftCAN.getBusVoltage();
+			
+			case Config.Drive.idMtRightCAN: return mtRightCAN.getBusVoltage();
+			
+			case Config.Drive.idMtFrontCAN: return mtFrontCAN.getBusVoltage();
+			
+			case Config.Drive.idMtBackCAN: return mtBackCAN.getBusVoltage();
 		}
 		
 		return 0;
@@ -240,89 +211,7 @@ public class Drive
 	 */
 	public double strafeAdjust()
 	{
-			return convertAngBound(navX.getAngle() - prevGyroAng) * Config.Drive.turnAdjustment;
-	}
-	
-	/**
-	 * Gets the front encoder value
-	 * @return the front encoder value
-	 */
-	public double getFrontEncDist() 
-	{
-		return frontEnc.getDistance();
-	}
-	
-	/**
-	 * Gets the back encoder value
-	 * @return the back encoder value
-	 */
-	public double getBackEncDist() 
-	{
-		return backEnc.getDistance();
-	}
-	
-	/**
-	 * Gets the left encoder value
-	 * @return the left encoder value
-	 */
-	public double getLeftEncDist() 
-	{
-		return leftEnc.getDistance();
-	}
-
-	/**
-	 * Gets the right encoder value
-	 * @return the right encoder value
-	 */
-	public double getRightEncDist() 
-	{
-		return rightEnc.getDistance();
-	}
-	
-	/**
-	 * Return the position of the requested Talon
-	 * @param talonNum Numbers :mtRightOne 1, mtRightTwo, mtLeftOne 3, mtLeftTwo 4, mtFront 5, mtBack 6
-	 * @return Position of the Talon
-	 */
-	public double getPosition(int talonNum)
-	{
-		if (dash.getTalonModeType() == 0)
-		{
-			switch(talonNum)
-			{
-				case 1: return mtRightOne.getPosition();
-				case 2: return mtRightTwo.getPosition();
-				case 3: return mtLeftOne.getPosition();
-				case 4: return mtLeftTwo.getPosition();
-				case 5: return mtFront.getPosition();
-				case 6: return mtBack.getPosition();
-			}
-		}
-		else
-		{
-			switch(talonNum)
-			{
-				case 1: return mtRightOne.getPosition();
-				case 2: return mtRightTwo.getPosition();
-				case 3: return mtLeftOne.getPosition();
-				case 4: return mtLeftTwo.getPosition();
-				case 5: return mtFront.getPosition();
-				case 6: return mtBack.getPosition();
-			}
-		}
-		
-		return 0;
-	}
-	
-	/**
-	 * Resets all the encoders
-	 */
-	public void encReset()
-	{
-		leftEnc.reset();
-		rightEnc.reset();
-		frontEnc.reset();
-		backEnc.reset();
+		return convertAngBound(navX.getAngle() - prevGyroAng) * Config.Drive.strafeAdjustment;
 	}
 	
 	/**
@@ -361,5 +250,25 @@ public class Drive
 		
 		return ang;
 	}
-}
+
+	public int getFrontEnc() {
+		return frontEnc.get();
+	}
+
+	public int getBackEnc() {
+		return backEnc.get();
+	}
+
+	public int getLeftEnc() {
+		return leftEnc.get();
+	}
+
+	public int getRightEnc() {
+		return rightEnc.get();
+	}
+
+
 	
+
+
+} 

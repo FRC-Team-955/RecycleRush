@@ -1,11 +1,11 @@
 package core;
 
-import util.Config;
+import lib.Config;
+import lib.Controller;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import util.Controller;
 
-
-public class Claw {
+public class Claw 
+{
 	private DoubleSolenoid noid = new DoubleSolenoid(Config.Claw.chnSolOne, Config.Claw.chnSolTwo);
 	private Controller contr;
 	
@@ -23,18 +23,39 @@ public class Claw {
 	 */
 	public void run()
 	{
-		if (contr.getButton(Config.Claw.btOpen))
-			openClaw();
-		
-		else if(contr.getButton(Config.Claw.btClose))
-			closeClaw();
+		if(contr.getButton(Config.Claw.btOpenClose))
+		{
+			if(getClawStatus())
+				closeClaw();
+			
+			else
+				openClaw();
+		}
 	}
 	
+	public void runXBox()
+	{
+		if(contr.getButton(Config.ContrXBox.btClawToggle))
+		{
+			if(getClawStatus())
+				closeClaw();
+			
+			else
+				openClaw();
+		}
+	}
+	
+	/**
+	 * Opens the claw
+	 */
 	public void openClaw()
 	{
 		noid.set(DoubleSolenoid.Value.kForward);
 	}
 	
+	/**
+	 * Closes the claw
+	 */
 	public void closeClaw()
 	{
 		noid.set(DoubleSolenoid.Value.kReverse); 
@@ -43,14 +64,10 @@ public class Claw {
 	
 	/**
 	 * Gets the status of claw, open or closed
-	 * @return If the solenoid is closed, it returns true, else false
+	 * @return If the solenoid is open, it returns true
 	 */
-	public boolean getClawStatus () {
-		if (noid.get() == DoubleSolenoid.Value.kReverse) {
-			return false;
-		} else {
-			return true;
-		}
+	public boolean getClawStatus() 
+	{
+		return noid.get() == DoubleSolenoid.Value.kForward;
 	}
-	
 }
