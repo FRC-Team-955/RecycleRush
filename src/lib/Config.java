@@ -95,6 +95,11 @@ public class Config
 		public static final double kDownP = 0;
 		public static final double kDownI = 0;
 		public static final double kDownD = 0;
+		
+		// For Elevator Brakes
+		public static final double maxHeightDiff = .5;
+		public static final double maxBrakeRate = .5;
+		
 
 	}
 

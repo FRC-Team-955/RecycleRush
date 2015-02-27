@@ -90,7 +90,7 @@ public class Drive
 			
 			if(pidStrafe.isRunning())
 			{
-				pidStrafe.stopTimer();
+				pidStrafe.stop();
 				pidStrafe.reset();
 			}
 		}
@@ -101,7 +101,7 @@ public class Drive
 			if(!pidStrafe.isRunning())
 			{
 				pidStrafe.reset();
-				pidStrafe.startTimer();
+				pidStrafe.start();
 			}
 			
 			pidStrafe.update(getAngle(), wantStrafeAng);

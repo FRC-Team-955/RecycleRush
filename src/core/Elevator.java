@@ -35,6 +35,8 @@ public class Elevator
 	// PID
 	private boolean pidMode = true;
 	private double wantPos = 0;
+	
+	private boolean elevUpPushed = false;
 //	private double baseHeight = 0;
 //	private int level = 0;
 //	private boolean mode = false;
@@ -82,7 +84,7 @@ public class Elevator
 			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 			{
 				setSpeed(Config.Elevator.elevatorUpSpeed);
-				System.out.println("GOING UP");
+				//System.out.println("GOING UP");
 			}
 		}
 		
@@ -99,7 +101,7 @@ public class Elevator
 			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 			{
 				setSpeed(Config.Elevator.elevatorDownSpeed);
-				System.out.println("GOING DOWN");
+				//System.out.println("GOING DOWN");
 			}
 		}
 		
@@ -114,7 +116,7 @@ public class Elevator
 				tmBrake.reset();
 			}
 		
-			System.out.println("0 SPEED");
+			//System.out.println("0 SPEED");
 		}
 	}
 	
@@ -132,30 +134,67 @@ public class Elevator
 			pidMode = false;
 		
 		if(pidMode)
-		{
+		{			
 			if(contr.getButton(Config.ContrElevator.btElevatorUp))
-			{
-				pidUp.reset();
-				pidUp.startTimer();
-				
-				// Negative is up
-				wantPos = -5;
+			{				
+				elevUpPushed = true;
+				wantPos = -13;
 			}
 			
 			else if(contr.getButton(Config.ContrElevator.btElevatorUp2))
 			{
-				pidUp.reset();
-				pidUp.startTimer();
-				
-				// Negative is up
-				wantPos = -15;
+				elevUpPushed = true;
+				wantPos = -26;
 			}
 			
-			pidUp.update(enc.getDistance(), wantPos);
-			speed = pidUp.getOutput();
+			if(elevUpPushed)
+			{
+				if(getBrake())
+				{
+					unBrake();
+					tmBrake.reset();
+					tmBrake.start();
+				}
+				
+				else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
+				{
+					pidUp.reset();
+					pidUp.start();
+					
+					elevUpPushed = false;
+				}
+			}
+			
+			// Update the pid if the pid is running
+			if(pidUp.isRunning())
+			{
+				pidUp.update(enc.getDistance(), wantPos);
+				speed = pidUp.getOutput();
+				
+				// If the rate is small and the elevator height diff is small as well we've reached our destination, thus
+				// activate the brake and turn off the pid AFTER the brake has made physical contact
+				if(Math.abs(wantPos - enc.getDistance()) < Config.Elevator.maxHeightDiff && Math.abs(enc.getRate()) < Config.Elevator.maxBrakeRate)
+				{
+					if(!getBrake())
+					{
+						brake();
+						// Run timer, keep pid running when breaking, may be dangerious
+						tmBrake.reset();
+						tmBrake.start();
+					}
+					
+					else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
+					{
+						pidUp.stop();
+					}
+				}
+			}
+			
+			else
+				speed = 0;
 		}
 		
-		System.out.println("Speed " + speed + " : " + "Encoder " + enc.getDistance());
+		System.out.println("Speed " + speed + " : " + "Encoder " + enc.getDistance() +" Encode Rate " + enc.getRate());
 		setSpeed(speed);
 	}
 	
@@ -199,9 +238,10 @@ public class Elevator
 	 */
 	public void resetPID()
 	{
-		pidUp.stopTimer();
+		pidUp.stop();
 		pidUp.reset();
-		pidDown.stopTimer();
+		pidDown.stop();
 		pidDown.reset();
 	}
+	
 }

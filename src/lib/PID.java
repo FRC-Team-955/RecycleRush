@@ -88,7 +88,7 @@ public class PID
     /**
      * Starts local Timer
      */
-    public void startTimer()
+    public void start()
     {
     	timer.start();
     	isRunning = true;
@@ -97,7 +97,7 @@ public class PID
     /**
      * Stops local Timer
      */
-    public void stopTimer()
+    public void stop()
     {
     	timer.stop();
     	isRunning = false;
