@@ -8,12 +8,12 @@ public class FileSaver
 {
 	// TODO Add comments
 	private FileWriter writer;
-	private boolean wasWrittenTo = false;
+	private boolean isOpen = false;
 	
 	
 	public FileSaver(String fileName) 
 	{
-		wasWrittenTo = false;	
+		isOpen = true;	
 		
 		try 
 		{
@@ -36,7 +36,6 @@ public class FileSaver
 		{
 			writer.write(data);
 			writer.flush();
-			wasWrittenTo = true;
 		}
 
 		catch (IOException e) 
@@ -51,6 +50,7 @@ public class FileSaver
 		{
 			writer.flush();
 			writer.close();
+			isOpen = false;
 		}
 
 		catch (IOException e) 
@@ -59,8 +59,8 @@ public class FileSaver
 		}
 	}
 	
-	public boolean getWrittenTo()
+	public boolean isOpen()
 	{
-		return wasWrittenTo;
+		return isOpen;
 	}
 }

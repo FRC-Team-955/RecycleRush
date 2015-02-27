@@ -23,19 +23,7 @@ public class Claw
 	 */
 	public void run()
 	{
-		if(contr.getButton(Config.Claw.btOpenClose))
-		{
-			if(getClawStatus())
-				closeClaw();
-			
-			else
-				openClaw();
-		}
-	}
-	
-	public void runXBox()
-	{
-		if(contr.getButton(Config.ContrXBox.btClawToggle))
+		if(contr.getButton(Config.ContrElevator.btClawToggle))
 		{
 			if(getClawStatus())
 				closeClaw();
@@ -60,7 +48,6 @@ public class Claw
 	{
 		noid.set(DoubleSolenoid.Value.kReverse); 
 	}
-	
 	
 	/**
 	 * Gets the status of claw, open or closed

@@ -1,12 +1,8 @@
-	package core;
+package core;
 
 import lib.Config;
 import lib.Controller;
-import lib.Config.FileSaver;
-import lib.navX.NavX;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.SerialPort;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -17,15 +13,12 @@ import edu.wpi.first.wpilibj.SerialPort;
  */
 public class Robot extends IterativeRobot
 {
-	private Controller contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons, Config.ContrDrive.linearity);
-	private SerialPort serial = new SerialPort(Config.Drive.navXBaudRate, SerialPort.Port.kMXP); 
-	private NavX navX = new NavX(serial, (byte) 50);
-	private Drive drive = new Drive(contrDrive, navX);
+	private Controller contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons);
+	private Drive drive = new Drive(contrDrive);
 	private Claw claw = new Claw (contrDrive);
-//	private Elevator elevator = new Elevator(contrDrive);
-	private ElevatorEnc elevatorEnc = new ElevatorEnc(contrDrive);
-//	private Dashboard dash = new Dashboard(drive, elevatorEnc, claw, navX);
-	private Compressor comp = new Compressor();
+	private Elevator elevator = new Elevator(contrDrive);
+	private Dashboard dashboard = new Dashboard(drive, elevator, claw);
+	private boolean teleopRan = false;
 	
     /**
      * This function is run when the robot is first started up and should be
@@ -33,12 +26,20 @@ public class Robot extends IterativeRobot
      */
     public void robotInit() 
     {
-//    	drive.init(Config.Drive.idRobotCentric, dash.getAngleOffset());
     	contrDrive.flipLeftX(true);
     	contrDrive.flipRightX(true);
     	contrDrive.flipRightY(true);
     }
 
+    /**
+     * This function is called once before autonomous
+     */
+    public void autonomousInit()
+    {
+    	dashboard.openLogFile();
+    	drive.init(Config.Drive.idRobotCentric, dashboard.getBotAngleOffset());
+    }
+    
     /**
      * This function is called periodically during autonomous
      */
@@ -47,10 +48,15 @@ public class Robot extends IterativeRobot
 
     }
     
+    /**
+     * This function is called once before teleop
+     */
     public void teleopInit()
     {
-//    	drive.init(Config.Drive.idFieldCentric, dash.getAngleOffset());
-//    	elevatorEnc.unBrake();
+    	teleopRan = true;
+    	dashboard.openLogFile();
+    	drive.init(Config.Drive.idFieldCentric, dashboard.getBotAngleOffset());
+    	elevator.unBrake();
     }
     
     /**
@@ -59,13 +65,21 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {
     	contrDrive.update();
-//    	if(contrDrive.getButton(Config.ContrXBox.btElevatorUp))
-//    		System.out.println("true");
-//      elevator.runXBox();
 //      drive.run();
-    	elevatorEnc.testPID();
-        claw.runXBox();
-//      dash.update();
+    	elevator.testPID();
+        claw.run();
+        dashboard.update();
+    }
+
+    public void disabledInit()
+    {
+    	elevator.resetPID();
+    	
+    	if(teleopRan)
+    	{
+    		dashboard.closeLogFile();
+    		teleopRan = false;
+    	}
     }
     
     /**
@@ -74,10 +88,5 @@ public class Robot extends IterativeRobot
     public void testPeriodic()
     {
     
-    }
-
-    public void disabledInit()
-    {
-    	elevatorEnc.resetPID();
     }
 }

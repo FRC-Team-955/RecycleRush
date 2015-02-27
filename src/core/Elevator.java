@@ -11,21 +11,43 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator 
 {
+	// CAN Talons
 	private CANTalon mtElevatorOne = new CANTalon(Config.Elevator.idMtElevatorOne);
 	private CANTalon mtElevatorTwo = new CANTalon(Config.Elevator.idMtElevatorTwo);
 	
-	private DoubleSolenoid noid = new DoubleSolenoid(Config.Elevator.chnNoidOne, Config.Elevator.chnNoidTwo);
+	// Solenoid for brake
+	private DoubleSolenoid noidBrake = new DoubleSolenoid(Config.Elevator.chnNoidOne, Config.Elevator.chnNoidTwo);
+	
+	// Limit switches
 	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop, false);
 	private LimitSwitch limitBot = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom, false);
-	private Encoder enc = new Encoder(Config.ElevatorEnc.chnEncOne, Config.ElevatorEnc.chnEncTwo);
 	
-	private Timer timerBrake = new Timer();
-	private Timer testTimer = new Timer();
+	// Encoder
+	private Encoder enc = new Encoder(Config.Elevator.chnEncA, Config.Elevator.chnEncB);
+	
+	// PIDs
+	private PID pidUp = new PID(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
+	private PID pidDown = new PID(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
+	
+	private Timer tmBrake = new Timer();
 	private Controller contr;
 	
-	private boolean wasMoving = false;
-	private int prevEnc = 0;
-	//private PID pid = new PID(Config.Elevator.kP, Config.Elevator.kI, Config.Elevator.kP);
+	// PID
+	private boolean pidMode = true;
+	private double wantPos = 0;
+//	private double baseHeight = 0;
+//	private int level = 0;
+//	private boolean mode = false;
+//	
+//	private int [] levels = 
+//	{
+//		Config.ContrElevator.btLvlOne,
+//		Config.ContrElevator.btLvlTwo,
+//		Config.ContrElevator.btLvlThree,
+//		Config.ContrElevator.btLvlFour,
+//		Config.ContrElevator.btLvlFive,
+//		Config.ContrElevator.btLvlSix
+//	};
 	
 	/**
 	 * Constructor
@@ -34,7 +56,7 @@ public class Elevator
 	public Elevator(Controller newContr)
 	{
 		contr = newContr;
-		enc.setDistancePerPulse(Config.ElevatorEnc.distancePerPulse);
+		enc.setDistancePerPulse(Config.Elevator.distancePerPulse);
 		enc.reset();
 	}
 
@@ -43,43 +65,41 @@ public class Elevator
 	 */
 	public void run()
 	{		
-//		System.out.println("Encoder " + enc.getDistance());
-//		System.out.println("Encoder Count: " + enc.get());
-		
+		System.out.println("Encoder " + enc.getDistance());
 		System.out.println("Limit Top" + limitTop.get());
 		System.out.println("Limit Bot" + limitBot.get());
 		
-		if(contr.getRawButton(Config.Elevator.btUp) && !limitTop.get())
+		if(contr.getRawButton(Config.ContrElevator.btElevatorUp) && !limitTop.get())
 		{
 			// Auto disengages brakes if the brakes are engaged
 			if(getBrake())
 			{
-				timerBrake.start();
+				tmBrake.start();
 				unBrake();
 			}
 			
-			// Moves the elevator motor after the piston disengages 
-			else if(timerBrake.get() > Config.Elevator.minTimerVal)
+			// Moves the elevator motor after the brake disengages 
+			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 			{
 				setSpeed(Config.Elevator.elevatorUpSpeed);
-				System.out.println("1 SPEED");
+				System.out.println("GOING UP");
 			}
 		}
 		
-		else if(contr.getRawButton(Config.Elevator.btDown) && !limitBot.get())
+		else if(contr.getRawButton(Config.ContrElevator.btElevatorDown) && !limitBot.get())
 		{
 			// Auto disengages brakes if the brakes are engaged
 			if(getBrake())
 			{
 				unBrake();
-				timerBrake.start();
+				tmBrake.start();
 			}
 			
-			// Moves the elevator motor after the piston disengages
-			else if(timerBrake.get() > Config.Elevator.minTimerVal)
+			// Moves the elevator motor after the brake disengages
+			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 			{
 				setSpeed(Config.Elevator.elevatorDownSpeed);
-				System.out.println("-1 SPEED");
+				System.out.println("GOING DOWN");
 			}
 		}
 		
@@ -91,63 +111,52 @@ public class Elevator
 			if(!getBrake())
 			{
 				brake();
-				timerBrake.reset();
+				tmBrake.reset();
 			}
 		
 			System.out.println("0 SPEED");
 		}
 	}
 	
-	public void runXBox()
-	{		
-		System.out.println("Encoder " + enc.getDistance());
-		System.out.println("Encoder Count: " + enc.get());
+	/**
+	 * Tests the PID for the elevator
+	 */
+	public void testPID()
+	{	
+		double speed = 0;
 		
-		System.out.println("Limit Top" + limitTop.get());
-		System.out.println("Limit Bot" + limitBot.get());
-//		
-		if(contr.getRawButton(Config.ContrXBox.btElevatorUp) && !limitTop.get())
+		if(contr.getButton(Config.ContrElevator.btEnableElevatorPID))
+			pidMode = true;
+		
+		else if(contr.getButton(Config.ContrElevator.btDisableElevatorPID))
+			pidMode = false;
+		
+		if(pidMode)
 		{
-			if(getBrake())
+			if(contr.getButton(Config.ContrElevator.btElevatorUp))
 			{
-				timerBrake.start();
-				unBrake();
+				pidUp.reset();
+				pidUp.startTimer();
+				
+				// Negative is up
+				wantPos = -5;
 			}
 			
-			else if(timerBrake.get() > Config.Elevator.minTimerVal)
+			else if(contr.getButton(Config.ContrElevator.btElevatorUp2))
 			{
-				setSpeed(Config.Elevator.elevatorUpSpeed);
-				System.out.println("1 SPEED");
-			}
-		}
-		
-		else if(contr.getRawButton(Config.ContrXBox.btElevatorDown) && !limitBot.get())
-		{
-			if(getBrake())
-			{
-				unBrake();
-				timerBrake.start();
+				pidUp.reset();
+				pidUp.startTimer();
+				
+				// Negative is up
+				wantPos = -15;
 			}
 			
-			else if(timerBrake.get() > Config.Elevator.minTimerVal)
-			{
-				setSpeed(Config.Elevator.elevatorDownSpeed);
-				System.out.println("-1 SPEED");
-			}
+			pidUp.update(enc.getDistance(), wantPos);
+			speed = pidUp.getOutput();
 		}
 		
-		else
-		{		
-			setSpeed(0);
-			
-			if(!getBrake())
-			{
-				brake();
-				timerBrake.reset();
-			}
-		
-			System.out.println("0 SPEED");
-		}
+		System.out.println("Speed " + speed + " : " + "Encoder " + enc.getDistance());
+		setSpeed(speed);
 	}
 	
 	/**
@@ -165,7 +174,7 @@ public class Elevator
 	 */
 	public void brake()
 	{
-		noid.set(DoubleSolenoid.Value.kReverse);
+		noidBrake.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	/**
@@ -173,15 +182,26 @@ public class Elevator
 	 */
 	public void unBrake()
 	{
-		noid.set(DoubleSolenoid.Value.kForward);
+		noidBrake.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	/**
-	 * Checks if the brake is engaged or not
+	 * Checks if the brake is engaged or not, true if engaged
 	 * @return the brake position 
 	 */
 	public boolean getBrake()
 	{
-		return noid.get() == DoubleSolenoid.Value.kReverse;
+		return noidBrake.get() == DoubleSolenoid.Value.kReverse;
+	}
+	
+	/**
+	 * Resets the PID
+	 */
+	public void resetPID()
+	{
+		pidUp.stopTimer();
+		pidUp.reset();
+		pidDown.stopTimer();
+		pidDown.reset();
 	}
 }

@@ -7,31 +7,26 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class Controller extends Joystick 
 {
-	private final double linearity;
 	private final int maxButtons;
-	
 	private int chnLeftX = 0;
     private int chnLeftY = 1;
     private int chnRightX = 2;
     private int chnRightY = 3;
-    
-    private boolean[] lastButtonState;
-    private boolean[] buttonState;
-    
     private boolean flipLeftX = false;
     private boolean flipLeftY = false;
     private boolean flipRightX = false;
     private boolean flipRightY = false;
+    private boolean[] lastButtonState;
+    private boolean[] buttonState;
     
     /**
      * Constructor
      * @param portNum port number for the controller 
      */
-    public Controller(int portNum, int maxButtons, double linearity)
+    public Controller(int portNum, int maxButtons)
     {
         super(portNum);
         this.maxButtons = maxButtons;
-        this.linearity = linearity;
         lastButtonState = new boolean[maxButtons];
         buttonState = new boolean[maxButtons];
         
@@ -98,42 +93,6 @@ public class Controller extends Joystick
     public double getRawRightY()
     {
     	return super.getRawAxis(chnRightY) * (flipRightY ? -1 : 1);
-    }
-    
-    /**
-     * Gets the adjusted x value of the left joystick
-     * @return the adjusted x value of the left joystick
-     */
-    public double getLeftX()
-    {
-    	return altInput(getRawLeftX());
-    }
-    
-    /**
-     * Gets the adjusted y value of the left joystick
-     * @return the adjusted y value of the left joystick
-     */
-    public double getLeftY()
-    {
-    	return altInput(getRawLeftY());
-    }
-    
-    /**
-     * Gets the adjusted x value of the right joystick
-     * @return the adjusted x value of the right joystick
-     */
-    public double getRightX()
-    {
-    	return altInput(getRawRightX());
-    }
-    
-    /**
-     * Gets the adjusted y value of the right joystick
-     * @return the adjusted y value of the right joystick
-     */
-    public double getRightY()
-    {
-    	return altInput(getRawRightX());
     }
     
     /**
@@ -242,15 +201,5 @@ public class Controller extends Joystick
     public boolean getDpadLeft()
     {
     	return super.getPOV(0) == 270;
-    }
-    
-    /**
-     * Adjusts the tangent function to better fit the joystick input
-     * @param input the value to be adjusted
-     * @return the adjusted value
-     */
-    private double altInput(double input)
-    {
-    	return Math.tan((Math.PI / 4) * linearity * input) / Math.tan((Math.PI / 4) * linearity);
     }
 }

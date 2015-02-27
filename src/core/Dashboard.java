@@ -13,19 +13,16 @@ public class Dashboard
 	private Elevator elevator;
 	private Drive drive;
 	private Claw claw;
-	private NavX navX;
-//	private SendableChooser talonModeChooser = new SendableChooser();
 //	private SendableChooser autoChooser = new SendableChooser();
 	private SendableChooser driveChooser = new SendableChooser();
 	private PowerDistributionPanel pdp = new PowerDistributionPanel();
 	private FileSaver fileSaver;
 	
-	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw, NavX newNavX)
+	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw)
 	{
 		drive = newDrive;
 		elevator = newElevator;
 		claw = newClaw;
-		navX = newNavX;
 //		// Autonomous Routines
 //		chooser.addDefault("Do Nothing", new ChooserType(Config.Auto.idDoNothing));
 //		chooser.addObject("Drive Foward Timer", new ChooserType(Config.Auto.idDriveForwardTimer));
@@ -40,22 +37,17 @@ public class Dashboard
 //		chooser.addObject("Get All Totes Right Encoder", new ChooserType(Config.Auto.idGetAllTotesRightEnc));
 //		chooser.addObject("Get Recycle Bin and Tote Encoder", new ChooserType(Config.Auto.idGetRecycleBinEnc));
 //		chooser.addObject("Get Recycle Bin and Tote Timer", new ChooserType(Config.Auto.idGetRecycleBinTimer));
-//		
-//		//Talon mode (SRX inclusion or not)
-//		talonModeChooser.addDefault("TalonSRX", new ChooserType(Config.Drive.idTalonSRX));
-//		talonModeChooser.addObject("Talon", new ChooserType(Config.Drive.idTalon));
 //		SmartDashboard.putData("AutoMode", autoChooser);
 		driveChooser.addDefault("Field Centric Drive", new ChooserType(Config.Drive.idFieldCentric));
 		driveChooser.addObject("Robo Centric Drive", new ChooserType(Config.Drive.idRobotCentric));
 		SmartDashboard.putData("DriveMode", driveChooser);
-		fileSaver = new FileSaver(String.valueOf(System.currentTimeMillis()));
 	}
 	
 	public void update()
 	{
 		// Gyro
-		SmartDashboard.putNumber("Gyro", navX.getAngle());
-		fileSaver.write("Gyro Angle:" + String.valueOf(navX.getAngle()));
+		SmartDashboard.putNumber("Gyro", drive.getAngle());
+		fileSaver.write("Gyro Angle:" + String.valueOf(drive.getAngle()));
 		
 		// Claw
 		SmartDashboard.putBoolean("Claw", claw.getClawStatus());
@@ -79,48 +71,18 @@ public class Dashboard
 		SmartDashboard.putNumber("HALP NO CURRENT PLS", pdp.getCurrent(5));
 		//fileSaver.write("HALP NO CURRENT PLS:" + String.valueOf(pdp.getCurrent(5)));
 		
-		// Voltages
-//		SmartDashboard.putNumber("Right Talon One", drive.getVoltage(1));
-//		fileSaver.write("Right Talon One Voltage:" + String.valueOf(drive.getVoltage(1)));
-//		
-//		SmartDashboard.putNumber("Right Talon Two", drive.getVoltage(2));
-//		fileSaver.write("Right Talon Two Voltage:" + String.valueOf(drive.getVoltage(2)));
-//		
-//		SmartDashboard.putNumber("Left Talon One", drive.getVoltage(3));
-//		fileSaver.write("Left Talon One Voltage:" + String.valueOf(drive.getVoltage(3)));
-//		
-//		
-//		SmartDashboard.putNumber("Left Talon Two", drive.getVoltage(4));
-//		fileSaver.write("Left Talon Two Voltage:" + String.valueOf(drive.getVoltage(4)));
-//		
-//		SmartDashboard.putNumber("Front Talon", drive.getVoltage(5));
-//		fileSaver.write("Front Talon:" + String.valueOf(drive.getVoltage(5)));
-//		
-//		SmartDashboard.putNumber("Back Talon", drive.getVoltage(6));
-//		fileSaver.write("Back Talon:" + String.valueOf(drive.getVoltage(6)));
-		
 		// Angle Offset
 		SmartDashboard.putNumber("Angle Offset", 0);
 		
 		fileSaver.write("Angle Offset: 0"); 
 	}
 	
-//	public int getAutoType()
-//	{
-//		return ((ChooserType) chooser.getSelected()).getId();
-//	}
-//	
-//	public int getTalonModeType()
-//	{
-//		return ((ChooserType) talonModeChooser.getSelected()).getId();
-//	}
-//	
 	public int getDriveType()
 	{
 		return ((ChooserType) driveChooser.getSelected()).getId();
 	}
 	
-	public double getAngleOffset()
+	public double getBotAngleOffset()
 	{
 		try
 		{
@@ -134,9 +96,14 @@ public class Dashboard
 		}
 	}
 	
+	public void openLogFile()
+	{
+		if(fileSaver == null || !fileSaver.isOpen())
+			fileSaver = new FileSaver(String.valueOf(System.currentTimeMillis()));
+	}
+	
 	public void closeLogFile()
 	{
-		if(fileSaver.getWrittenTo())
-			fileSaver.close();
+		fileSaver.close();
 	}
 }
