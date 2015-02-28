@@ -155,7 +155,7 @@ public class Elevator
 			// Set the want position based on button that was pressed
 			for(int i = 0; i < levels.length; i++)
 				if(contr.getButton(levels[i]))
-					setHeight((i * Config.Elevator.toteHeight) + Config.Elevator.clearanceHeight);
+					setHeight((i * Config.Elevator.toteHeight) + (i > 0 ? Config.Elevator.toteClearanceHeight : 0));
 			
 			update();
 		}
@@ -205,8 +205,9 @@ public class Elevator
 				tmBrake.start();
 			}
 			
-			// Start the pid once the brake has completely disengaged
-			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
+			// Reset/Start the pid once the brake has completely disengaged, or if
+			// a new height was chosen when the pid is already running
+			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime || pidUp.isRunning())
 			{
 				tmBrake.stop();
 				tmBrake.reset();
@@ -223,6 +224,8 @@ public class Elevator
 			pidUp.update(getHeight(), wantPos);
 			speed = Util.ramp(getSpeed(), pidUp.getOutput(), Config.Elevator.maxRampRate);
 			
+			// TODO: Get getting current from the pdp working so that finding out whether a motor is stalling
+			// would be easier and more effective that way
 			// If the encoder rate is continuously less than than a certain value for a certain time, engage the break
 			// we don't want to stall out the motors too long even if we haven't reached are wanted height
 			if(Math.abs(enc.getRate()) < Config.Elevator.minEncRate)
@@ -236,15 +239,17 @@ public class Elevator
 			
 			// If the height diff and rate is small we've reached our destination, thus
 			// activate the brake and turn off the pid AFTER the brake has made physical contact
-			if((Math.abs(wantPos - getHeight()) < Config.Elevator.maxHeightDiff && Math.abs(enc.getRate()) < Config.Elevator.minEncRate) || tmEncRate.get() >= Config.Elevator.minEncRunTime)
+			if((Math.abs(wantPos - getHeight()) < Config.Elevator.maxHeightDiff && Math.abs(enc.getRate()) < Config.Elevator.minEncRate) || tmEncRate.get() >= Config.Elevator.maxEncStallTime)
 			{
 				// If not braked brake the elevator, but keep pid running
 				if(!getBrake())
 				{
 					brake();
-					// Run timer, keep pid running when breaking, may be dangerous
+					// Run brake timer, stop encoder rate timer, keep pid running when breaking, may be dangerous
 					tmBrake.reset();
 					tmBrake.start();
+					tmEncRate.stop();
+					tmEncRate.reset();
 				}
 			}
 						
@@ -295,8 +300,6 @@ public class Elevator
 	public void brake()
 	{
 		noidBrake.set(DoubleSolenoid.Value.kReverse);
-		tmEncRate.stop();
-		tmEncRate.reset();
 	}
 	
 	/**
@@ -326,5 +329,4 @@ public class Elevator
 		pidDown.stop();
 		pidDown.reset();
 	}
-	
 }

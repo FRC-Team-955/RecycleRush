@@ -76,21 +76,13 @@ public class Config
 		// Brake solenoid channels
 		public static final int chnNoidOne = 4;
 		public static final int chnNoidTwo = 5;
-
-		// Minimum timer value to for brake to disengage seconds
-		public static final double brakeDisengageTime = .04;
 		
 		// Encoder channels
 		public static final int chnEncA = 3;
 		public static final int chnEncB = 2;
 		
 		// Encoder distance per pulse
-		public static final double distancePerPulse = 63.0 / 1350;
-
-		// Measurments in inches
-		public static final double adjustedBaseHeight = 2;
-		public static final double toteHeight = 13;		   
-		public static final double clearanceHeight= 1;    
+		public static final double distancePerPulse = 63.0 / 1350;   
 		
 		/** PID constants **/
 		// For up PID
@@ -103,11 +95,19 @@ public class Config
 		public static final double kDownI = 0;
 		public static final double kDownD = 0;
 		
-		// For Elevator
-		public static final double maxHeightDiff = .5;  // inches
-		public static final double minEncRate = .5;     // seconds
-		public static final double minEncRunTime = 0.5; // seconds
+		// Timer constants values, seconds
+		public static final double brakeDisengageTime = .04;	// Minimum timer value to for brake to disengage seconds
+		public static final double maxEncStallTime = 0.5;
 		public static final double maxRampRate = 0.254;
+		
+		// Height constants values, inches
+		public static final double maxHeightDiff = .5;
+		public static final double adjustedBaseHeight = 2;
+		public static final double toteHeight = 13;		   
+		public static final double toteClearanceHeight= 1; 
+				
+		// Minimum encoder rate for elevator to be able to be braked without damage occurring
+		public static final double minEncRate = .5;
 	}
 
 	public class FileSaver 
