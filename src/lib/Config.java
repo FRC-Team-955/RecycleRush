@@ -54,6 +54,7 @@ public class Config
 	
 	public class Claw 
 	{
+		// Channels for claw solenoids
 		public static final int chnSolOne = 6;
 		public static final int chnSolTwo = 7;
 	}
@@ -69,8 +70,8 @@ public class Config
 		public static final int chnLimitSwitchBottom = 1;
 
 		// Elevator speeds for manual control, -value = up on elevator
-		public static final double elevatorUpSpeed = -1;
-		public static final double elevatorDownSpeed = .25;
+		public static final double elevatorUpSpeed = 1;
+		public static final double elevatorDownSpeed = -.25;
 
 		// Brake solenoid channels
 		public static final int chnNoidOne = 4;
@@ -110,6 +111,7 @@ public class Config
 
 	public class FileSaver 
 	{
+		// Save directory for all the log files
 		public static final String saveDir = "/logFiles";
 	}
 
@@ -165,6 +167,7 @@ public class Config
 	
 	public class NavX
 	{
+		// Update rate for navX, baud rate for navX
 		public static final byte updateRateHz = 50;
 		public static final int baudRate = 57600;
 	}
