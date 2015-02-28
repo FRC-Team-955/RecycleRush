@@ -36,20 +36,20 @@ public class Elevator
 	private boolean pidMode = true;
 	private double wantPos = 0;
 	
-	private boolean elevUpPushed = false;
+	private boolean elevatorUpPushed = false;
 //	private double baseHeight = 0;
 //	private int level = 0;
 //	private boolean mode = false;
 //	
-//	private int [] levels = 
-//	{
-//		Config.ContrElevator.btLvlOne,
-//		Config.ContrElevator.btLvlTwo,
-//		Config.ContrElevator.btLvlThree,
-//		Config.ContrElevator.btLvlFour,
-//		Config.ContrElevator.btLvlFive,
-//		Config.ContrElevator.btLvlSix
-//	};
+	private int [] levels = 
+	{
+		Config.ContrElevator.btLvlOne,
+		Config.ContrElevator.btLvlTwo,
+		Config.ContrElevator.btLvlThree,
+		Config.ContrElevator.btLvlFour,
+		Config.ContrElevator.btLvlFive,
+		Config.ContrElevator.btLvlSix
+	};
 	
 	/**
 	 * Constructor
@@ -76,6 +76,7 @@ public class Elevator
 			// Auto disengages brakes if the brakes are engaged
 			if(getBrake())
 			{
+				tmBrake.reset();
 				tmBrake.start();
 				unBrake();
 			}
@@ -93,8 +94,9 @@ public class Elevator
 			// Auto disengages brakes if the brakes are engaged
 			if(getBrake())
 			{
-				unBrake();
+				tmBrake.reset();
 				tmBrake.start();
+				unBrake();
 			}
 			
 			// Moves the elevator motor after the brake disengages
@@ -112,8 +114,8 @@ public class Elevator
 			// Auto brakes after the motor stops
 			if(!getBrake())
 			{
+				tmBrake.stop();
 				brake();
-				tmBrake.reset();
 			}
 		
 			//System.out.println("0 SPEED");
@@ -125,30 +127,34 @@ public class Elevator
 	 */
 	public void testPID()
 	{	
+		// Default elevator speed to 0
 		double speed = 0;
 		
+		// Set to pid mode if button pressed
 		if(contr.getButton(Config.ContrElevator.btEnableElevatorPID))
 			pidMode = true;
 		
+		// Set to non pid mode if button pressed
 		else if(contr.getButton(Config.ContrElevator.btDisableElevatorPID))
 			pidMode = false;
 		
+		// Run pid if in pid mode
 		if(pidMode)
-		{			
-			if(contr.getButton(Config.ContrElevator.btElevatorUp))
-			{				
-				elevUpPushed = true;
-				wantPos = -13;
+		{	
+			// TODO: The minus 3 is temp because we dont want to test high yet since no limit switch implementation
+			// Set the want position based on button that was pressed
+			for(int i = 0; i < levels.length - 3; i++)
+			{
+				if(contr.getButton(levels[i]))
+				{
+					wantPos = i * Config.Elevator.toteHeight * -1;
+					elevatorUpPushed = true;
+				}
 			}
 			
-			else if(contr.getButton(Config.ContrElevator.btElevatorUp2))
+			if(elevatorUpPushed)
 			{
-				elevUpPushed = true;
-				wantPos = -26;
-			}
-			
-			if(elevUpPushed)
-			{
+				// Unbrake if braked, start timer for disengaging
 				if(getBrake())
 				{
 					unBrake();
@@ -156,18 +162,20 @@ public class Elevator
 					tmBrake.start();
 				}
 				
+				// Start the pid once the brake has completely disengaged
 				else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 				{
+					tmBrake.stop();
 					pidUp.reset();
 					pidUp.start();
-					
-					elevUpPushed = false;
+					elevatorUpPushed = false;
 				}
 			}
 			
 			// Update the pid if the pid is running
 			if(pidUp.isRunning())
 			{
+				// Update the pid with curr/want position
 				pidUp.update(enc.getDistance(), wantPos);
 				speed = pidUp.getOutput();
 				
@@ -175,21 +183,26 @@ public class Elevator
 				// activate the brake and turn off the pid AFTER the brake has made physical contact
 				if(Math.abs(wantPos - enc.getDistance()) < Config.Elevator.maxHeightDiff && Math.abs(enc.getRate()) < Config.Elevator.maxBrakeRate)
 				{
+					// If not braked brake the elevator, but keep pid running
 					if(!getBrake())
 					{
 						brake();
-						// Run timer, keep pid running when breaking, may be dangerious
+						// Run timer, keep pid running when breaking, may be dangerous
 						tmBrake.reset();
 						tmBrake.start();
 					}
-					
-					else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
-					{
-						pidUp.stop();
-					}
+				}
+				
+				// Once the brake has made complete contact, then stop the pid and set the speed to 0
+				if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
+				{
+					tmBrake.stop();
+					pidUp.stop();
+					speed = 0;
 				}
 			}
 			
+			// If pid is not running set elevator speed to 0 (should probably brake too)
 			else
 				speed = 0;
 		}

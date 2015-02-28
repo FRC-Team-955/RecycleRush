@@ -38,7 +38,12 @@ public class Config
 		public static final int btElevatorUp = 4;
 		public static final int btElevatorUp2 = 2;
 		public static final int btElevatorDown = 1;
-		
+		public static final int btLvlOne = 1;
+		public static final int btLvlTwo = 2;
+		public static final int btLvlThree = 3;
+		public static final int btLvlFour = 4;
+		public static final int btLvlFive = 5;
+		public static final int btLvlSix = 6;
 		// TODO: WE'RE NOT ACTUALLY USING THESE YET
 //		public static final int btModeSwitch = 12;
 //		public static final int btUp = 1;
@@ -71,8 +76,8 @@ public class Config
 		public static final int chnNoidOne = 4;
 		public static final int chnNoidTwo = 5;
 
-		// Minimum timer value to for brake to disengage
-		public static final double brakeDisengageTime = .1;
+		// Minimum timer value to for brake to disengage seconds
+		public static final double brakeDisengageTime = .04;
 		
 		// Encoder channels
 		public static final int chnEncA = 3;
@@ -88,7 +93,7 @@ public class Config
 		/** PID constants **/
 		// For up PID
 		public static final double kUpP = .254;
-		public static final double kUpI = 0.033; // Was .001
+		public static final double kUpI = 0.033;
 		public static final double kUpD = 0;
 		
 		// For down PID
