@@ -82,6 +82,7 @@ public class PID
         output = 0;
         totalErr = 0;
         prevErr = 0;
+        prevTime = 0;
         timer.reset();
     }
     

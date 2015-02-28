@@ -1,5 +1,6 @@
 package core;
 
+import auto.Auto;
 import lib.Config;
 import lib.Controller;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -17,6 +18,7 @@ public class Robot extends IterativeRobot
 	private Drive drive = new Drive(contrDrive);
 	private Claw claw = new Claw (contrDrive);
 	private Elevator elevator = new Elevator(contrDrive);
+	private Auto auto = new Auto(drive, elevator, claw);
 	private Dashboard dashboard = new Dashboard(drive, elevator, claw);
 	private boolean teleopRan = false;
 	
