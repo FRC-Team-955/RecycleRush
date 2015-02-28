@@ -159,7 +159,7 @@ public class Elevator
 	{
 		// TODO: Remove the only higher limitation once down pid has been tuned
 		// Only allow to get higher since PID for going down has not been tuned yet
-		if(height < getHeight())
+		if(height > getHeight())
 		{
 			wantPos = height;
 			changeElevatorHeight = true;
