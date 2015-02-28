@@ -56,7 +56,6 @@ public class Robot extends IterativeRobot
     	teleopRan = true;
     	dashboard.openLogFile();
     	drive.init(Config.Drive.idFieldCentric, dashboard.getBotAngleOffset());
-    	elevator.unBrake();
     }
     
     /**
@@ -67,7 +66,7 @@ public class Robot extends IterativeRobot
     	contrDrive.update();
 //      drive.run();
     	elevator.testPID();
-        claw.run();
+//        claw.run();
         dashboard.update();
     }
 

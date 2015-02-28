@@ -34,4 +34,14 @@ public class Util
 		
 		return ang;
 	}
+	
+	/**
+	 * Rounds the double to the nearest hundreths place
+	 * @param num
+	 * @return
+	 */
+	public static double round(double num)
+	{
+		return Math.floor((num * 100) + 0.5) / 100;
+	}
 }

@@ -4,6 +4,7 @@ import lib.Config;
 import lib.Controller;
 import lib.LimitSwitch;
 import lib.PID;
+import lib.Util;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
@@ -29,7 +30,11 @@ public class Elevator
 	private PID pidUp = new PID(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
 	private PID pidDown = new PID(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
 	
+	// Timers for elevator
 	private Timer tmBrake = new Timer();
+	private Timer tmEncRate = new Timer();
+	
+	// Controller for controlling the elevators
 	private Controller contr;
 	
 	// PID
@@ -46,9 +51,9 @@ public class Elevator
 		Config.ContrElevator.btLvlOne,
 		Config.ContrElevator.btLvlTwo,
 		Config.ContrElevator.btLvlThree,
-		Config.ContrElevator.btLvlFour,
-		Config.ContrElevator.btLvlFive,
-		Config.ContrElevator.btLvlSix
+		Config.ContrElevator.btLvlFour
+		//Config.ContrElevator.btLvlFive,
+		//Config.ContrElevator.btLvlSix
 	};
 	
 	/**
@@ -135,14 +140,22 @@ public class Elevator
 		else if(contr.getButton(Config.ContrElevator.btDisableElevatorPID))
 			pidMode = false;
 		
+		else if(contr.getButton(Config.ContrElevator.btToggleBrake))
+		{
+			if(getBrake())
+				unBrake();
+			
+			else
+				brake();
+		}
+		
 		// Run pid if in pid mode
 		if(pidMode)
 		{	
-			// TODO: The minus 3 is temp because we dont want to test high yet since no limit switch implementation
 			// Set the want position based on button that was pressed
-			for(int i = 0; i < levels.length - 3; i++)
+			for(int i = 0; i < levels.length; i++)
 				if(contr.getButton(levels[i]))
-					setHeight(i * Config.Elevator.toteHeight);
+					setHeight((i * Config.Elevator.toteHeight) + Config.Elevator.clearanceHeight);
 			
 			update();
 		}
@@ -153,15 +166,15 @@ public class Elevator
 	
 	/**
 	 * Sets the wanted height for the elevator
-	 * @param height
+	 * @param newHeight
 	 */
-	public void setHeight(double height)
+	public void setHeight(double newHeight)
 	{
 		// TODO: Remove the only higher limitation once down pid has been tuned
 		// Only allow to get higher since PID for going down has not been tuned yet
-		if(height > getHeight())
+		if(newHeight > getHeight())
 		{
-			wantPos = height;
+			wantPos = newHeight;
 			changeElevatorHeight = true;
 		}
 	}
@@ -196,6 +209,7 @@ public class Elevator
 			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 			{
 				tmBrake.stop();
+				tmBrake.reset();
 				pidUp.reset();
 				pidUp.start();
 				changeElevatorHeight = false;
@@ -205,13 +219,24 @@ public class Elevator
 		// Update the pid if the pid is running
 		if(pidUp.isRunning())
 		{
-			// Update the pid with curr/want position
+			// Update the pid with curr/want position, with ramping
 			pidUp.update(getHeight(), wantPos);
-			speed = pidUp.getOutput();
+			speed = Util.ramp(getSpeed(), pidUp.getOutput(), Config.Elevator.maxRampRate);
+			
+			// If the encoder rate is continuously less than than a certain value for a certain time, engage the break
+			// we don't want to stall out the motors too long even if we haven't reached are wanted height
+			if(Math.abs(enc.getRate()) < Config.Elevator.minEncRate)
+				tmEncRate.start();
+			
+			else
+			{
+				tmEncRate.stop();
+				tmEncRate.reset();
+			}
 			
 			// If the height diff and rate is small we've reached our destination, thus
 			// activate the brake and turn off the pid AFTER the brake has made physical contact
-			if(Math.abs(wantPos - getHeight()) < Config.Elevator.maxHeightDiff && Math.abs(enc.getRate()) < Config.Elevator.maxBrakeRate)
+			if((Math.abs(wantPos - getHeight()) < Config.Elevator.maxHeightDiff && Math.abs(enc.getRate()) < Config.Elevator.minEncRate) || tmEncRate.get() >= Config.Elevator.minEncRunTime)
 			{
 				// If not braked brake the elevator, but keep pid running
 				if(!getBrake())
@@ -222,17 +247,25 @@ public class Elevator
 					tmBrake.start();
 				}
 			}
-			
+						
 			// Once the brake has made complete contact, then stop the pid and set the speed to 0
 			if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 			{
 				tmBrake.stop();
+				tmBrake.reset();
 				pidUp.stop();
 				speed = 0;
 			}
 		}
 		
-		System.out.println("Speed " + speed + " : " + "Encoder " + getHeight() +" Encode Rate " + enc.getRate());
+		System.out.println
+		(
+				"Speed " + Util.round(speed) + 
+				" : Encoder " + Util.round(getHeight()) + 
+				" : Encode Rate " + enc.getRate() + 
+				" : Want Height " + wantPos
+		);
+		
 		setSpeed(speed);
 	}
 	
@@ -248,11 +281,22 @@ public class Elevator
 	}
 	
 	/**
+	 * Gets the speed of the elevator, voltage, postive for up
+	 * @return
+	 */
+	public double getSpeed()
+	{
+		return -mtElevatorOne.get();
+	}
+	
+	/**
 	 * Engages brake
 	 */
 	public void brake()
 	{
 		noidBrake.set(DoubleSolenoid.Value.kReverse);
+		tmEncRate.stop();
+		tmEncRate.reset();
 	}
 	
 	/**

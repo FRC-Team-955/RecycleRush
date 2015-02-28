@@ -33,17 +33,17 @@ public class Config
 		
 		// Buttons for controller
 		public static final int btClawToggle = 6;
-		public static final int btEnableElevatorPID = 1;
-		public static final int btDisableElevatorPID = 3;
+		public static final int btEnableElevatorPID = 8;
+		public static final int btDisableElevatorPID = 7;
 		public static final int btElevatorUp = 4;
-		public static final int btElevatorUp2 = 2;
 		public static final int btElevatorDown = 1;
 		public static final int btLvlOne = 1;
 		public static final int btLvlTwo = 2;
-		public static final int btLvlThree = 3;
-		public static final int btLvlFour = 4;
-		public static final int btLvlFive = 5;
-		public static final int btLvlSix = 6;
+		public static final int btLvlThree = 4;
+		public static final int btLvlFour = 3;
+		//public static final int btLvlFive = 5;
+		//public static final int btLvlSix = 6;
+		public static final int btToggleBrake = 5;
 		// TODO: WE'RE NOT ACTUALLY USING THESE YET
 //		public static final int btModeSwitch = 12;
 //		public static final int btUp = 1;
@@ -89,12 +89,13 @@ public class Config
 
 		// Measurments in inches
 		public static final double adjustedBaseHeight = 2;
-		public static final double toteHeight = 13;
+		public static final double toteHeight = 13;		   
+		public static final double clearanceHeight= 1;    
 		
 		/** PID constants **/
 		// For up PID
-		public static final double kUpP = .254;
-		public static final double kUpI = 0.033;
+		public static final double kUpP = 0.33;
+		public static final double kUpI = 0.01;
 		public static final double kUpD = 0;
 		
 		// For down PID
@@ -102,11 +103,11 @@ public class Config
 		public static final double kDownI = 0;
 		public static final double kDownD = 0;
 		
-		// For Elevator Brakes
-		public static final double maxHeightDiff = .5;
-		public static final double maxBrakeRate = .5;
-		
-
+		// For Elevator
+		public static final double maxHeightDiff = .5;  // inches
+		public static final double minEncRate = .5;     // seconds
+		public static final double minEncRunTime = 0.5; // seconds
+		public static final double maxRampRate = 0.254;
 	}
 
 	public class FileSaver 
