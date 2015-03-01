@@ -52,6 +52,34 @@ public class Config
 //		public static final int btUnbrake = 2;
 	}
 	
+	public class Auto
+	{
+		// Ids for SmartDashboard chooser
+		public static final int idDoNothing = 0;
+		public static final int idDriveForward = 1;
+		public static final int idDriveForwardBearing= 2;
+		public static final int idGetOneTote = 3;
+		public static final int idGetOneToteBearing = 4;
+		public static final int idGetAllTotesLeft = 5;
+		public static final int idGetAllTotesCenter = 6;
+		public static final int idGetAllTotesRight = 7;
+		public static final int idGetAllTotesBearingLeft = 8;
+		public static final int idGetAllTotesBearingCenter = 9;
+		public static final int idGetAllTotesBearingRight = 10;
+		
+		// Encoder distance values
+		public static final double encStrafeDistance = 2;
+		public static final double encDistanceBetweenTotes = 2;
+		public static final double encDriveForwardDistance = 2;
+		
+		public static final double encTolerance = 10;
+		
+		// Timer values
+		public static final double timeIntakeClose = .5; 
+		public static final double timeElevatorStack = timeIntakeClose + 1;
+		public static final double timeIntakeOpen = timeElevatorStack + .5;
+	}
+	
 	public class Claw 
 	{
 		// Channels for claw solenoids
@@ -168,6 +196,26 @@ public class Config
         public static final double kStrafeP = 0.0234;
         public static final double kStrafeI = 0;
         public static final double kStrafeD = 0;
+        
+        public static final double kLeftP = 0;
+        public static final double kLeftI = 0;
+        public static final double kLeftD = 0;
+        
+        public static final double kRightP = 0;
+        public static final double kRightI = 0;
+        public static final double kRightD = 0;
+        
+        public static final double kFrontP = 0;
+        public static final double kFrontI = 0;
+        public static final double kFrontD = 0;
+        
+        public static final double kBackP = 0;
+        public static final double kBackI = 0;
+        public static final double kBackD = 0;
+        
+        public static final double robotCircumfrence = Math.PI * 48; // Inches
+        public static final double maxDistanceDiff = 1;              // Inches
+        		
 	}
 	
 	public class NavX
