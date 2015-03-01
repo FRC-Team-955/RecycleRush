@@ -36,7 +36,18 @@ public class Drive
 	
 	private NavX navX = new NavX();
 	private Controller contr;
+	
+	//PID
 	private PID pidStrafe = new PID(Config.Drive.kStrafeP, Config.Drive.kStrafeI, Config.Drive.kStrafeD);
+	private PID pidLeft= new PID(Config.Drive.kLeftP, Config.Drive.kLeftI, Config.Drive.kLeftD);
+	private PID pidRight = new PID(Config.Drive.kRightP, Config.Drive.kRightI, Config.Drive.kRightD);
+	private PID pidFront = new PID(Config.Drive.kFrontP, Config.Drive.kFrontI, Config.Drive.kFrontD);
+	private PID pidBack = new PID(Config.Drive.kBackP, Config.Drive.kBackI, Config.Drive.kBackD);
+	
+	private double wantLeftPos = 0;
+	private double wantRightPos = 0;
+	private double wantFrontPos = 0;
+	private double wantBackPos = 0;
 	
 	private boolean fieldCentricMode = true;
 	private double wantStrafeAng = 0;
@@ -132,6 +143,100 @@ public class Drive
 		mtRight.set(rightSpeed);				
 		mtFrontCAN.set(frontSpeed);		
 		mtBackCAN.set(backSpeed);
+	}
+	
+	public void setHeading(double heading, double distance)
+	{
+		double centerPosition = distance * Math.sin(heading);
+        double sidePosition = distance * Math.cos(heading);
+        wantLeftPos += sidePosition;
+        wantRightPos += centerPosition;
+        wantFrontPos += sidePosition;
+        wantBackPos += centerPosition;
+        updatePID();
+	}
+	
+	public void setHeading(double heading, double bearing, double distance)
+	{
+		double centerPosition = distance * Math.sin(heading);
+        double sidePosition = distance * Math.cos(heading);
+		double angDiff = Util.absoluteAngToRelative(bearing - heading);
+		wantLeftPos = sidePosition + (Config.Drive.robotCircumfrence * angDiff);
+		wantRightPos = sidePosition - (Config.Drive.robotCircumfrence * angDiff);
+		wantFrontPos = centerPosition + (Config.Drive.robotCircumfrence * angDiff);
+		wantBackPos = centerPosition - (Config.Drive.robotCircumfrence * angDiff);
+		updatePID();
+	}
+	
+	public void updatePID()
+	{
+		double leftSpeed = 0;
+		double rightSpeed = 0;
+		double frontSpeed = 0;
+		double backSpeed = 0;
+		
+		// Checks if the wanted position is greater than a buffer to start the PID
+		if(Math.abs(wantLeftPos - encLeft.getDistance()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
+			pidLeft.start();
+		
+		else
+		{
+			pidLeft.stop();
+			pidLeft.reset();
+		}
+		
+		if(Math.abs(wantRightPos - encRight.getDistance()) > Config.Drive.maxDistanceDiff && !pidRight.isRunning())
+			pidRight.start();
+		
+		else
+		{
+			pidRight.stop();
+			pidRight.reset();
+		}
+		
+		if(Math.abs(wantFrontPos - encFront.getDistance()) > Config.Drive.maxDistanceDiff && !pidFront.isRunning())
+			pidFront.start();
+		
+		else
+		{
+			pidFront.stop();
+			pidFront.reset();
+		}
+		
+		if(Math.abs(wantBackPos - encBack.getDistance()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
+			pidBack.start();
+		
+		else
+		{
+			pidBack.stop();
+			pidBack.reset();
+		}
+		
+		if(pidLeft.isRunning())
+		{
+			pidLeft.update(encLeft.getDistance(), wantLeftPos);
+			leftSpeed = pidLeft.getOutput();
+		}
+		
+		if(pidRight.isRunning())
+		{
+			pidRight.update(encRight.getDistance(), wantRightPos);
+			rightSpeed = pidRight.getOutput();
+		}
+		
+		if(pidFront.isRunning())
+		{
+			pidFront.update(encFront.getDistance(), wantFrontPos);
+			frontSpeed = pidFront.getOutput();
+		}
+		
+		if(pidBack.isRunning())
+		{
+			pidBack.update(encBack.getDistance(), wantBackPos);
+			backSpeed = pidBack.getOutput();
+		}
+		
+		setSpeed(leftSpeed, rightSpeed, frontSpeed, backSpeed);
 	}
 	
 	/**
