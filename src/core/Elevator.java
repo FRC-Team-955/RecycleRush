@@ -68,7 +68,7 @@ public class Elevator
 	}
 
 	/**
-	 * Runs the elevator motor depending on joystick inputs
+	 * Runs the elevator motor depending on button inputs
 	 */
 	public void run()
 	{		
@@ -165,7 +165,7 @@ public class Elevator
 	}
 	
 	/**
-	 * Sets the wanted height for the elevator
+	 * Sets the wanted height for the elevator, inches
 	 * @param newHeight
 	 */
 	public void setHeight(double newHeight)
@@ -186,6 +186,16 @@ public class Elevator
 	public double getHeight()
 	{
 		return -enc.getDistance();
+	}
+	
+	/**
+	 * Returns the wanted the height of the elevator that the user wants, 
+	 * positive is higher for the elevator, inches
+	 * @return
+	 */
+	public double getWantHeight()
+	{
+		return wantPos;
 	}
 	
 	/**
@@ -228,7 +238,7 @@ public class Elevator
 			// would be easier and more effective that way
 			// If the encoder rate is continuously less than than a certain value for a certain time, engage the break
 			// we don't want to stall out the motors too long even if we haven't reached are wanted height
-			if(Math.abs(enc.getRate()) < Config.Elevator.minEncRate)
+			if(Math.abs(getRate()) < Config.Elevator.minEncRate)
 				tmEncRate.start();
 			
 			else
@@ -239,7 +249,7 @@ public class Elevator
 			
 			// If the height diff and rate is small we've reached our destination, thus
 			// activate the brake and turn off the pid AFTER the brake has made physical contact
-			if((Math.abs(wantPos - getHeight()) < Config.Elevator.maxHeightDiff && Math.abs(enc.getRate()) < Config.Elevator.minEncRate) || tmEncRate.get() >= Config.Elevator.maxEncStallTime)
+			if((Math.abs(wantPos - getHeight()) < Config.Elevator.maxHeightDiff && Math.abs(getRate()) < Config.Elevator.minEncRate) || tmEncRate.get() >= Config.Elevator.maxEncStallTime)
 			{
 				// If not braked brake the elevator, but keep pid running
 				if(!getBrake())
@@ -267,7 +277,7 @@ public class Elevator
 		(
 				"Speed " + Util.round(speed) + 
 				" : Encoder " + Util.round(getHeight()) + 
-				" : Encode Rate " + enc.getRate() + 
+				" : Encode Rate " + getRate() + 
 				" : Want Height " + wantPos
 		);
 		
@@ -275,7 +285,7 @@ public class Elevator
 	}
 	
 	/**
-	 * Sets both elevator motors to the wanted speed, positive to move elevator up
+	 * Sets both elevator motors to the wanted speed, voltage, positive to move elevator up
 	 * @param speed the speed wanted
 	 */
 	public void setSpeed(double speed)
@@ -292,6 +302,16 @@ public class Elevator
 	public double getSpeed()
 	{
 		return -mtElevatorOne.get();
+	}
+	
+	/**
+	 * Returns the elevator rate, inches/sec positive for up
+	 * @return
+	 */
+	public double getRate()
+	{
+		// Flip the direction because negative is actually up on the elevator
+		return -enc.getRate();
 	}
 	
 	/**

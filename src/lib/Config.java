@@ -65,6 +65,10 @@ public class Config
 		public static final int idMtElevatorOne = 3;
 		public static final int idMtElevatorTwo = 1;
 		
+		// TODO Check values
+		public static final int pdpChnMtElevatorOneCAN = 1;
+		public static final int pdpChnMtElevatorTwoCAN = 2;
+				
 		// Limit switch channels
 		public static final int chnLimitSwitchTop = 0;
 		public static final int chnLimitSwitchBottom = 1;
