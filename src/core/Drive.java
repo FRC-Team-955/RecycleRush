@@ -307,4 +307,12 @@ public class Drive
 	{
 		return navX.getAngle();
 	}
+	
+	public void encReset()
+	{
+		encLeft.reset();
+		encRight.reset();
+		encFront.reset();
+		encBack.reset();
+	}
 } 

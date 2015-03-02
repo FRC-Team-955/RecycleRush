@@ -41,7 +41,7 @@ public class Config
 		public static final int btLvlTwo = 2;
 		public static final int btLvlThree = 4;
 		public static final int btLvlFour = 3;
-		//public static final int btLvlFive = 5;
+		public static final int btLvlFive = 10;
 		//public static final int btLvlSix = 6;
 		public static final int btToggleBrake = 5;
 		// TODO: WE'RE NOT ACTUALLY USING THESE YET
@@ -52,7 +52,7 @@ public class Config
 //		public static final int btUnbrake = 2;
 	}
 	
-	public class Auto
+	public class AutoPID
 	{
 		// Ids for SmartDashboard chooser
 		public static final int idDoNothing = 0;
@@ -78,6 +78,46 @@ public class Config
 		public static final double timeIntakeClose = .5; 
 		public static final double timeElevatorStack = timeIntakeClose + 1;
 		public static final double timeIntakeOpen = timeElevatorStack + .5;
+	}
+	
+	public class Auto
+	{
+		// Ids for SmartDashboard chooser
+		public static final int idDoNothing = 0;
+		public static final int idDriveForwardTimer = 1;
+		public static final int idDriveForwardEnc = 2;
+		public static final int idGetOneToteTimer = 3;
+		public static final int idGetOneToteEnc = 4;
+		public static final int idGetAllTotesLeftTimer = 5;
+		public static final int idGetAllTotesCenterTimer = 6;
+		public static final int idGetAllTotesRightTimer = 7;
+		public static final int idGetAllTotesLeftEnc = 8;
+		public static final int idGetAllTotesCenterEnc = 9;
+		public static final int idGetAllTotesRightEnc = 10;
+		public static final int idGetRecycleBinEnc = 11;
+		public static final int idGetRecycleBinTimer = 12;
+		
+		// Encoder distance values
+		public static final double encStrafeDistance = 2;
+		public static final double encDistanceBetweenTotes = 2;
+		public static final double encDriveForwardDistance = 2;
+		
+		public static final double encTolerance = 10;
+		
+		// Timer values
+		public static final double timeIntakeOpen = .5;
+		public static final double timeIntakeClose = timeIntakeOpen + .5;
+		public static final double timeStrafe = .75;
+		public static final double timeDriveTowardTote = timeStrafe + 1;
+		public static final double timeStrafeBackwards = timeDriveTowardTote + .75;
+		public static final double timeDriveForward = 1;
+		public static final double timeElevatorStack = .5;
+		
+		// Speeds for timerbased Auto
+		public static final double driveForwardSpeed = 1;
+		public static final double strafeSpeed = 1;
+		public static final double driveTowardToteSpeed = .5;
+		
 	}
 	
 	public class Claw 
@@ -119,7 +159,7 @@ public class Config
 		/** PID constants **/
 		// For up PID
 		public static final double kUpP = 0.33;
-		public static final double kUpI = 0.01;
+		public static final double kUpI = 0.01; // Prev .01
 		public static final double kUpD = 0;
 		
 		// For down PID
@@ -127,16 +167,20 @@ public class Config
 		public static final double kDownI = 0;
 		public static final double kDownD = 0;
 		
+		// PID max and min Errors
+		public static final double minErrorSum = -100; // TODO Find correct value
+		public static final double maxErrorSum = 625;
+		
 		// Timer constants values, seconds
 		public static final double brakeDisengageTime = .04;	// Minimum timer value to for brake to disengage seconds
 		public static final double maxEncStallTime = 0.5;
 		public static final double maxRampRate = 0.254;
 		
 		// Height constants values, inches
-		public static final double maxHeightDiff = .5;
+		public static final double maxHeightDiff = .33;
 		public static final double adjustedBaseHeight = 2;
 		public static final double toteHeight = 13;		   
-		public static final double toteClearanceHeight= 1; 
+		public static final double toteClearanceHeight= 2; 
 				
 		// Minimum encoder rate for elevator to be able to be braked without damage occurring
 		public static final double minEncRate = .5;

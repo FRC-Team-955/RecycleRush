@@ -12,11 +12,14 @@ public class PID
     private double kP = 0;
     private double kI = 0;
     private double kD = 0;
-    private double totalErr = 0;
+    private double maxErr = 0;
+    private double minErr = 0;
+    private double errSum = 0;
     private double prevErr = 0;
     private double output = 0;
     private double prevTime = 0;
     private boolean isRunning = false;
+    private boolean limitErr= false;
     private Timer timer = new Timer();
     
     /**
@@ -33,6 +36,22 @@ public class PID
         kD = newD;
     }
     
+    public void setErrLimits(double min, double max)
+    {
+    	minErr = min;
+    	maxErr = max;
+    }
+    
+    public void setErrLimitMode(boolean mode)
+    {
+    	limitErr = mode;
+    }
+    
+    public boolean getErrLimitMode()
+    {
+    	return limitErr;
+    }
+    
     /**
      * Updates the pid loop output value
      * 
@@ -44,9 +63,20 @@ public class PID
     	double deltaT = timer.get() - prevTime;		// time diff since last update call
         prevTime = timer.get();						// update prevTime value
         double errP = want - curr;      			// err = diff in pos aka proportional
-        totalErr += errP;               			// integral of the err aka total err
+        errSum += errP;               			// integral of the err aka total err
+        
+        // Only limit the error if the mode 
+        if(limitErr)
+        {	
+	        if(errSum >= maxErr)
+	        	errSum = maxErr;
+	        
+	        else if(errSum <= minErr)
+	        	errSum = minErr;
+        }
+        
         double errD = (errP - prevErr) / deltaT;   	// derivative of err aka change in err
-        output = (errP * kP) + ((totalErr * kI) * deltaT) + (errD * kD);
+        output = (errP * kP) + ((errSum * kI) * deltaT) + (errD * kD);
         prevErr = errP;
     }
     
@@ -80,7 +110,7 @@ public class PID
     public void reset()
     {
         output = 0;
-        totalErr = 0;
+        errSum = 0;
         prevErr = 0;
         prevTime = 0;
         timer.reset();
@@ -110,5 +140,11 @@ public class PID
     public boolean isRunning()
     {
     	return isRunning;
+    }
+
+    public double getErrSum()
+    {
+    	return errSum;
+    	  	
     }
 }

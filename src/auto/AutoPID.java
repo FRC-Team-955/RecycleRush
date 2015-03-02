@@ -28,40 +28,40 @@ public class AutoPID
 	{
 		switch(autoId)
 		{
-			case Config.Auto.idDoNothing:
+			case Config.AutoPID.idDoNothing:
 			{
 				doNothing();
 				break;
 			}
 			
-			case Config.Auto.idDriveForwardBearing:
+			case Config.AutoPID.idDriveForwardBearing:
 			{
 				//drive.setTalonMode(true);
 				driveForwardBearing();
 				break;
 			}		
 			
-			case Config.Auto.idGetOneToteBearing:
+			case Config.AutoPID.idGetOneToteBearing:
 			{
 				getOneToteBearng();
 				break;
 			}
 
-			case Config.Auto.idGetAllTotesBearingLeft:
+			case Config.AutoPID.idGetAllTotesBearingLeft:
 			{
 				//drive.setTalonMode(true);
 				getAllTotesBearingLeft();
 				break;
 			}
 			
-			case Config.Auto.idGetAllTotesBearingCenter:
+			case Config.AutoPID.idGetAllTotesBearingCenter:
 			{
 				//drive.setTalonMode(true);
 				getAllTotesBearingCenter();
 				break;
 			}
 			
-			case Config.Auto.idGetAllTotesBearingRight:
+			case Config.AutoPID.idGetAllTotesBearingRight:
 			{
 				//drive.setTalonMode(true);
 				getAllTotesBearingRight();
@@ -77,7 +77,7 @@ public class AutoPID
 	
 	public void driveForwardBearing()
 	{
-		drive.setHeading(0, drive.getAngle(), Config.Auto.encDriveForwardDistance);
+		drive.setHeading(0, drive.getAngle(), Config.AutoPID.encDriveForwardDistance);
 	}
 	
 	public void getOneToteBearng()
@@ -228,16 +228,16 @@ public class AutoPID
 	
 	public void strafeRightBearing()
 	{
-		drive.setHeading(0, drive.getAngle(), Config.Auto.encStrafeDistance);
-		if(Math.abs(drive.getFrontEnc() - Config.Auto.encStrafeDistance) < Config.Auto.encTolerance && Math.abs(drive.getBackEnc() - Config.Auto.encStrafeDistance) < Config.Auto.encTolerance)
+		drive.setHeading(0, drive.getAngle(), Config.AutoPID.encStrafeDistance);
+		if(Math.abs(drive.getFrontEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance)
 		{
-			drive.setHeading(90, drive.getAngle(), Config.Auto.encDistanceBetweenTotes);
+			drive.setHeading(90, drive.getAngle(), Config.AutoPID.encDistanceBetweenTotes);
 			
-			if(Math.abs(drive.getLeftEnc() - Config.Auto.encDistanceBetweenTotes) < Config.Auto.encTolerance && Math.abs(drive.getRightEnc() - Config.Auto.encDistanceBetweenTotes) < Config.Auto.encTolerance)
+			if(Math.abs(drive.getLeftEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance && Math.abs(drive.getRightEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance)
 			{
-				drive.setHeading(0, drive.getAngle(), -Config.Auto.encStrafeDistance);
+				drive.setHeading(0, drive.getAngle(), -Config.AutoPID.encStrafeDistance);
 				
-				if((Math.abs(drive.getFrontEnc()) < Config.Auto.encTolerance && Math.abs(drive.getBackEnc()) < Config.Auto.encTolerance))
+				if((Math.abs(drive.getFrontEnc()) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc()) < Config.AutoPID.encTolerance))
 					endRoutine();				
 			}
 		}
@@ -245,16 +245,16 @@ public class AutoPID
 	
 	public void strafeLeftBearing()
 	{
-		drive.setHeading(0, drive.getAngle(), Config.Auto.encStrafeDistance);
-		if(Math.abs(drive.getFrontEnc() - Config.Auto.encStrafeDistance) < Config.Auto.encTolerance && Math.abs(drive.getBackEnc() - Config.Auto.encStrafeDistance) < Config.Auto.encTolerance)
+		drive.setHeading(0, drive.getAngle(), Config.AutoPID.encStrafeDistance);
+		if(Math.abs(drive.getFrontEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance)
 		{
-			drive.setHeading(270, drive.getAngle(), Config.Auto.encDistanceBetweenTotes);
+			drive.setHeading(270, drive.getAngle(), Config.AutoPID.encDistanceBetweenTotes);
 			
-			if(Math.abs(drive.getLeftEnc() - Config.Auto.encDistanceBetweenTotes) < Config.Auto.encTolerance && Math.abs(drive.getRightEnc() - Config.Auto.encDistanceBetweenTotes) < Config.Auto.encTolerance)
+			if(Math.abs(drive.getLeftEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance && Math.abs(drive.getRightEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance)
 			{
-				drive.setHeading(0, drive.getAngle(), -Config.Auto.encStrafeDistance);
+				drive.setHeading(0, drive.getAngle(), -Config.AutoPID.encStrafeDistance);
 				
-				if((Math.abs(drive.getFrontEnc()) < Config.Auto.encTolerance && Math.abs(drive.getBackEnc()) < Config.Auto.encTolerance))
+				if((Math.abs(drive.getFrontEnc()) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc()) < Config.AutoPID.encTolerance))
 					endRoutine();				
 			}
 		}
@@ -262,16 +262,16 @@ public class AutoPID
 	
 	public void strafeLeft()
 	{
-		drive.setHeading(0, Config.Auto.encStrafeDistance);
-		if(Math.abs(drive.getFrontEnc() - Config.Auto.encStrafeDistance) < Config.Auto.encTolerance && Math.abs(drive.getBackEnc() - Config.Auto.encStrafeDistance) < Config.Auto.encTolerance)
+		drive.setHeading(0, Config.AutoPID.encStrafeDistance);
+		if(Math.abs(drive.getFrontEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance)
 		{
-			drive.setHeading(270, Config.Auto.encDistanceBetweenTotes);
+			drive.setHeading(270, Config.AutoPID.encDistanceBetweenTotes);
 			
-			if(Math.abs(drive.getLeftEnc() - Config.Auto.encDistanceBetweenTotes) < Config.Auto.encTolerance && Math.abs(drive.getRightEnc() - Config.Auto.encDistanceBetweenTotes) < Config.Auto.encTolerance)
+			if(Math.abs(drive.getLeftEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance && Math.abs(drive.getRightEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance)
 			{
-				drive.setHeading(0, -Config.Auto.encStrafeDistance);
+				drive.setHeading(0, -Config.AutoPID.encStrafeDistance);
 				
-				if((Math.abs(drive.getFrontEnc()) < Config.Auto.encTolerance && Math.abs(drive.getBackEnc()) < Config.Auto.encTolerance))
+				if((Math.abs(drive.getFrontEnc()) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc()) < Config.AutoPID.encTolerance))
 					endRoutine();				
 			}
 		}
@@ -279,16 +279,16 @@ public class AutoPID
 	
 	public void strafeRight()
 	{
-		drive.setHeading(0,Config.Auto.encStrafeDistance);
-		if(Math.abs(drive.getFrontEnc() - Config.Auto.encStrafeDistance) < Config.Auto.encTolerance && Math.abs(drive.getBackEnc() - Config.Auto.encStrafeDistance) < Config.Auto.encTolerance)
+		drive.setHeading(0,Config.AutoPID.encStrafeDistance);
+		if(Math.abs(drive.getFrontEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance)
 		{
-			drive.setHeading(90, Config.Auto.encDistanceBetweenTotes);
+			drive.setHeading(90, Config.AutoPID.encDistanceBetweenTotes);
 			
-			if(Math.abs(drive.getLeftEnc() - Config.Auto.encDistanceBetweenTotes) < Config.Auto.encTolerance && Math.abs(drive.getRightEnc() - Config.Auto.encDistanceBetweenTotes) < Config.Auto.encTolerance)
+			if(Math.abs(drive.getLeftEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance && Math.abs(drive.getRightEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance)
 			{
-				drive.setHeading(0, -Config.Auto.encStrafeDistance);
+				drive.setHeading(0, -Config.AutoPID.encStrafeDistance);
 				
-				if((Math.abs(drive.getFrontEnc()) < Config.Auto.encTolerance && Math.abs(drive.getBackEnc()) < Config.Auto.encTolerance))
+				if((Math.abs(drive.getFrontEnc()) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc()) < Config.AutoPID.encTolerance))
 					endRoutine();				
 			}
 		}
@@ -296,18 +296,18 @@ public class AutoPID
 	
 	public void pickUp()
 	{	
-		if(tmPickUp.get() < Config.Auto.timeIntakeClose)
+		if(tmPickUp.get() < Config.AutoPID.timeIntakeClose)
 		{
 			claw.closeClaw();
 		}
 				
-		else if(tmPickUp.get() < Config.Auto.timeElevatorStack)
+		else if(tmPickUp.get() < Config.AutoPID.timeElevatorStack)
 		{
 			elevator.setHeight(elevatorLevel);
 			elevatorLevel++;
 		}
 		
-		else if(tmPickUp.get() < Config.Auto.timeIntakeClose)
+		else if(tmPickUp.get() < Config.AutoPID.timeIntakeClose)
 		{
 			claw.openClaw();
 		}

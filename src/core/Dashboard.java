@@ -47,7 +47,8 @@ public class Dashboard
 		
 		// Bot Angle Offset for beginning of match
 		SmartDashboard.putNumber("Angle Offset", 0);
-		fileSaver.write("Angle Offset: 0");
+		// TODO: fix the writing before file is created error
+		//fileSaver.write("Angle Offset: 0");
 	}
 	
 	public void update()
@@ -120,5 +121,11 @@ public class Dashboard
 	public void closeLogFile()
 	{
 		fileSaver.close();
+	}
+	
+	public void displayCurrent()
+	{
+		for(int i = 0; i < 16; i++)
+			SmartDashboard.putNumber("Port " + i, pdp.getCurrent(i));
 	}
 }
