@@ -44,6 +44,7 @@ public class Config
 		public static final int btLvlFive = 10;
 		//public static final int btLvlSix = 6;
 		public static final int btToggleBrake = 5;
+		public static final int btDropOff = 9;
 		// TODO: WE'RE NOT ACTUALLY USING THESE YET
 //		public static final int btModeSwitch = 12;
 //		public static final int btUp = 1;
@@ -163,9 +164,9 @@ public class Config
 		public static final double kUpD = 0;
 		
 		// For down PID
-		public static final double kDownP = 0;
+		public static final double kDownP = 0.0706;
 		public static final double kDownI = 0;
-		public static final double kDownD = 0;
+		public static final double kDownD = 0.05;
 		
 		// PID max and min Errors
 		public static final double minErrorSum = -100; // TODO Find correct value
@@ -177,13 +178,14 @@ public class Config
 		public static final double maxRampRate = 0.254;
 		
 		// Height constants values, inches
-		public static final double maxHeightDiff = .33;
+		public static final double maxHeightDiff = .420; // .3 Blaze it
 		public static final double adjustedBaseHeight = 2;
 		public static final double toteHeight = 13;		   
-		public static final double toteClearanceHeight= 2; 
+		public static final double toteClearanceHeight = 2; 
+		public static final double dropOffHeightAdjust = 2;
 				
 		// Minimum encoder rate for elevator to be able to be braked without damage occurring
-		public static final double minEncRate = .5;
+		public static final double minEncRate = .5; // .5
 	}
 
 	public class FileSaver 

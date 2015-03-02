@@ -3,6 +3,8 @@ package core;
 import auto.AutoPID;
 import lib.Config;
 import lib.Controller;
+import lib.LIDAR;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Robot extends IterativeRobot
 {
+	private LIDAR lidar = new LIDAR(Port.kMXP);
 	private Controller contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons);
 	private Drive drive = new Drive(contrDrive);
 	private Claw claw = new Claw (contrDrive);
@@ -59,6 +62,8 @@ public class Robot extends IterativeRobot
     	dashboard.openLogFile();
     	drive.init(Config.Drive.idFieldCentric, dashboard.getBotAngleOffset());
     	elevator.brake();
+    	
+    	//lidar.start(20);
     }
     
     /**
@@ -66,12 +71,15 @@ public class Robot extends IterativeRobot
      */
     public void teleopPeriodic() 
     {
-//    	contrDrive.update();
-    	drive.run();
-//    	elevator.testPID();
-//      claw.run();
+    	contrDrive.update();
+//    	drive.run();
+    	elevator.testPID();
+    	claw.run();
 //      dashboard.update();
     	dashboard.displayCurrent();
+    
+//      System.out.println(lidar.getDistance() / 2.54);
+   
     }
 
     public void disabledInit()

@@ -112,7 +112,7 @@ public class Dashboard
 	public void openLogFile()
 	{
 		if(fileSaver == null || !fileSaver.isOpen())
-			fileSaver = new FileSaver(String.valueOf(System.currentTimeMillis()));
+			fileSaver = new FileSaver(System.currentTimeMillis() + ".txt");
 	}
 	
 	/**

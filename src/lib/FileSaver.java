@@ -10,7 +10,10 @@ public class FileSaver
 	private FileWriter writer;
 	private boolean isOpen = false;
 	
-	
+	/**
+	 * Creates a file object for writing to the roborio
+	 * @param fileName
+	 */
 	public FileSaver(String fileName) 
 	{
 		isOpen = true;	
@@ -30,11 +33,15 @@ public class FileSaver
 		}
 	}
 
+	/**
+	 * Writes data to the file, with new line '\n' at the end
+	 * @param data
+	 */
 	public void write(String data) 
 	{
 		try 
 		{
-			writer.write(data);
+			writer.write(data + "\n");
 			writer.flush();
 		}
 
@@ -44,6 +51,9 @@ public class FileSaver
 		}
 	}
 
+	/**
+	 * Closes the file
+	 */
 	public void close() 
 	{
 		try 
@@ -59,6 +69,10 @@ public class FileSaver
 		}
 	}
 	
+	/**
+	 * Returns true if the file is open
+	 * @return
+	 */
 	public boolean isOpen()
 	{
 		return isOpen;

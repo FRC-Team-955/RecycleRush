@@ -27,7 +27,7 @@ public class Elevator
 	private Encoder enc = new Encoder(Config.Elevator.chnEncA, Config.Elevator.chnEncB);
 	
 	// PIDs
-	private PID pidUp = new PID(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
+	private PID pidElevator = new PID(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
 	private PID pidDown = new PID(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
 	
 	// Timers for elevator
@@ -40,8 +40,10 @@ public class Elevator
 	// PID
 	private boolean pidMode = true;
 	private double wantPos = 0;
+	private double maxErrD = 0;
 	
 	private boolean changeElevatorHeight = false;
+	private boolean dropOffAdjust = false;
 //	private double baseHeight = 0;
 //	private int level = 0;
 //	private boolean mode = false;
@@ -68,8 +70,8 @@ public class Elevator
 		enc.setDistancePerPulse(Config.Elevator.distancePerPulse);
 		enc.reset();
 		
-		pidUp.setErrLimitMode(true);
-		pidUp.setErrLimits(Config.Elevator.minErrorSum, Config.Elevator.maxErrorSum);
+		pidElevator.setErrLimitMode(true);
+		pidElevator.setErrLimits(Config.Elevator.minErrorSum, Config.Elevator.maxErrorSum);
 	}
 
 	/**
@@ -125,7 +127,7 @@ public class Elevator
 			if(!getBrake())
 			{
 				tmBrake.stop();
-				brake();
+//				brake();
 			}
 		
 			//System.out.println("0 SPEED");
@@ -154,6 +156,9 @@ public class Elevator
 				brake();
 		}
 		
+		if(contr.getButton(Config.ContrElevator.btDropOff))
+			dropOffAdjust = true;
+		
 		// Run pid if in pid mode
 		if(pidMode)
 		{	
@@ -162,7 +167,7 @@ public class Elevator
 			{
 				if(contr.getButton(levels[i]))
 				{
-					setHeight((i * Config.Elevator.toteHeight) + (i > 0 ? Config.Elevator.toteClearanceHeight : 0));
+					setHeight(i * Config.Elevator.toteHeight);
 //					double wantHeight = i * Config.Elevator.toteHeight;
 //					// One inch is lost per 
 //					double heightAdjust =  Config.Elevator.toteClearanceHeight - (i-1);
@@ -186,11 +191,24 @@ public class Elevator
 	{
 		// TODO: Remove the only higher limitation once down pid has been tuned
 		// Only allow to get higher since PID for going down has not been tuned yet
+		// Set constants for upPID if you are moving up
+		// TODO Add buffer for when the height does not exactly match the wanted height 
 		if(newHeight > getHeight())
 		{
-			wantPos = newHeight;
-			changeElevatorHeight = true;
+			pidElevator.setConsts(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
+			wantPos = newHeight + (newHeight > 0 ? Config.Elevator.toteClearanceHeight : 0);
 		}
+		
+		// Set constants for downPID if you are moving down
+		if(newHeight < getHeight())
+		{
+			pidElevator.setConsts(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
+			wantPos = newHeight  - (dropOffAdjust ? Config.Elevator.dropOffHeightAdjust : 0);
+			dropOffAdjust = false;
+;
+		}
+		
+		changeElevatorHeight = true;
 	}
 	
 	/**
@@ -231,42 +249,45 @@ public class Elevator
 			
 			// Reset/Start the pid once the brake has completely disengaged, or if
 			// a new height was chosen when the pid is already running
-			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime || pidUp.isRunning())
+			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime || pidElevator.isRunning())
 			{
 				tmBrake.stop();
 				tmBrake.reset();
-				pidUp.reset();
-				pidUp.start();
+				pidElevator.reset();
+				pidElevator.start();
 				
 				changeElevatorHeight = false;
 			}
 		}
 		
 		// Update the pid if the pid is running
-		if(pidUp.isRunning())
+		if(pidElevator.isRunning())
 		{
-			if(limitBot.get())
-			{
-				wantPos = getHeight();
-				
-				// TODO: Noodle proof this, a noodle could potentially
-				// hit the limit switch thus reset it while in reality the
-				// actual height was not even close to the bottom
-				enc.reset();
-			}
-			
+//			if(limitBot.get())
+//			{
+//				wantPos = getHeight();
+//				
+//				// TODO: Noodle proof this, a noodle could potentially
+//				// hit the limit switch thus reset it while in reality the
+//				// actual height was not even close to the bottom
+//				enc.reset();
+//			}
+//			
 			if(limitTop.get())
 			{
 				wantPos = getHeight();
-				pidUp.reset();
+				pidElevator.reset();
 			}
 			
 			// Update the pid with curr/want position, with ramping
-			pidUp.update(getHeight(), wantPos);
-			speed = Util.ramp(getSpeed(), pidUp.getOutput(), Config.Elevator.maxRampRate);
+			pidElevator.update(getHeight(), wantPos);
+			speed = Util.ramp(getSpeed(), pidElevator.getOutput(), Config.Elevator.maxRampRate);
 			
-			if(pidUp.getErrSum() > maxError)
-				maxError = pidUp.getErrSum();
+			if(pidElevator.getErrSum() > maxError)
+				maxError = pidElevator.getErrSum();
+			
+			if(Math.abs(pidElevator.getErrD()) > Math.abs(maxErrD))
+				maxErrD = pidElevator.getErrD();
 			
 			// TODO: Get getting current from the pdp working so that finding out whether a motor is stalling
 			// would be easier and more effective that way
@@ -302,7 +323,7 @@ public class Elevator
 			{
 				tmBrake.stop();
 				tmBrake.reset();
-				pidUp.stop();
+				pidElevator.stop();
 				speed = 0;
 			}
 		}
@@ -311,9 +332,11 @@ public class Elevator
 		(
 				"Speed " + Util.round(speed) + 
 				" : Encoder " + Util.round(getHeight()) + 
+				" : Encoder Clicks " + -enc.get() +
 				" : Encode Rate " + getRate() + 
 				" : Want Height " + wantPos +
-    			" : Max Error " + maxError
+    			" : Max Error " + maxError +
+    			" : Max Error diff " + maxErrD
 		);
 		
 		setSpeed(speed);
@@ -379,8 +402,8 @@ public class Elevator
 	 */
 	public void resetPID()
 	{
-		pidUp.stop();
-		pidUp.reset();
+		pidElevator.stop();
+		pidElevator.reset();
 		pidDown.stop();
 		pidDown.reset();
 	}

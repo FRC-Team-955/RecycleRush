@@ -16,6 +16,7 @@ public class PID
     private double minErr = 0;
     private double errSum = 0;
     private double prevErr = 0;
+    private double errD = 0;
     private double output = 0;
     private double prevTime = 0;
     private boolean isRunning = false;
@@ -75,7 +76,7 @@ public class PID
 	        	errSum = minErr;
         }
         
-        double errD = (errP - prevErr) / deltaT;   	// derivative of err aka change in err
+        errD = (errP - prevErr) / deltaT;   	// derivative of err aka change in err
         output = (errP * kP) + ((errSum * kI) * deltaT) + (errD * kD);
         prevErr = errP;
     }
@@ -146,5 +147,10 @@ public class PID
     {
     	return errSum;
     	  	
+    }
+    
+    public double getErrD()
+    {
+    	return errD;
     }
 }

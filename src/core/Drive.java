@@ -119,7 +119,7 @@ public class Drive
 			turnSpeed = pidStrafe.getOutput();
 		}
 		
-		System.out.println(sideSpeed + " : " + centerSpeed + " : " + turnSpeed);
+		//System.out.println(sideSpeed + " : " + centerSpeed + " : " + turnSpeed);
 		setSpeed(sideSpeed + turnSpeed, sideSpeed - turnSpeed, centerSpeed + turnSpeed, centerSpeed - turnSpeed);
 	}
 	
