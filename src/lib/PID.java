@@ -20,7 +20,7 @@ public class PID
     private double output = 0;
     private double prevTime = 0;
     private boolean isRunning = false;
-    private boolean limitErr= false;
+    private boolean limitErr = false;
     private Timer timer = new Timer();
     
     /**
@@ -61,12 +61,12 @@ public class PID
      */
     public void update(double curr, double want)
     {
-    	double deltaT = timer.get() - prevTime;		// time diff since last update call
-        prevTime = timer.get();						// update prevTime value
-        double errP = want - curr;      			// err = diff in pos aka proportional
-        errSum += errP;               			// integral of the err aka total err
+        double deltaT = timer.get() - prevTime;     // time diff since last update call
+        prevTime = timer.get();                     // update prevTime value
+        double errP = want - curr;                  // err = diff in pos aka proportional
+        errSum += errP * deltaT;                    // integral of the err aka total err
         
-        // Only limit the error if the mode 
+        // Only limit the error if limit err mode is true
         if(limitErr)
         {	
 	        if(errSum >= maxErr)
@@ -76,9 +76,9 @@ public class PID
 	        	errSum = minErr;
         }
         
-        errD = (errP - prevErr) / deltaT;   	// derivative of err aka change in err
-        output = (errP * kP) + ((errSum * kI) * deltaT) + (errD * kD);
+        errD = (errP - prevErr) / deltaT;   	    // derivative of err aka change in err
         prevErr = errP;
+        output = (errP * kP) + (errSum * kI) + (errD * kD);
     }
     
     /**

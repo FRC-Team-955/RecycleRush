@@ -12,42 +12,43 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator 
 {
-	// CAN Talons
+	// CAN Talons for controlling the elevator
 	private CANTalon mtElevatorOne = new CANTalon(Config.Elevator.idMtElevatorOne);
 	private CANTalon mtElevatorTwo = new CANTalon(Config.Elevator.idMtElevatorTwo);
 	
 	// Solenoid for brake
 	private DoubleSolenoid noidBrake = new DoubleSolenoid(Config.Elevator.chnNoidOne, Config.Elevator.chnNoidTwo);
 	
-	// Limit switches
+	// Limit switches on top/bottom to prevent out of bounds
 	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop, false);
 	private LimitSwitch limitBot = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom, false);
 	
-	// Encoder
+	// Encoder on the elevator for height
 	private Encoder enc = new Encoder(Config.Elevator.chnEncA, Config.Elevator.chnEncB);
 	
-	// PIDs
+	// PID for elevator to gracefully reach wanted height
 	private PID pidElevator = new PID(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
-	private PID pidDown = new PID(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
 	
-	// Timers for elevator
+	// Timers for elevator brake and elevator encoder
 	private Timer tmBrake = new Timer();
 	private Timer tmEncRate = new Timer();
 	
 	// Controller for controlling the elevators
 	private Controller contr;
 	
-	// PID
+	// PID variables
 	private boolean pidMode = true;
+	private boolean changeElevatorHeight = false;
 	private double wantPos = 0;
+	
+	// Variables to help tune the PID by holding data about the PID
+	private double maxErrI = 0;
 	private double maxErrD = 0;
 	
-	private boolean changeElevatorHeight = false;
-	private boolean dropOffAdjust = false;
-//	private double baseHeight = 0;
-//	private int level = 0;
-//	private boolean mode = false;
-//	
+	// Different modes for the elevator
+	private boolean dropOffMode = true;
+	private int heightType = Config.Elevator.heightTypeGround;
+	
 	private int [] levels = 
 	{
 		Config.ContrElevator.btLvlOne,
@@ -57,8 +58,6 @@ public class Elevator
 		Config.ContrElevator.btLvlFive
 		//Config.ContrElevator.btLvlSix
 	};
-	
-	double maxError = 0;
 	
 	/**
 	 * Constructor
@@ -70,6 +69,7 @@ public class Elevator
 		enc.setDistancePerPulse(Config.Elevator.distancePerPulse);
 		enc.reset();
 		
+		// Enable min/max limits for pid, set min/max limits for pid 
 		pidElevator.setErrLimitMode(true);
 		pidElevator.setErrLimits(Config.Elevator.minErrorSum, Config.Elevator.maxErrorSum);
 	}
@@ -137,50 +137,30 @@ public class Elevator
 	/**
 	 * Tests the PID for the elevator
 	 */
-	public void testPID()
+	public void runPID()
 	{	
-		// Set to pid mode if button pressed
-		if(contr.getButton(Config.ContrElevator.btEnableElevatorPID))
-			pidMode = true;
-		
-		// Set to non pid mode if button pressed
-		else if(contr.getButton(Config.ContrElevator.btDisableElevatorPID))
-			pidMode = false;
-		
+		if(contr.getButton(Config.ContrElevator.btDropOff))
+			setDropOffMode(!dropOffMode);
+			
 		else if(contr.getButton(Config.ContrElevator.btToggleBrake))
 		{
 			if(getBrake())
 				unBrake();
 			
 			else
-				brake();
-		}
-		
-		if(contr.getButton(Config.ContrElevator.btDropOff))
-			dropOffAdjust = true;
-		
-		// Run pid if in pid mode
-		if(pidMode)
-		{	
-			// Set the want position based on button that was pressed
-			for(int i = 0; i < levels.length; i++)
 			{
-				if(contr.getButton(levels[i]))
-				{
-					setHeight(i * Config.Elevator.toteHeight);
-//					double wantHeight = i * Config.Elevator.toteHeight;
-//					// One inch is lost per 
-//					double heightAdjust =  Config.Elevator.toteClearanceHeight - (i-1);
-//					
-//					setHeight((wantHeight) + (i > 0 ? heightAdjust : 0));
-				}
+				pidElevator.stop();
+				pidElevator.reset();
+				brake();
 			}
-			
-			update();
 		}
 		
-		else
-			setSpeed(0);
+		// Set the want position based on button that was pressed
+		for(int i = 0; i < levels.length; i++)
+			if(contr.getButton(levels[i]))
+				setToteLevel(i + 1);
+		
+		update();
 	}
 	
 	/**
@@ -189,26 +169,66 @@ public class Elevator
 	 */
 	public void setHeight(double newHeight)
 	{
-		// TODO: Remove the only higher limitation once down pid has been tuned
-		// Only allow to get higher since PID for going down has not been tuned yet
-		// Set constants for upPID if you are moving up
-		// TODO Add buffer for when the height does not exactly match the wanted height 
+		// If the new height is already where we are dont move the elevator
+		if(Math.abs(newHeight - getHeight()) < Config.Elevator.maxHeightDiff)
+			return;
+		
+		// If the new height is > current height, use the pid constants for up
 		if(newHeight > getHeight())
-		{
 			pidElevator.setConsts(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
-			wantPos = newHeight + (newHeight > 0 ? Config.Elevator.toteClearanceHeight : 0);
-		}
-		
-		// Set constants for downPID if you are moving down
+			
+		// If the new height is < current height, use the pid constants for down
 		if(newHeight < getHeight())
-		{
 			pidElevator.setConsts(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
-			wantPos = newHeight  - (dropOffAdjust ? Config.Elevator.dropOffHeightAdjust : 0);
-			dropOffAdjust = false;
-;
-		}
-		
+			
+		// Update want pos and set change elevator boolean status to true
+		wantPos = newHeight;
 		changeElevatorHeight = true;
+	}
+	
+	/**
+	 * Sets the want elevator height based on the tote level wanted, and based on
+	 * drop off mode and height mode
+	 * Levels 1 to 7 inclusive only
+	 * @param level
+	 */
+	public void setToteLevel(int level)
+	{
+		if(level < Config.Elevator.minToteLevel)
+			level = Config.Elevator.minToteLevel;
+		
+		else if(level > Config.Elevator.maxToteLevel)
+			level = Config.Elevator.maxToteLevel;
+		
+		double newHeight = (level - 1) * Config.Elevator.toteHeight;
+		
+		// If in drop off mode increase height to give it clearance for totes
+		if(dropOffMode)
+			newHeight += (level - 1) > 0 ? Config.Elevator.toteClearanceHeight : 0;
+		
+		// Subtract height for the fact that totes stack in eachother, thus losing height
+		newHeight -= (level - 1) * Config.Elevator.toteLossHeight;
+		
+		// Add base height based on height mode since there are different heights for on the field
+		if(heightType == Config.Elevator.heightTypeGround)
+			newHeight += Config.Elevator.baseHeightGround;
+		
+		else if(heightType == Config.Elevator.heightTypeScoring)
+			newHeight += Config.Elevator.baseHeightScoring;
+		
+		else if(heightType == Config.Elevator.heightTypeStep)
+			newHeight += Config.Elevator.baseHeightStep;
+		
+		setHeight(newHeight);
+	}
+	
+	/**
+	 * Sets the elevator for drop off totes or picking up totes
+	 * @param wantDropOff
+	 */
+	public void setDropOffMode(boolean wantDropOff)
+	{
+		dropOffMode = wantDropOff;
 	}
 	
 	/**
@@ -217,6 +237,7 @@ public class Elevator
 	 */
 	public double getHeight()
 	{
+		// Flip the direction because negative is actually up on the elevator
 		return -enc.getDistance();
 	}
 	
@@ -248,8 +269,9 @@ public class Elevator
 			}
 			
 			// Reset/Start the pid once the brake has completely disengaged, or if
-			// a new height was chosen when the pid is already running
-			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime || pidElevator.isRunning())
+			// a new height was chosen when the pid is already running, or if
+			// the brake was not braked to begin with
+			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime || pidElevator.isRunning() || tmBrake.get() == 0)
 			{
 				tmBrake.stop();
 				tmBrake.reset();
@@ -272,19 +294,25 @@ public class Elevator
 //				// actual height was not even close to the bottom
 //				enc.reset();
 //			}
-//			
-			if(limitTop.get())
+			
+			// TODO: Consider adding deadband value for getRate()
+			// If the bottom limit switch gets hit and the elevator is moving down
+			// or if the top limit switch gets hit and the elevator is moving up
+			// set the want position to current height as that means we hit the 
+			// mechanical limits and we should stop trying to go any further
+			if((limitBot.get() && getRate() < 0) || (limitTop.get() && getRate() > 0))
 			{
 				wantPos = getHeight();
 				pidElevator.reset();
 			}
 			
-			// Update the pid with curr/want position, with ramping
+			// Update the pid with curr/want position
 			pidElevator.update(getHeight(), wantPos);
-			speed = Util.ramp(getSpeed(), pidElevator.getOutput(), Config.Elevator.maxRampRate);
+			speed = pidElevator.getOutput();
 			
-			if(pidElevator.getErrSum() > maxError)
-				maxError = pidElevator.getErrSum();
+			// TODO: These are for debugging purposes
+			if(pidElevator.getErrSum() > maxErrI)
+				maxErrI = pidElevator.getErrSum();
 			
 			if(Math.abs(pidElevator.getErrD()) > Math.abs(maxErrD))
 				maxErrD = pidElevator.getErrD();
@@ -335,7 +363,7 @@ public class Elevator
 				" : Encoder Clicks " + -enc.get() +
 				" : Encode Rate " + getRate() + 
 				" : Want Height " + wantPos +
-    			" : Max Error " + maxError +
+    			" : Max Error " + maxErrI +
     			" : Max Error diff " + maxErrD
 		);
 		
@@ -349,8 +377,18 @@ public class Elevator
 	public void setSpeed(double speed)
 	{
 		// Flip the speed direction because negative is actually up on the elevator
-		mtElevatorOne.set(-speed);
-		mtElevatorTwo.set(-speed);
+		
+		// Only ramp the elevator when the direction of the 
+		// acceleration matches the direction of the velocity, 
+		// direction not negativity
+		if(speed - getSpeed() > 0)
+			speed = -Util.ramp(getSpeed(), speed, Config.Elevator.maxRampRate);
+		
+		else
+			speed = -speed;
+		
+		mtElevatorOne.set(speed);
+		mtElevatorTwo.set(speed);
 	}
 	
 	/**
@@ -359,6 +397,7 @@ public class Elevator
 	 */
 	public double getSpeed()
 	{
+		// Flip the direction because negative is actually up on the elevator
 		return -mtElevatorOne.get();
 	}
 	
@@ -404,7 +443,5 @@ public class Elevator
 	{
 		pidElevator.stop();
 		pidElevator.reset();
-		pidDown.stop();
-		pidDown.reset();
 	}
 }

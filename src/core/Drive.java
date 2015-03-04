@@ -132,9 +132,12 @@ public class Drive
 	 */
 	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed)
 	{
-		leftSpeed = Util.ramp(mtLeftCAN.get(), -leftSpeed, Config.Drive.maxRampRate);
+		leftSpeed = -leftSpeed;
+		frontSpeed = -frontSpeed;
+		
+		leftSpeed = Util.ramp(mtLeftCAN.get(), leftSpeed, Config.Drive.maxRampRate);
 		rightSpeed = Util.ramp(mtRightCAN.get(), rightSpeed, Config.Drive.maxRampRate);
-		frontSpeed = Util.ramp(mtFrontCAN.get(), -frontSpeed, Config.Drive.maxRampRate);
+		frontSpeed = Util.ramp(mtFrontCAN.get(), frontSpeed, Config.Drive.maxRampRate);
 		backSpeed = Util.ramp(mtBackCAN.get(), backSpeed, Config.Drive.maxRampRate);
 		
 		mtLeftCAN.set(leftSpeed);
@@ -147,71 +150,70 @@ public class Drive
 	
 	public void setHeading(double heading, double distance)
 	{
-		double centerPosition = distance * Math.sin(heading);
-        double sidePosition = distance * Math.cos(heading);
+		double centerPosition = distance * Math.sin(Math.toRadians(heading));
+        double sidePosition = distance * Math.cos(Math.toRadians(heading));
         wantLeftPos += sidePosition;
         wantRightPos += centerPosition;
         wantFrontPos += sidePosition;
         wantBackPos += centerPosition;
-        updatePID();
+        
+        if(Math.abs(wantLeftPos - encLeft.getDistance()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
+			pidLeft.start();
+        
+        if(Math.abs(wantRightPos - encRight.getDistance()) > Config.Drive.maxDistanceDiff && !pidRight.isRunning())
+			pidRight.start();
+        
+        if(Math.abs(wantFrontPos - encFront.getDistance()) > Config.Drive.maxDistanceDiff && !pidFront.isRunning())
+			pidFront.start();
+        
+        if(Math.abs(wantBackPos - encBack.getDistance()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
+			pidBack.start();
 	}
 	
+	// TODO: Remove this or fix this if we're gonna use it, has not been looked over
 	public void setHeading(double heading, double bearing, double distance)
 	{
-		double centerPosition = distance * Math.sin(heading);
-        double sidePosition = distance * Math.cos(heading);
-		double angDiff = Util.absoluteAngToRelative(bearing - heading);
-		wantLeftPos = sidePosition + (Config.Drive.robotCircumfrence * angDiff);
-		wantRightPos = sidePosition - (Config.Drive.robotCircumfrence * angDiff);
-		wantFrontPos = centerPosition + (Config.Drive.robotCircumfrence * angDiff);
-		wantBackPos = centerPosition - (Config.Drive.robotCircumfrence * angDiff);
-		updatePID();
+		return;
+//		double centerPosition = distance * Math.sin(Math.toRadians(heading));
+//        double sidePosition = distance * Math.cos(Math.toRadians(heading));
+//		double angDiff = Util.absoluteAngToRelative(bearing - heading);
+//		wantLeftPos += sidePosition + (Config.Drive.robotCircumfrence * angDiff);
+//		wantRightPos += sidePosition - (Config.Drive.robotCircumfrence * angDiff);
+//		wantFrontPos += centerPosition + (Config.Drive.robotCircumfrence * angDiff);
+//		wantBackPos += centerPosition - (Config.Drive.robotCircumfrence * angDiff);
 	}
 	
-	public void updatePID()
+	public void update()
 	{
 		double leftSpeed = 0;
 		double rightSpeed = 0;
 		double frontSpeed = 0;
 		double backSpeed = 0;
 		
-		// Checks if the wanted position is greater than a buffer to start the PID
-		if(Math.abs(wantLeftPos - encLeft.getDistance()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
-			pidLeft.start();
-		
-		else
+		if(Math.abs(wantLeftPos - encLeft.getDistance()) < Config.Drive.maxDistanceDiff)
 		{
 			pidLeft.stop();
 			pidLeft.reset();
 		}
 		
-		if(Math.abs(wantRightPos - encRight.getDistance()) > Config.Drive.maxDistanceDiff && !pidRight.isRunning())
-			pidRight.start();
-		
-		else
+		if(Math.abs(wantRightPos - encRight.getDistance()) < Config.Drive.maxDistanceDiff)
 		{
 			pidRight.stop();
 			pidRight.reset();
 		}
 		
-		if(Math.abs(wantFrontPos - encFront.getDistance()) > Config.Drive.maxDistanceDiff && !pidFront.isRunning())
-			pidFront.start();
-		
-		else
+		if(Math.abs(wantFrontPos - encFront.getDistance()) < Config.Drive.maxDistanceDiff)
 		{
 			pidFront.stop();
 			pidFront.reset();
 		}
 		
-		if(Math.abs(wantBackPos - encBack.getDistance()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
-			pidBack.start();
-		
-		else
+		if(Math.abs(wantBackPos - encBack.getDistance()) < Config.Drive.maxDistanceDiff)
 		{
 			pidBack.stop();
 			pidBack.reset();
 		}
-		
+			
 		if(pidLeft.isRunning())
 		{
 			pidLeft.update(encLeft.getDistance(), wantLeftPos);

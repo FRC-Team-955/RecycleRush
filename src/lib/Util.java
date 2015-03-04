@@ -2,8 +2,10 @@ package lib;
 
 public class Util 
 {	
+	// TODO: Add more documentation
 	/**
-	 * Limits the sudden increase or decrease of the motor
+	 * Limits the sudden increase or decrease of the motor, unless 
+	 * wantSpeed is 0
 	 * @param currSpeed The speed the motor is currently at
 	 * @param wantSpeed The speed wanted
 	 * @param rampRate the max difference between these speeds
@@ -11,6 +13,9 @@ public class Util
 	 */
 	public static double ramp(double currSpeed, double wantSpeed, double rampRate)
 	{
+		if(wantSpeed == 0)
+			return 0;
+		
 		if(Math.abs(currSpeed - wantSpeed) > rampRate) 
         {
             if(wantSpeed > currSpeed)

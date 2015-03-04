@@ -33,8 +33,6 @@ public class Config
 		
 		// Buttons for controller
 		public static final int btClawToggle = 6;
-		public static final int btEnableElevatorPID = 8;
-		public static final int btDisableElevatorPID = 7;
 		public static final int btElevatorUp = 4;
 		public static final int btElevatorDown = 1;
 		public static final int btLvlOne = 1;
@@ -160,7 +158,7 @@ public class Config
 		/** PID constants **/
 		// For up PID
 		public static final double kUpP = 0.33;
-		public static final double kUpI = 0.01; // Prev .01
+		public static final double kUpI = 0.01;
 		public static final double kUpD = 0;
 		
 		// For down PID
@@ -170,7 +168,7 @@ public class Config
 		
 		// PID max and min Errors
 		public static final double minErrorSum = -100; // TODO Find correct value
-		public static final double maxErrorSum = 625;
+		public static final double maxErrorSum = 12.5; // Was 625 before the pid deltaT placement change
 		
 		// Timer constants values, seconds
 		public static final double brakeDisengageTime = .04;	// Minimum timer value to for brake to disengage seconds
@@ -179,13 +177,26 @@ public class Config
 		
 		// Height constants values, inches
 		public static final double maxHeightDiff = .420; // .3 Blaze it
-		public static final double adjustedBaseHeight = 2;
 		public static final double toteHeight = 13;		   
-		public static final double toteClearanceHeight = 2; 
-		public static final double dropOffHeightAdjust = 2;
+		public static final double toteClearanceHeight = 2;
+		public static final double toteLossHeight = 1;
 				
 		// Minimum encoder rate for elevator to be able to be braked without damage occurring
 		public static final double minEncRate = .5; // .5
+		
+		// Height modes for elevator
+		public static final int heightTypeGround = 0;
+		public static final int heightTypeStep = 1;
+		public static final int heightTypeScoring = 2;
+		
+		// Base height offset for elevator, inches
+		public static final double baseHeightGround = 0;
+		public static final double baseHeightStep = 6.25;
+		public static final double baseHeightScoring = 2;
+		
+		// Min/Max tote level for the elevator
+		public static final int minToteLevel = 1;
+		public static final int maxToteLevel = 7;
 	}
 
 	public class FileSaver 
