@@ -9,7 +9,7 @@ public class Config
 	public class ContrDrive 
 	{
 		// Channels, max buttons
-		public static final int maxButtons = 10;
+		public static final int maxButtons = 12;
 		public static final int chn = 0;
 		public static final int chnLeftX = 0;
 		public static final int chnLeftY = 1;
@@ -24,25 +24,39 @@ public class Config
 	public class ContrElevator
 	{
 		// Channels, max buttons
-		public static final int maxButtons = 10;
+		public static final int maxButtons = 12;
 		public static final int chn = 0;
 		public static final int chnLeftX = 0;
 		public static final int chnLeftY = 1;
 		public static final int chnRightX = 2;
 		public static final int chnRightY = 3;
 		
-		// Buttons for controller
+		// XBox Buttons for controller
+//		public static final int btClawToggle = 6;
+//		public static final int btElevatorUp = 4;
+//		public static final int btElevatorDown = 1;
+//		public static final int btLvlOne = 1;
+//		public static final int btLvlTwo = 2;
+//		public static final int btLvlThree = 4;
+//		public static final int btLvlFour = 3;
+//		public static final int btLvlFive = 10;
+		//public static final int btLvlSix = 6;
+//		public static final int btToggleBrake = 5;
+//		public static final int btDropOff = 9;
+		
+		// PS3 Buttons
 		public static final int btClawToggle = 6;
 		public static final int btElevatorUp = 4;
 		public static final int btElevatorDown = 1;
-		public static final int btLvlOne = 1;
+		public static final int btLvlOne = 3;
 		public static final int btLvlTwo = 2;
-		public static final int btLvlThree = 4;
-		public static final int btLvlFour = 3;
-		public static final int btLvlFive = 10;
+		public static final int btLvlThree = 1;
+		public static final int btLvlFour = 4;
+		public static final int btLvlFive = 12;
 		//public static final int btLvlSix = 6;
 		public static final int btToggleBrake = 5;
-		public static final int btDropOff = 9;
+		public static final int btDropOff = 11;
+		
 		// TODO: WE'RE NOT ACTUALLY USING THESE YET
 //		public static final int btModeSwitch = 12;
 //		public static final int btUp = 1;
@@ -162,18 +176,20 @@ public class Config
 		public static final double kUpD = 0;
 		
 		// For down PID
-		public static final double kDownP = 0.0706;
-		public static final double kDownI = 0;
-		public static final double kDownD = 0.05;
+		public static final double kDownP = 0.05;
+		public static final double kDownI = 0.0;
+		public static final double kDownD = 0.0254;
 		
 		// PID max and min Errors
 		public static final double minErrorSum = -100; // TODO Find correct value
 		public static final double maxErrorSum = 12.5; // Was 625 before the pid deltaT placement change
 		
 		// Timer constants values, seconds
-		public static final double brakeDisengageTime = .04;	// Minimum timer value to for brake to disengage seconds
+		public static final double brakeDisengageTime = .02;	// Minimum timer value to for brake to disengage seconds
 		public static final double maxEncStallTime = 0.5;
 		public static final double maxRampRate = 0.254;
+		public static final double minElevatorSpeed = -1;
+		public static final double maxElevatorSpeed = 1;
 		
 		// Height constants values, inches
 		public static final double maxHeightDiff = .420; // .3 Blaze it
@@ -182,7 +198,7 @@ public class Config
 		public static final double toteLossHeight = 1;
 				
 		// Minimum encoder rate for elevator to be able to be braked without damage occurring
-		public static final double minEncRate = .5; // .5
+		public static final double minEncRate = .6; // .5
 		
 		// Height modes for elevator
 		public static final int heightTypeGround = 0;
@@ -234,7 +250,7 @@ public class Config
 		public static final double minLeftJoyMag = 0.1;
 		
 		// Ramping
-		public static final double maxRampRate = .254;
+		public static final double maxRampRate = .5; // was .254
 		
 		// Encoder Channel Values
 		public static final int chnEncFrontA = 10; //TODO get correct values

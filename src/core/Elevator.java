@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator 
 {
@@ -139,6 +140,9 @@ public class Elevator
 	 */
 	public void runPID()
 	{	
+		SmartDashboard.putBoolean("Limit Top", limitTop.get());
+		SmartDashboard.putBoolean("Limit Bot", limitBot.get());
+		
 		if(contr.getButton(Config.ContrElevator.btDropOff))
 			setDropOffMode(!dropOffMode);
 			
@@ -300,7 +304,8 @@ public class Elevator
 			// or if the top limit switch gets hit and the elevator is moving up
 			// set the want position to current height as that means we hit the 
 			// mechanical limits and we should stop trying to go any further
-			if((limitBot.get() && getRate() < 0) || (limitTop.get() && getRate() > 0))
+			// TODO get boundries working with getRate() 
+			if((limitBot.get() && wantPos < 0) || (limitTop.get() && getRate() > 0))
 			{
 				wantPos = getHeight();
 				pidElevator.reset();
@@ -356,6 +361,8 @@ public class Elevator
 			}
 		}
 		
+		speed = Util.limit(speed, Config.Elevator.minElevatorSpeed, Config.Elevator.maxElevatorSpeed);
+		
 		System.out.println
 		(
 				"Speed " + Util.round(speed) + 
@@ -381,11 +388,11 @@ public class Elevator
 		// Only ramp the elevator when the direction of the 
 		// acceleration matches the direction of the velocity, 
 		// direction not negativity
-		if(speed - getSpeed() > 0)
-			speed = -Util.ramp(getSpeed(), speed, Config.Elevator.maxRampRate);
-		
-		else
+		if((getSpeed() > 0 && speed - getSpeed() < 0) || (getSpeed() < 0 && speed - getSpeed() > 0))
 			speed = -speed;
+
+		else
+			speed = -Util.ramp(getSpeed(), speed, Config.Elevator.maxRampRate);
 		
 		mtElevatorOne.set(speed);
 		mtElevatorTwo.set(speed);

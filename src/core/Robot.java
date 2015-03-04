@@ -31,7 +31,7 @@ public class Robot extends IterativeRobot
      */
     public void robotInit() 
     {
-    	contrDrive.flipLeftX(true);
+    	contrDrive.flipLeftX(false);
     	contrDrive.flipRightX(true);
     	contrDrive.flipRightY(true);
     }
@@ -72,10 +72,10 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {
     	contrDrive.update();
-//    	drive.run();
+    	drive.run();
     	elevator.runPID();
     	claw.run();
-//      dashboard.update();
+        dashboard.update();
     	dashboard.displayCurrent();
     
 //      System.out.println(lidar.getDistance() / 2.54);

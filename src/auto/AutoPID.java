@@ -432,23 +432,23 @@ public class AutoPID
 	
 	public void strafeRightBearing()
 	{
-		drive.setHeading(0, drive.getAngle(), Config.AutoPID.encStrafeDistance);
-		if(Math.abs(drive.getFrontEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance)
-		{
-			drive.setHeading(90, drive.getAngle(), Config.AutoPID.encDistanceBetweenTotes);
-			
-			if(Math.abs(drive.getLeftEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance && Math.abs(drive.getRightEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance)
-			{
-				drive.setHeading(0, drive.getAngle(), -Config.AutoPID.encStrafeDistance);
-				
-				if((Math.abs(drive.getFrontEnc()) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc()) < Config.AutoPID.encTolerance))
-					endRoutine();				
-			}
-		}
+//		drive.setHeading(0, drive.getAngle(), Config.AutoPID.encStrafeDistance);
+//		if(Math.abs(drive.getFrontEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance)
+//		{
+//			drive.setHeading(90, drive.getAngle(), Config.AutoPID.encDistanceBetweenTotes);
+//			
+//			if(Math.abs(drive.getLeftEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance && Math.abs(drive.getRightEnc() - Config.AutoPID.encDistanceBetweenTotes) < Config.AutoPID.encTolerance)
+//			{
+//				drive.setHeading(0, drive.getAngle(), -Config.AutoPID.encStrafeDistance);
+//				
+//				if((Math.abs(drive.getFrontEnc()) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc()) < Config.AutoPID.encTolerance))
+//					endRoutine();				
+//			}
+//		}
 	}
 	
-//	public void strafeLeftBearing()
-//	{
+	public void strafeLeftBearing()
+	{
 //		drive.setHeading(0, drive.getAngle(), Config.AutoPID.encStrafeDistance);
 //		if(Math.abs(drive.getFrontEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance && Math.abs(drive.getBackEnc() - Config.AutoPID.encStrafeDistance) < Config.AutoPID.encTolerance)
 //		{
@@ -462,7 +462,7 @@ public class AutoPID
 //					endRoutine();				
 //			}
 //		}
-//	}
+	}
 	
 	public void strafeLeft()
 	{

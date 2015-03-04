@@ -49,4 +49,15 @@ public class Util
 	{
 		return Math.floor((num * 100) + 0.5) / 100;
 	}
+	
+	public static double limit(double num, double min, double max)
+	{
+		if(num < min)
+			return min;
+		
+		if(num > max)
+			return max;
+		
+		return num;
+	}
 }

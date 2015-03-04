@@ -18,6 +18,7 @@ import lib.navX.NavX;
 
 public class Drive 
 {
+	// TODO Fix joystick axis in field centric mode
 	// Encoders
 	private Encoder encFront = new Encoder(Config.Drive.chnEncFrontA, Config.Drive.chnEncFrontB); 
 	private Encoder encBack = new Encoder(Config.Drive.chnEncBackA, Config.Drive.chnEncBackB);
@@ -99,25 +100,25 @@ public class Drive
 		{
 			wantStrafeAng = getAngle();
 			
-			if(pidStrafe.isRunning())
-			{
-				pidStrafe.stop();
-				pidStrafe.reset();
-			}
+//			if(pidStrafe.isRunning())
+//			{
+//				pidStrafe.stop();
+//				pidStrafe.reset();
+//			}
 		}
 		
 		// Run strafe pid if only moving, not turning
-		else if(Math.abs(leftJoyMag) > Config.Drive.minLeftJoyMag)
-		{
-			if(!pidStrafe.isRunning())
-			{
-				pidStrafe.reset();
-				pidStrafe.start();
-			}
-			
-			pidStrafe.update(getAngle(), wantStrafeAng);
-			turnSpeed = pidStrafe.getOutput();
-		}
+//		else if(Math.abs(leftJoyMag) > Config.Drive.minLeftJoyMag)
+//		{
+//			if(!pidStrafe.isRunning())
+//			{
+//				pidStrafe.reset();
+//				pidStrafe.start();
+//			}
+//			
+//			pidStrafe.update(getAngle(), wantStrafeAng);
+//			turnSpeed = pidStrafe.getOutput();
+//		}
 		
 		//System.out.println(sideSpeed + " : " + centerSpeed + " : " + turnSpeed);
 		setSpeed(sideSpeed + turnSpeed, sideSpeed - turnSpeed, centerSpeed + turnSpeed, centerSpeed - turnSpeed);
