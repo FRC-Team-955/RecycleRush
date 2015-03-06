@@ -25,6 +25,8 @@ public class PID
     private double errD = 0;
     private double prevTime = 0;
     private double deltaT = 0;
+    private double deltaSysT = 0;
+    private double prevSysTime = 0;
     
     // Output of pid
     private double output = 0;
@@ -92,6 +94,9 @@ public class PID
         errD = (errP - prevErr) / deltaT;   	    // derivative of err aka change in err
         prevErr = errP;
         output = (errP * kP) + (errSum * kI) + (errD * kD);
+    
+        deltaSysT = (System.currentTimeMillis() - prevSysTime) / 1000;
+        prevSysTime = (deltaSysT * 1000) + prevSysTime;
     }
     
     /**
@@ -180,5 +185,10 @@ public class PID
     public boolean getNeedReset()
     {
     	return needReset;
+    }
+    
+    public double getDeltaSysT()
+    {
+    	return deltaSysT;
     }
 }

@@ -21,7 +21,7 @@ public class Robot extends IterativeRobot
 	private Claw claw = new Claw (contrDrive);
 	private Elevator elevator = new Elevator(contrDrive);
 	private AutoPID auto = new AutoPID(drive, elevator, claw);
-	private Dashboard dashboard = new Dashboard(drive, elevator, claw);
+	private Dashboard dashboard = new Dashboard(drive, elevator, claw, contrDrive);
 	private boolean teleopRan = false;
 	
     /**
@@ -72,12 +72,13 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {
     	contrDrive.update();
-    	drive.run();
+    	//drive.run();
     	elevator.runPID();
     	claw.run();
         dashboard.update();
     	dashboard.displayCurrent();
-    
+    	dashboard.displayDpad();
+    	
 //      System.out.println(lidar.getDistance() / 2.54);
    
     }

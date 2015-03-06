@@ -53,7 +53,7 @@ public class Config
 		public static final int btLvlThree = 1;
 		public static final int btLvlFour = 4;
 		public static final int btLvlFive = 12;
-		//public static final int btLvlSix = 6;
+		public static final int btLvlSix = 7;
 		public static final int btToggleBrake = 5;
 		public static final int btDropOff = 11;
 		
@@ -184,12 +184,12 @@ public class Config
 		public static final double kUpD = 0;
 		
 		// For down PID
-		public static final double kDownP = 0.05;
-		public static final double kDownI = 0.0;
-		public static final double kDownD = 0.0254;
+		public static final double kDownP = 0.33;
+		public static final double kDownI = 0.01;
+		public static final double kDownD = 0;    // 0.0254;
 		
 		// PID max and min Errors
-		public static final double minErrorSum = -100; // TODO Find correct value
+		public static final double minErrorSum = -6.25; // TODO Find correct value
 		public static final double maxErrorSum = 12.5; // Was 625 before the pid deltaT placement change
 		
 		// Timer constants values, seconds
@@ -202,8 +202,9 @@ public class Config
 		// Height constants values, inches
 		public static final double maxHeightDiff = .420; // .3 Blaze it
 		public static final double toteHeight = 13;		   
-		public static final double toteClearanceHeight = 2;
-		public static final double toteLossHeight = 1;
+		public static final double clearanceHeight = 2;
+		public static final double toteLossHeight = 1/2.54;
+		public static final double maxElevatorHeight = 63;
 				
 		// Minimum encoder rate for elevator to be able to be braked without damage occurring
 		public static final double minEncRate = .6; // .5
