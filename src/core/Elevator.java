@@ -58,8 +58,8 @@ public class Elevator
 		Config.ContrElevator.btLvlTwo,
 		Config.ContrElevator.btLvlThree,
 		Config.ContrElevator.btLvlFour,
-		Config.ContrElevator.btLvlFive
-		//Config.ContrElevator.btLvlSix
+		Config.ContrElevator.btLvlFive,
+		Config.ContrElevator.btLvlSix
 	};
 	
 	/**
@@ -147,6 +147,15 @@ public class Elevator
 		
 		if(contr.getButton(Config.ContrElevator.btDropOff))
 			setDropOffMode(!dropOffMode);
+		
+		if(contr.getDpadUp())
+			setHeightType(Config.Elevator.heightTypeGround);
+		
+		if(contr.getDpadLeft())
+			setHeightType(Config.Elevator.heightTypeScoring);
+		
+		if(contr.getDpadRight())
+			setHeightType(Config.Elevator.heightTypeStep);
 			
 		else if(contr.getButton(Config.ContrElevator.btToggleBrake))
 		{
@@ -207,7 +216,7 @@ public class Elevator
 			// set the want position to current height as that means we hit the 
 			// mechanical limits and we should stop trying to go any further
 			// TODO get boundaries working with getRate() 
-			if((limitBot.get() && wantPos < getHeight()) || (limitTop.get() && getRate() > 0))
+			if((limitBot.get() && wantPos < getHeight()) || (limitTop.get() && wantPos > getHeight()))
 			{
 				setHeight(getHeight());
 				//wantPos = getHeight();
@@ -272,11 +281,12 @@ public class Elevator
 		(
 				"Speed " + Util.round(speed) + 
 				" : Encoder " + Util.round(getHeight()) + 
-				" : Encoder Clicks " + -enc.get() +
+				" : Time " + pidElevator.getDeltaT() +
+				" : Time Sys " + pidElevator.getDeltaSysT() +
 				" : Encode Rate " + getRate() + 
 				" : Want Height " + wantPos +
     			" : Max Error " + maxErrI +
-    			" : Max Error diff " + maxErrD
+    			" : Error diff " + pidElevator.getErrD()
 		);
 		
 		setSpeed(speed);
@@ -329,7 +339,10 @@ public class Elevator
 		
 		// If in drop off mode increase height to give it clearance for totes
 		if(dropOffMode)
-			newHeight += (level - 1) > 0 ? Config.Elevator.toteClearanceHeight : 0;
+			newHeight += (level - 1) > 0 ? Config.Elevator.clearanceHeight : 0;
+			
+			if(heightType == Config.Elevator.heightTypeStep && (level - 1) == 0)
+					newHeight += Config.Elevator.clearanceHeight;
 		
 		// Subtract height for the fact that totes stack in eachother, thus losing height
 		newHeight -= (level - 1) * Config.Elevator.toteLossHeight;
@@ -344,7 +357,7 @@ public class Elevator
 		else if(heightType == Config.Elevator.heightTypeStep)
 			newHeight += Config.Elevator.baseHeightStep;
 		
-		setHeight(newHeight);
+		setHeight(Util.limit(newHeight, 0, Config.Elevator.maxElevatorHeight));
 	}
 	
 	/**
@@ -401,12 +414,22 @@ public class Elevator
 		switch(newHeightType)
 		{
 			case Config.Elevator.heightTypeScoring:
-			case Config.Elevator.heightTypeStep:
+			{
 				heightType = newHeightType;
 				break;
+			}
 				
+			case Config.Elevator.heightTypeStep:
+			{
+				heightType = newHeightType;
+				break;
+			}
+			
 			default:
+			{
 				heightType = Config.Elevator.heightTypeGround;
+				break;
+			}
 		}
 	}
 	

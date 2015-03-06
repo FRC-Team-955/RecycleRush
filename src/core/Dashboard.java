@@ -1,7 +1,9 @@
 package core;
 
 import lib.ChooserType;
+import lib.Controller;
 import lib.Config;
+import lib.Config.ContrElevator;
 import lib.FileSaver;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,10 +17,12 @@ public class Dashboard
 //	private SendableChooser autoChooser = new SendableChooser();
 	private SendableChooser driveChooser = new SendableChooser();
 	private PowerDistributionPanel pdp = new PowerDistributionPanel();
+	private Controller contr;
 	private FileSaver fileSaver;
 	
-	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw)
+	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw, Controller newContr)
 	{
+		contr = newContr;
 		drive = newDrive;
 		elevator = newElevator;
 		claw = newClaw;
@@ -127,5 +131,13 @@ public class Dashboard
 	{
 		for(int i = 0; i < 16; i++)
 			SmartDashboard.putNumber("Port " + i, pdp.getCurrent(i));
+	}
+	
+	public void displayDpad()
+	{
+		SmartDashboard.putBoolean("D Pad Up ", contr.getDpadUp());
+		SmartDashboard.putBoolean("D Pad Left ", contr.getDpadLeft());
+		SmartDashboard.putBoolean("D Pad Right ", contr.getDpadRight());
+		SmartDashboard.putBoolean("D Pad Down ", contr.getDpadDown());
 	}
 }
