@@ -25,18 +25,18 @@ public class Claw
 	{
 		if(contr.getButton(Config.ContrElevator.btClawToggle))
 		{
-			if(getClawStatus())
-				closeClaw();
+			if(getClaw())
+				close();
 			
 			else
-				openClaw();
+				open();
 		}
 	}
 	
 	/**
 	 * Opens the claw
 	 */
-	public void openClaw()
+	public void open()
 	{
 		noid.set(DoubleSolenoid.Value.kForward);
 	}
@@ -44,17 +44,19 @@ public class Claw
 	/**
 	 * Closes the claw
 	 */
-	public void closeClaw()
+	public void close()
 	{
 		noid.set(DoubleSolenoid.Value.kReverse); 
 	}
 	
 	/**
-	 * Gets the status of claw, open or closed
-	 * @return If the solenoid is open, it returns true
+	 * Gets the status of claw,
+	 * returns true if closed,
+	 * returns false if open
+	 * @return
 	 */
-	public boolean getClawStatus() 
+	public boolean getClaw() 
 	{
-		return noid.get() == DoubleSolenoid.Value.kForward;
+		return noid.get() == DoubleSolenoid.Value.kReverse;
 	}
 }

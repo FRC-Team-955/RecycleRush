@@ -9,18 +9,31 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class PID
 {
+	// Constants P, I, D
     private double kP = 0;
     private double kI = 0;
     private double kD = 0;
+    
+    // For limiting the error sum, integral of error
+    private boolean limitErr = false;
     private double maxErr = 0;
     private double minErr = 0;
     private double errSum = 0;
+    
+    // Prev error/time for derivative of error
     private double prevErr = 0;
     private double errD = 0;
-    private double output = 0;
     private double prevTime = 0;
+    private double deltaT = 0;
+    
+    // Output of pid
+    private double output = 0;
+    
+    // Statuses of pid
     private boolean isRunning = false;
-    private boolean limitErr = false;
+    private boolean needReset = false;
+    
+    // Timer used for derivative of error
     private Timer timer = new Timer();
     
     /**
@@ -61,7 +74,7 @@ public class PID
      */
     public void update(double curr, double want)
     {
-        double deltaT = timer.get() - prevTime;     // time diff since last update call
+        deltaT = timer.get() - prevTime;     // time diff since last update call
         prevTime = timer.get();                     // update prevTime value
         double errP = want - curr;                  // err = diff in pos aka proportional
         errSum += errP * deltaT;                    // integral of the err aka total err
@@ -110,6 +123,7 @@ public class PID
      */
     public void reset()
     {
+    	needReset = false;
         output = 0;
         errSum = 0;
         prevErr = 0;
@@ -146,11 +160,25 @@ public class PID
     public double getErrSum()
     {
     	return errSum;
-    	  	
     }
     
     public double getErrD()
     {
     	return errD;
+    }
+    
+    public double getDeltaT()
+    {
+    	return deltaT;
+    }
+    
+    public void setNeedReset(boolean newNeedReset)
+    {
+    	needReset = newNeedReset;
+    }
+    
+    public boolean getNeedReset()
+    {
+    	return needReset;
     }
 }

@@ -39,6 +39,8 @@ public class Elevator
 	
 	// PID variables
 	private boolean pidMode = true;
+	private boolean upMode = false;
+	private boolean downMode = false;
 	private boolean changeElevatorHeight = false;
 	private double wantPos = 0;
 	
@@ -152,11 +154,7 @@ public class Elevator
 				unBrake();
 			
 			else
-			{
-				pidElevator.stop();
-				pidElevator.reset();
-				brake();
-			}
+				setHeight(getHeight());
 		}
 		
 		// Set the want position based on button that was pressed
@@ -165,94 +163,6 @@ public class Elevator
 				setToteLevel(i + 1);
 		
 		update();
-	}
-	
-	/**
-	 * Sets the wanted height for the elevator, inches
-	 * @param newHeight
-	 */
-	public void setHeight(double newHeight)
-	{
-		// If the new height is already where we are dont move the elevator
-		if(Math.abs(newHeight - getHeight()) < Config.Elevator.maxHeightDiff)
-			return;
-		
-		// If the new height is > current height, use the pid constants for up
-		if(newHeight > getHeight())
-			pidElevator.setConsts(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
-			
-		// If the new height is < current height, use the pid constants for down
-		if(newHeight < getHeight())
-			pidElevator.setConsts(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
-			
-		// Update want pos and set change elevator boolean status to true
-		wantPos = newHeight;
-		changeElevatorHeight = true;
-	}
-	
-	/**
-	 * Sets the want elevator height based on the tote level wanted, and based on
-	 * drop off mode and height mode
-	 * Levels 1 to 7 inclusive only
-	 * @param level
-	 */
-	public void setToteLevel(int level)
-	{
-		if(level < Config.Elevator.minToteLevel)
-			level = Config.Elevator.minToteLevel;
-		
-		else if(level > Config.Elevator.maxToteLevel)
-			level = Config.Elevator.maxToteLevel;
-		
-		double newHeight = (level - 1) * Config.Elevator.toteHeight;
-		
-		// If in drop off mode increase height to give it clearance for totes
-		if(dropOffMode)
-			newHeight += (level - 1) > 0 ? Config.Elevator.toteClearanceHeight : 0;
-		
-		// Subtract height for the fact that totes stack in eachother, thus losing height
-		newHeight -= (level - 1) * Config.Elevator.toteLossHeight;
-		
-		// Add base height based on height mode since there are different heights for on the field
-		if(heightType == Config.Elevator.heightTypeGround)
-			newHeight += Config.Elevator.baseHeightGround;
-		
-		else if(heightType == Config.Elevator.heightTypeScoring)
-			newHeight += Config.Elevator.baseHeightScoring;
-		
-		else if(heightType == Config.Elevator.heightTypeStep)
-			newHeight += Config.Elevator.baseHeightStep;
-		
-		setHeight(newHeight);
-	}
-	
-	/**
-	 * Sets the elevator for drop off totes or picking up totes
-	 * @param wantDropOff
-	 */
-	public void setDropOffMode(boolean wantDropOff)
-	{
-		dropOffMode = wantDropOff;
-	}
-	
-	/**
-	 * Returns the height of the elevator, positive the higher the elevator is, inches
-	 * @return
-	 */
-	public double getHeight()
-	{
-		// Flip the direction because negative is actually up on the elevator
-		return -enc.getDistance();
-	}
-	
-	/**
-	 * Returns the wanted the height of the elevator that the user wants, 
-	 * positive is higher for the elevator, inches
-	 * @return
-	 */
-	public double getWantHeight()
-	{
-		return wantPos;
 	}
 	
 	/**
@@ -279,36 +189,29 @@ public class Elevator
 			{
 				tmBrake.stop();
 				tmBrake.reset();
-				pidElevator.reset();
-				pidElevator.start();
 				
+				if(pidElevator.getNeedReset())
+					pidElevator.reset();
+				
+				pidElevator.start();
 				changeElevatorHeight = false;
 			}
 		}
 		
 		// Update the pid if the pid is running
 		if(pidElevator.isRunning())
-		{
-//			if(limitBot.get())
-//			{
-//				wantPos = getHeight();
-//				
-//				// TODO: Noodle proof this, a noodle could potentially
-//				// hit the limit switch thus reset it while in reality the
-//				// actual height was not even close to the bottom
-//				enc.reset();
-//			}
-			
+		{			
 			// TODO: Consider adding deadband value for getRate()
 			// If the bottom limit switch gets hit and the elevator is moving down
 			// or if the top limit switch gets hit and the elevator is moving up
 			// set the want position to current height as that means we hit the 
 			// mechanical limits and we should stop trying to go any further
-			// TODO get boundries working with getRate() 
-			if((limitBot.get() && wantPos < 0) || (limitTop.get() && getRate() > 0))
+			// TODO get boundaries working with getRate() 
+			if((limitBot.get() && wantPos < getHeight()) || (limitTop.get() && getRate() > 0))
 			{
-				wantPos = getHeight();
-				pidElevator.reset();
+				setHeight(getHeight());
+				//wantPos = getHeight();
+				//pidElevator.reset();
 			}
 			
 			// Update the pid with curr/want position
@@ -358,6 +261,8 @@ public class Elevator
 				tmBrake.reset();
 				pidElevator.stop();
 				speed = 0;
+				upMode = false;
+				downMode = false;
 			}
 		}
 		
@@ -378,28 +283,154 @@ public class Elevator
 	}
 	
 	/**
-	 * Sets both elevator motors to the wanted speed, voltage, positive to move elevator up
-	 * @param speed the speed wanted
+	 * Sets the wanted height for the elevator, inches
+	 * @param newHeight
 	 */
-	public void setSpeed(double speed)
+	public void setHeight(double newHeight)
 	{
-		// Flip the speed direction because negative is actually up on the elevator
+		// If the new height is already where we are and we're braked don't move the elevator again
+		if(Math.abs(newHeight - getHeight()) < Config.Elevator.maxHeightDiff && getBrake())
+			return;
 		
-		// Only ramp the elevator when the direction of the 
-		// acceleration matches the direction of the velocity, 
-		// direction not negativity
-		if((getSpeed() > 0 && speed - getSpeed() < 0) || (getSpeed() < 0 && speed - getSpeed() > 0))
-			speed = -speed;
-
-		else
-			speed = -Util.ramp(getSpeed(), speed, Config.Elevator.maxRampRate);
+		// If the new height is > current height, use the pid constants for up
+		if(newHeight > getHeight())
+		{
+			pidElevator.setConsts(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
+			pidElevator.setNeedReset(!upMode);  // Only need to reset when changing directions
+			upMode = true;
+			downMode = false;
+		}
 		
-		mtElevatorOne.set(speed);
-		mtElevatorTwo.set(speed);
+		// If the new height is < current height, use the pid constants for down
+		if(newHeight < getHeight())
+		{
+			pidElevator.setConsts(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
+			pidElevator.setNeedReset(!downMode);  // Only need to reset when changing directions
+			downMode = true;
+			upMode = false;
+		}
+		
+		// Update want pos and set change elevator boolean status to true
+		wantPos = newHeight;
+		changeElevatorHeight = true;
 	}
 	
 	/**
-	 * Gets the speed of the elevator, voltage, postive for up
+	 * Sets the want elevator height based on the tote level wanted, and based on
+	 * drop off mode and height mode
+	 * Levels 1 to 7 inclusive only
+	 * @param level
+	 */
+	public void setToteLevel(int level)
+	{
+		// Limit the tote level to be within boundaries
+		level = (int)Util.limit(level, Config.Elevator.minToteLevel, Config.Elevator.maxToteLevel);
+		double newHeight = (level - 1) * Config.Elevator.toteHeight;
+		
+		// If in drop off mode increase height to give it clearance for totes
+		if(dropOffMode)
+			newHeight += (level - 1) > 0 ? Config.Elevator.toteClearanceHeight : 0;
+		
+		// Subtract height for the fact that totes stack in eachother, thus losing height
+		newHeight -= (level - 1) * Config.Elevator.toteLossHeight;
+		
+		// Add base height based on height type since there are different heights for on the field
+		if(heightType == Config.Elevator.heightTypeGround)
+			newHeight += Config.Elevator.baseHeightGround;
+		
+		else if(heightType == Config.Elevator.heightTypeScoring)
+			newHeight += Config.Elevator.baseHeightScoring;
+		
+		else if(heightType == Config.Elevator.heightTypeStep)
+			newHeight += Config.Elevator.baseHeightStep;
+		
+		setHeight(newHeight);
+	}
+	
+	/**
+	 * Sets the elevator for drop off totes or picking up totes
+	 * true = drop off mode
+	 * false = pick up mode
+	 * @param wantDropOff
+	 */
+	public void setDropOffMode(boolean wantDropOff)
+	{
+		dropOffMode = wantDropOff;
+	}
+	
+	/**
+	 * Returns the height of the elevator, positive the higher the elevator is, inches
+	 * @return
+	 */
+	public double getHeight()
+	{
+		// Flip the direction because negative is actually up on the elevator
+		return -enc.getDistance();
+	}
+	
+	/**
+	 * Returns the wanted the height of the elevator that the user wants, 
+	 * positive is higher for the elevator, inches
+	 * @return
+	 */
+	public double getWantHeight()
+	{
+		return wantPos;
+	}
+	
+	/**
+	 * Returns true if elevator is trying to get to a destination currently,
+	 * returns false if elevator is not doing anything
+	 * @return
+	 */
+	public boolean isRunning()
+	{
+		return pidElevator.isRunning();
+	}
+	
+	/**
+	 * Sets the height type which will change the elevator height offset
+	 * 3 height types available currently
+	 * scoring,
+	 * step,
+	 * ground
+	 * @param newHeightType
+	 */
+	public void setHeightType(int newHeightType)
+	{
+		switch(newHeightType)
+		{
+			case Config.Elevator.heightTypeScoring:
+			case Config.Elevator.heightTypeStep:
+				heightType = newHeightType;
+				break;
+				
+			default:
+				heightType = Config.Elevator.heightTypeGround;
+		}
+	}
+	
+	/**
+	 * Sets both elevator motors to the wanted speed, voltage, positive to move elevator up
+	 * @param newSpeed the speed wanted
+	 */
+	public void setSpeed(double newSpeed)
+	{		
+		// Only ramp the elevator when the direction of the 
+		// acceleration matches the direction of the velocity, 
+		// direction, because that means we want the elevator
+		// to go faster thus we need to ramp it
+		if(Math.signum(getRate()) == Math.signum(newSpeed - getSpeed()))
+			newSpeed = Util.ramp(getSpeed(), newSpeed, Config.Elevator.maxRampRate);
+		
+		// Flip the speed direction because negative is actually up on the elevator
+		newSpeed = -newSpeed;
+		mtElevatorOne.set(newSpeed);
+		mtElevatorTwo.set(newSpeed);
+	}
+	
+	/**
+	 * Gets the speed of the elevator, voltage, positive for up
 	 * @return
 	 */
 	public double getSpeed()
@@ -416,6 +447,16 @@ public class Elevator
 	{
 		// Flip the direction because negative is actually up on the elevator
 		return -enc.getRate();
+	}
+	
+	/**
+	 * Returns the raw encoder ticks unscaled by distance per pulse, positive for up
+	 * @return
+	 */
+	public double getEncTicks()
+	{
+		// Flip the direction because negative is actually up on the elevator
+		return -enc.get();
 	}
 	
 	/**

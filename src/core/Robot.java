@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Robot extends IterativeRobot
 {
-//	private LIDAR lidar = new LIDAR(Port.kMXP);
 	private Controller contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons);
 	private Drive drive = new Drive(contrDrive);
 	private Claw claw = new Claw (contrDrive);
@@ -32,7 +31,8 @@ public class Robot extends IterativeRobot
     public void robotInit() 
     {
     	contrDrive.flipLeftX(false);
-    	contrDrive.flipRightX(true);
+    	contrDrive.flipRightY(true);
+    	contrDrive.flipRightX(false);
     	contrDrive.flipRightY(true);
     }
 

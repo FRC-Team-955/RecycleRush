@@ -69,28 +69,36 @@ public class Config
 	{
 		// Ids for SmartDashboard chooser
 		public static final int idDoNothing = 0;
-		public static final int idDriveForward = 1;
-		public static final int idDriveForwardBearing= 2;
-		public static final int idGetOneTote = 3;
-		public static final int idGetOneToteBearing = 4;
-		public static final int idGetAllTotesLeft = 5;
-		public static final int idGetAllTotesCenter = 6;
-		public static final int idGetAllTotesRight = 7;
-		public static final int idGetAllTotesBearingLeft = 8;
-		public static final int idGetAllTotesBearingCenter = 9;
-		public static final int idGetAllTotesBearingRight = 10;
+		public static final int idStackAllTotesLeft = 1;
+		public static final int idToAutoZone = 2;
 		
-		// Encoder distance values
-		public static final double encStrafeDistance = 2;
-		public static final double encDistanceBetweenTotes = 2;
-		public static final double encDriveForwardDistance = 2;
+//		public static final int idDriveForward = 1;
+//		public static final int idDriveForwardBearing= 2;
+//		public static final int idGetOneTote = 3;
+//		public static final int idGetOneToteBearing = 4;
+//		public static final int idGetAllTotesLeft = 5;
+//		public static final int idGetAllTotesCenter = 6;
+//		public static final int idGetAllTotesRight = 7;
+//		public static final int idGetAllTotesBearingLeft = 8;
+//		public static final int idGetAllTotesBearingCenter = 9;
+//		public static final int idGetAllTotesBearingRight = 10;
+//		
+		// TODO: Actual set this values, these aren't legit
+		// Encoder distance values, inches
+		public static final double distInFrontOfBin = 5;
+		public static final double distToNextTote = 10;
+		public static final double distToAutoZone = 10;
+		public static final double distToClearStackedTotes = 2;
+//		public static final double encStrafeDistance = 2;
+//		public static final double encDistanceBetweenTotes = 2;
+//		public static final double encDriveForwardDistance = 2;
 		
-		public static final double encTolerance = 10;
+//		public static final double encTolerance = 10;
 		
 		// Timer values
-		public static final double timeIntakeClose = .5; 
-		public static final double timeElevatorStack = timeIntakeClose + 1;
-		public static final double timeIntakeOpen = timeElevatorStack + .5;
+//		public static final double timeIntakeClose = .5; 
+//		public static final double timeElevatorStack = timeIntakeClose + 1;
+//		public static final double timeIntakeOpen = timeElevatorStack + .5;
 	}
 	
 	public class Auto

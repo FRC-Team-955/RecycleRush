@@ -134,7 +134,7 @@ public class Drive
 	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed)
 	{
 		leftSpeed = -leftSpeed;
-		frontSpeed = -frontSpeed;
+		backSpeed = -backSpeed;
 		
 		leftSpeed = Util.ramp(mtLeftCAN.get(), leftSpeed, Config.Drive.maxRampRate);
 		rightSpeed = Util.ramp(mtRightCAN.get(), rightSpeed, Config.Drive.maxRampRate);
@@ -151,23 +151,24 @@ public class Drive
 	
 	public void setHeading(double heading, double distance)
 	{
-		double centerPosition = distance * Math.sin(Math.toRadians(heading));
-        double sidePosition = distance * Math.cos(Math.toRadians(heading));
+		double angDiff = Util.absoluteAngToRelative(heading - getAngle());
+		double centerPosition = distance * Math.sin(Math.toRadians(angDiff));
+        double sidePosition = distance * Math.cos(Math.toRadians(angDiff));
         wantLeftPos += sidePosition;
         wantRightPos += centerPosition;
         wantFrontPos += sidePosition;
         wantBackPos += centerPosition;
         
-        if(Math.abs(wantLeftPos - encLeft.getDistance()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
+        if(Math.abs(wantLeftPos - getLeftEncDist()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
 			pidLeft.start();
         
-        if(Math.abs(wantRightPos - encRight.getDistance()) > Config.Drive.maxDistanceDiff && !pidRight.isRunning())
+        if(Math.abs(wantRightPos - getRightEncDist()) > Config.Drive.maxDistanceDiff && !pidRight.isRunning())
 			pidRight.start();
         
-        if(Math.abs(wantFrontPos - encFront.getDistance()) > Config.Drive.maxDistanceDiff && !pidFront.isRunning())
+        if(Math.abs(wantFrontPos - getFrontEncDist()) > Config.Drive.maxDistanceDiff && !pidFront.isRunning())
 			pidFront.start();
         
-        if(Math.abs(wantBackPos - encBack.getDistance()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
+        if(Math.abs(wantBackPos - getBackEncDist()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
 			pidBack.start();
 	}
 	
@@ -191,25 +192,25 @@ public class Drive
 		double frontSpeed = 0;
 		double backSpeed = 0;
 		
-		if(Math.abs(wantLeftPos - encLeft.getDistance()) < Config.Drive.maxDistanceDiff)
+		if(Math.abs(wantLeftPos - getLeftEncDist()) < Config.Drive.maxDistanceDiff)
 		{
 			pidLeft.stop();
 			pidLeft.reset();
 		}
 		
-		if(Math.abs(wantRightPos - encRight.getDistance()) < Config.Drive.maxDistanceDiff)
+		if(Math.abs(wantRightPos - getRightEncDist()) < Config.Drive.maxDistanceDiff)
 		{
 			pidRight.stop();
 			pidRight.reset();
 		}
 		
-		if(Math.abs(wantFrontPos - encFront.getDistance()) < Config.Drive.maxDistanceDiff)
+		if(Math.abs(wantFrontPos - getFrontEncDist()) < Config.Drive.maxDistanceDiff)
 		{
 			pidFront.stop();
 			pidFront.reset();
 		}
 		
-		if(Math.abs(wantBackPos - encBack.getDistance()) < Config.Drive.maxDistanceDiff)
+		if(Math.abs(wantBackPos - getBackEncDist()) < Config.Drive.maxDistanceDiff)
 		{
 			pidBack.stop();
 			pidBack.reset();
@@ -217,29 +218,34 @@ public class Drive
 			
 		if(pidLeft.isRunning())
 		{
-			pidLeft.update(encLeft.getDistance(), wantLeftPos);
+			pidLeft.update(getLeftEncDist(), wantLeftPos);
 			leftSpeed = pidLeft.getOutput();
 		}
 		
 		if(pidRight.isRunning())
 		{
-			pidRight.update(encRight.getDistance(), wantRightPos);
+			pidRight.update(getRightEncDist(), wantRightPos);
 			rightSpeed = pidRight.getOutput();
 		}
 		
 		if(pidFront.isRunning())
 		{
-			pidFront.update(encFront.getDistance(), wantFrontPos);
+			pidFront.update(getFrontEncDist(), wantFrontPos);
 			frontSpeed = pidFront.getOutput();
 		}
 		
 		if(pidBack.isRunning())
 		{
-			pidBack.update(encBack.getDistance(), wantBackPos);
+			pidBack.update(getBackEncDist(), wantBackPos);
 			backSpeed = pidBack.getOutput();
 		}
 		
 		setSpeed(leftSpeed, rightSpeed, frontSpeed, backSpeed);
+	}
+	
+	public boolean isRunning()
+	{
+		return pidLeft.isRunning() && pidRight.isRunning() && pidFront.isRunning() && pidBack.isRunning();
 	}
 	
 	/**
@@ -270,7 +276,7 @@ public class Drive
 	 * Gets the front encoder distance in inches
 	 * @return
 	 */
-	public double getFrontEnc()
+	public double getFrontEncDist()
 	{
 		return encFront.getDistance();
 	}
@@ -279,7 +285,7 @@ public class Drive
 	 * Gets the back encoder distance in inches
 	 * @return
 	 */
-	public double getBackEnc()
+	public double getBackEncDist()
 	{
 		return encBack.getDistance();
 	}
@@ -288,7 +294,7 @@ public class Drive
 	 * Gets the left encoder distance in inches
 	 * @return
 	 */
-	public double getLeftEnc()
+	public double getLeftEncDist()
 	{
 		return encLeft.getDistance();
 	}
@@ -297,7 +303,7 @@ public class Drive
 	 * Gets the right encoder distance in inches
 	 * @return
 	 */
-	public double getRightEnc() 
+	public double getRightEncDist() 
 	{
 		return encRight.getDistance();
 	}

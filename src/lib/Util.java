@@ -50,6 +50,15 @@ public class Util
 		return Math.floor((num * 100) + 0.5) / 100;
 	}
 	
+	/**
+	 * Limits num so that if it is LESS than min return min
+	 * and if it is GREATER than max return max, else
+	 * return num
+	 * @param num
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public static double limit(double num, double min, double max)
 	{
 		if(num < min)
