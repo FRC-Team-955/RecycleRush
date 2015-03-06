@@ -254,11 +254,12 @@ public class Config
 		public static final int idRobotCentric = 1;	
 
 		// Minimum values for joysticks
-		public static final double minTurnSpeed = 0.025;
+		public static final double minTurnJoyVal = 0.025;
 		public static final double minLeftJoyMag = 0.1;
 		
 		// Ramping
-		public static final double maxRampRate = .5; // was .254
+		public static final double rampSideRate = .5; // was .254
+		public static final double rampCenterRate = .254;
 		
 		// Encoder Channel Values
 		public static final int chnEncFrontA = 10; //TODO get correct values
@@ -274,7 +275,7 @@ public class Config
         public static final int chnEncRightB = 17; // TODO get correct values
         
         // PID constansts
-        public static final double kStrafeP = 0.0234;
+        public static final double kStrafeP = 0.0190;
         public static final double kStrafeI = 0;
         public static final double kStrafeD = 0;
         
@@ -296,7 +297,11 @@ public class Config
         
         public static final double robotCircumfrence = Math.PI * 48; // Inches
         public static final double maxDistanceDiff = 1;              // Inches
-        		
+        
+        // Turn Speed Adjustments
+        public static final double minTurnSpeed = -.5;
+        public static final double maxTurnSpeed = .5;
+        public static final double turnRampRate = .254;
 	}
 	
 	public class NavX

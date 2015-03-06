@@ -31,7 +31,7 @@ public class Robot extends IterativeRobot
     public void robotInit() 
     {
     	contrDrive.flipLeftX(false);
-    	contrDrive.flipRightY(true);
+    	contrDrive.flipLeftY(true);
     	contrDrive.flipRightX(false);
     	contrDrive.flipRightY(true);
     }

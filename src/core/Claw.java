@@ -26,10 +26,10 @@ public class Claw
 		if(contr.getButton(Config.ContrElevator.btClawToggle))
 		{
 			if(getClaw())
-				close();
+				open();
 			
 			else
-				open();
+				close();
 		}
 	}
 	

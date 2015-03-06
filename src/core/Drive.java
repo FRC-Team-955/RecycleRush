@@ -1,6 +1,7 @@
 package core;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Encoder;
@@ -8,6 +9,7 @@ import lib.PID;
 import lib.Util;
 //import util.Config;
 //import util.Controller;
+
 
 
 import java.lang.Math;
@@ -52,6 +54,7 @@ public class Drive
 	
 	private boolean fieldCentricMode = true;
 	private double wantStrafeAng = 0;
+	private double turnSpeed = 0;
 	
 	public Drive (Controller newContr) 
 	{
@@ -73,11 +76,14 @@ public class Drive
 	 * Moves the robot in relation to the field instead of the robot
 	 */	
 	public void run() 
-	{		
+	{	
+		System.out.println("Joy Angle " + getJoyAng() + " : Joy Left X " + contr.getRawLeftX() + " : Joy Left Y " + contr.getRawLeftY() );
+
+		double joyAng = getJoyAng();
 		double leftJoyMag = getJoyMag();  
-		double centerSpeed = Math.abs(contr.getRawLeftX()) * contr.getRawLeftX();
-        double sideSpeed = Math.abs(contr.getRawLeftY()) * contr.getRawLeftY();
-        double turnSpeed = Math.abs(contr.getRawRightX()) * contr.getRawRightX();
+		double centerSpeed = leftJoyMag * -Math.sin(Math.toRadians(joyAng));
+        double sideSpeed = leftJoyMag * Math.cos(Math.toRadians(joyAng));
+        turnSpeed = Util.limit(Util.ramp(turnSpeed, Math.abs(contr.getRawRightX()) * contr.getRawRightX(), Config.Drive.turnRampRate), Config.Drive.minTurnSpeed, Config.Drive.maxTurnSpeed);    
         
         // Enable/Disable field centric mode
         if(contr.getButton(Config.ContrDrive.btFieldCentricMode))
@@ -89,39 +95,44 @@ public class Drive
         // Run field centric mode if enabled
 		if(fieldCentricMode)
 		{
-			double joyAng = getJoyAng();
 			double angDiff = getAngle() - joyAng;
-			centerSpeed = leftJoyMag * Math.sin(Math.toRadians(angDiff));
+			centerSpeed = -leftJoyMag * Math.sin(Math.toRadians(angDiff));
 			sideSpeed = leftJoyMag * Math.cos(Math.toRadians(angDiff));
 		}
 		
 		// Set wantStrafe angle when bot is turning or not moving, stop strafe pid
-		if(Math.abs(turnSpeed) > Config.Drive.minTurnSpeed || Math.abs(leftJoyMag) <= Config.Drive.minLeftJoyMag)
+		if(Math.abs(turnSpeed) > Config.Drive.minTurnJoyVal || Math.abs(leftJoyMag) <= Config.Drive.minLeftJoyMag)
 		{
 			wantStrafeAng = getAngle();
 			
-//			if(pidStrafe.isRunning())
-//			{
-//				pidStrafe.stop();
-//				pidStrafe.reset();
-//			}
+			if(pidStrafe.isRunning())
+			{
+				pidStrafe.stop();
+				pidStrafe.reset();
+			}
 		}
 		
 		// Run strafe pid if only moving, not turning
-//		else if(Math.abs(leftJoyMag) > Config.Drive.minLeftJoyMag)
-//		{
-//			if(!pidStrafe.isRunning())
-//			{
-//				pidStrafe.reset();
-//				pidStrafe.start();
-//			}
-//			
-//			pidStrafe.update(getAngle(), wantStrafeAng);
-//			turnSpeed = pidStrafe.getOutput();
-//		}
+		else if(Math.abs(leftJoyMag) > Config.Drive.minLeftJoyMag)
+		{
+			if(!pidStrafe.isRunning())
+			{
+				pidStrafe.reset();
+				pidStrafe.start();
+			}
+			
+			pidStrafe.update(getAngle(), wantStrafeAng);
+			
+			if(fieldCentricMode)
+				centerSpeed *= -1;
+			
+			turnSpeed = pidStrafe.getOutput();
+				
+			System.out.println("PID " + pidStrafe.getOutput());
+		}
 		
-		//System.out.println(sideSpeed + " : " + centerSpeed + " : " + turnSpeed);
-		setSpeed(sideSpeed + turnSpeed, sideSpeed - turnSpeed, centerSpeed + turnSpeed, centerSpeed - turnSpeed);
+//		System.out.println(sideSpeed + " : " + centerSpeed + " : " + turnSpeed);
+		setSpeed(sideSpeed + turnSpeed, sideSpeed - turnSpeed, centerSpeed - turnSpeed, centerSpeed + turnSpeed);
 	}
 	
 	/**
@@ -133,13 +144,15 @@ public class Drive
 	 */
 	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed)
 	{
-		leftSpeed = -leftSpeed;
+		rightSpeed = -rightSpeed;
 		backSpeed = -backSpeed;
 		
-		leftSpeed = Util.ramp(mtLeftCAN.get(), leftSpeed, Config.Drive.maxRampRate);
-		rightSpeed = Util.ramp(mtRightCAN.get(), rightSpeed, Config.Drive.maxRampRate);
-		frontSpeed = Util.ramp(mtFrontCAN.get(), frontSpeed, Config.Drive.maxRampRate);
-		backSpeed = Util.ramp(mtBackCAN.get(), backSpeed, Config.Drive.maxRampRate);
+		leftSpeed = Util.ramp(mtLeftCAN.get(), leftSpeed, Config.Drive.rampSideRate);
+		rightSpeed = Util.ramp(mtRightCAN.get(), rightSpeed, Config.Drive.rampSideRate);
+		frontSpeed = Util.ramp(mtFrontCAN.get(), frontSpeed, Config.Drive.rampCenterRate);
+		backSpeed = Util.ramp(mtBackCAN.get(), backSpeed, Config.Drive.rampCenterRate);
+		
+//		System.out.println("Left " + leftSpeed + "  : Right " + rightSpeed + "  : Front " + frontSpeed + "  : Back " + backSpeed);
 		
 		mtLeftCAN.set(leftSpeed);
 		mtLeft.set(leftSpeed);
@@ -269,6 +282,7 @@ public class Drive
 		if(x == 0 && y == 0)
 			return  0;
 		
+		System.out.println("Joy Angle before adjustment " + (450 - Math.toDegrees(Math.atan2(y, x))) % 360);
 		return Util.absoluteAngToRelative((450 - Math.toDegrees(Math.atan2(y, x))) % 360);
 	}
 
