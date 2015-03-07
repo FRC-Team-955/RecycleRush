@@ -19,6 +19,7 @@ public class Config
 		// Buttons for controller
 		public static final int btFieldCentricMode = 9;
 		public static final int btRobotCentricMode = 10;
+		public static final int btToggleSlowMode = 8;
 	}
 	
 	public class ContrElevator
@@ -256,11 +257,15 @@ public class Config
 
 		// Minimum values for joysticks
 		public static final double minTurnJoyVal = 0.025;
-		public static final double minLeftJoyMag = 0.1;
+		public static final double minLeftJoyMag = 0.05;
 		
 		// Ramping
-		public static final double rampSideRate = .5; // was .254
+		public static final double rampSideRate = .254; // was .5
 		public static final double rampCenterRate = .254;
+		public static final double minSlowSpeed = -.1;
+		public static final double maxSlowSpeed = .1;
+		public static final double slowSideSpeedScalar = .25;
+		public static final double slowCenterSpeedScalar = .5;
 		
 		// Encoder Channel Values
 		public static final int chnEncFrontA = 10; //TODO get correct values

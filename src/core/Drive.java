@@ -52,9 +52,10 @@ public class Drive
 	private double wantFrontPos = 0;
 	private double wantBackPos = 0;
 	
-	private boolean fieldCentricMode = true;
+	private boolean fieldCentricMode = false;
 	private double wantStrafeAng = 0;
 	private double turnSpeed = 0;
+	private boolean slowMode = true;
 	
 	public Drive (Controller newContr) 
 	{
@@ -91,6 +92,9 @@ public class Drive
 		
 		else if(contr.getButton(Config.ContrDrive.btRobotCentricMode))
 			fieldCentricMode = false;
+        
+        if(contr.getButton(Config.ContrDrive.btToggleSlowMode))
+        	setSlowMode(!slowMode);
         
         // Run field centric mode if enabled
 		if(fieldCentricMode)
@@ -147,10 +151,41 @@ public class Drive
 		rightSpeed = -rightSpeed;
 		backSpeed = -backSpeed;
 		
+		if(slowMode)
+		{
+			leftSpeed *= Config.Drive.slowSideSpeedScalar;
+			rightSpeed *= Config.Drive.slowSideSpeedScalar;
+			frontSpeed *= Config.Drive.slowCenterSpeedScalar;
+			backSpeed *= Config.Drive.slowCenterSpeedScalar;
+		}
+		
 		leftSpeed = Util.ramp(mtLeftCAN.get(), leftSpeed, Config.Drive.rampSideRate);
 		rightSpeed = Util.ramp(mtRightCAN.get(), rightSpeed, Config.Drive.rampSideRate);
 		frontSpeed = Util.ramp(mtFrontCAN.get(), frontSpeed, Config.Drive.rampCenterRate);
 		backSpeed = Util.ramp(mtBackCAN.get(), backSpeed, Config.Drive.rampCenterRate);
+		
+//		System.out.println("Left " + leftSpeed + "  : Right " + rightSpeed + "  : Front " + frontSpeed + "  : Back " + backSpeed);
+		
+		mtLeftCAN.set(leftSpeed);
+		mtLeft.set(leftSpeed);
+		mtRightCAN.set(rightSpeed);
+		mtRight.set(rightSpeed);				
+		mtFrontCAN.set(frontSpeed);		
+		mtBackCAN.set(backSpeed);
+	}
+	
+	public void setSpeed(double leftSpeed, double rightSpeed, double frontSpeed, double backSpeed, boolean ramp)
+	{
+		rightSpeed = -rightSpeed;
+		backSpeed = -backSpeed;
+		
+		if(ramp)
+		{
+			leftSpeed = Util.ramp(mtLeftCAN.get(), leftSpeed, Config.Drive.rampSideRate);
+			rightSpeed = Util.ramp(mtRightCAN.get(), rightSpeed, Config.Drive.rampSideRate);
+			frontSpeed = Util.ramp(mtFrontCAN.get(), frontSpeed, Config.Drive.rampCenterRate);
+			backSpeed = Util.ramp(mtBackCAN.get(), backSpeed, Config.Drive.rampCenterRate);
+		}
 		
 //		System.out.println("Left " + leftSpeed + "  : Right " + rightSpeed + "  : Front " + frontSpeed + "  : Back " + backSpeed);
 		
@@ -337,5 +372,10 @@ public class Drive
 		encRight.reset();
 		encFront.reset();
 		encBack.reset();
+	}
+	
+	public void setSlowMode(boolean wantSlowMode)
+	{
+		slowMode = wantSlowMode;
 	}
 } 
