@@ -119,12 +119,12 @@ public class Auto
 	private void driveForwardTimer()
 	{
 		if(timer.get() < Config.Auto.timeDriveForward){
-			drive.setSpeed(0, 0, Config.Auto.driveForwardSpeed, Config.Auto.driveForwardSpeed);
+			drive.setSpeed(0, 0, Config.Auto.driveForwardSpeed, Config.Auto.driveForwardSpeed, true);
 			System.out.println(timer.get());}
 		
 		else
 		{
-			drive.setSpeed(0, 0, 0, 0);
+			drive.setSpeed(0, 0, 0, 0, false);
 			autoStep++;
 		}
 	}
@@ -507,17 +507,17 @@ public class Auto
 	{
 		if(timer.get() < Config.Auto.timeStrafe)
 		{
-			drive.setSpeed(0, 0, Config.Auto.strafeSpeed, Config.Auto.strafeSpeed);
+			drive.setSpeed(0, 0, Config.Auto.strafeSpeed, Config.Auto.strafeSpeed, true);
 		}
 		
 		else if(timer.get() < Config.Auto.timeDriveTowardTote)
 		{
 			System.out.println("in second else if");
-			drive.setSpeed(Config.Auto.driveTowardToteSpeed, Config.Auto.driveTowardToteSpeed, 0, 0);
+			drive.setSpeed(Config.Auto.driveTowardToteSpeed, Config.Auto.driveTowardToteSpeed, 0, 0, true);
 		}
 		
 		else if(timer.get() < Config.Auto.timeStrafeBackwards)
-			drive.setSpeed(0, 0, -Config.Auto.strafeSpeed, -Config.Auto.strafeSpeed);
+			drive.setSpeed(0, 0, -Config.Auto.strafeSpeed, -Config.Auto.strafeSpeed, true);
 		
 		else
 			endRoutine();
@@ -530,17 +530,17 @@ public class Auto
 	{
 		if(timer.get() < Config.Auto.timeStrafe)
 		{
-			drive.setSpeed(0, 0, Config.Auto.strafeSpeed, Config.Auto.strafeSpeed);
+			drive.setSpeed(0, 0, Config.Auto.strafeSpeed, Config.Auto.strafeSpeed, true);
 		}
 		
 		else if(timer.get() < Config.Auto.timeDriveTowardTote)
 		{
 			System.out.println("in second else if");
-			drive.setSpeed(-Config.Auto.driveTowardToteSpeed, -Config.Auto.driveTowardToteSpeed, 0, 0);
+			drive.setSpeed(-Config.Auto.driveTowardToteSpeed, -Config.Auto.driveTowardToteSpeed, 0, 0, true);
 		}
 		
 		else if(timer.get() < Config.Auto.timeStrafeBackwards)
-			drive.setSpeed(0, 0, -Config.Auto.strafeSpeed, -Config.Auto.strafeSpeed);
+			drive.setSpeed(0, 0, -Config.Auto.strafeSpeed, -Config.Auto.strafeSpeed, true);
 		
 		else
 			endRoutine();

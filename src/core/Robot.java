@@ -72,12 +72,12 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {
     	contrDrive.update();
-    	//drive.run();
-    	elevator.runPID();
-    	claw.run();
-        dashboard.update();
-    	dashboard.displayCurrent();
-    	dashboard.displayDpad();
+    	drive.run();
+//    	elevator.runPID();
+//    	claw.run();
+//        dashboard.update();
+//    	dashboard.displayCurrent();
+//    	dashboard.displayDpad();
     	
 //      System.out.println(lidar.getDistance() / 2.54);
    
