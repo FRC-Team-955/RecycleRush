@@ -73,9 +73,9 @@ public class Robot extends IterativeRobot
     {
     	contrDrive.update();
     	drive.run();
-//    	elevator.runPID();
-//    	claw.run();
-//        dashboard.update();
+    	elevator.runPID();
+    	claw.run();
+        dashboard.update();
 //    	dashboard.displayCurrent();
 //    	dashboard.displayDpad();
     	

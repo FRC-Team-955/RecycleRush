@@ -222,7 +222,7 @@ public class Config
 		
 		// Min/Max tote level for the elevator
 		public static final int minToteLevel = 1;
-		public static final int maxToteLevel = 7;
+		public static final int maxToteLevel = 6;
 	}
 
 	public class FileSaver 

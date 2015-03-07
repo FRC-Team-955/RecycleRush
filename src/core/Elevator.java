@@ -148,13 +148,13 @@ public class Elevator
 		if(contr.getButton(Config.ContrElevator.btDropOff))
 			setDropOffMode(!dropOffMode);
 		
-		if(contr.getDpadUp())
+		if(contr.getDpadDown())
 			setHeightType(Config.Elevator.heightTypeGround);
 		
-		if(contr.getDpadLeft())
+		if(contr.getDpadRight())
 			setHeightType(Config.Elevator.heightTypeScoring);
 		
-		if(contr.getDpadRight())
+		if(contr.getDpadUp())
 			setHeightType(Config.Elevator.heightTypeStep);
 			
 		else if(contr.getButton(Config.ContrElevator.btToggleBrake))
