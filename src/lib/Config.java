@@ -72,8 +72,10 @@ public class Config
 		public static final int idDoNothing = 0;
 		public static final int idStackAllTotesLeft = 1;
 		public static final int idToAutoZone = 2;
-		
-//		public static final int idDriveForward = 1;
+		public static final int idMoveOneBin = 3;
+		public static final int idMoveOneBinAndTote = 4;
+		public static final int idMoveOneTote = 5 ;
+		//		public static final int idDriveForward = 1;
 //		public static final int idDriveForwardBearing= 2;
 //		public static final int idGetOneTote = 3;
 //		public static final int idGetOneToteBearing = 4;
@@ -93,6 +95,9 @@ public class Config
 //		public static final double encStrafeDistance = 2;
 //		public static final double encDistanceBetweenTotes = 2;
 //		public static final double encDriveForwardDistance = 2;
+		public static final double distToToteFromBin = 2;
+		
+		
 		
 //		public static final double encTolerance = 10;
 		
