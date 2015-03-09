@@ -65,20 +65,17 @@ public class Robot extends IterativeRobot
     	
 //    	lidar.start(20);
     }
-    
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() 
     {
     	contrDrive.update();
-//    	drive.run();
-    	elevator.run();
-    	elevator.printValues();
-//    	claw.run();
+    	drive.run();
+    	elevator.runPID();
+    	claw.run();
         dashboard.update();
 //    	dashboard.displayCurrent();
-//    	dashboard.displayDpad();
     	
 //      System.out.println(lidar.getDistance() / 2.54);
    

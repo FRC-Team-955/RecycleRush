@@ -104,9 +104,11 @@ public class Elevator
 			// Moves the elevator motor after the brake disengages 
 			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 			{
-				setSpeed(.25);
+				setSpeed(1);
 				//System.out.println("GOING UP");
 			}
+			
+			System.out.println("Up pressed");
 		}
 		
 		else if(contr.getRawButton(Config.ContrElevator.btElevatorDown) && !limitBot.get())
@@ -122,9 +124,11 @@ public class Elevator
 			// Moves the elevator motor after the brake disengages
 			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 			{
-				setSpeed(Config.Elevator.elevatorDownSpeed);
+				setSpeed(-1);
 				//System.out.println("GOING DOWN");
 			}
+			
+			System.out.println("Down pressed");
 		}
 		
 		else
@@ -520,18 +524,5 @@ public class Elevator
 	{
 		pidElevator.stop();
 		pidElevator.reset();
-	}
-	
-	public void printValues()
-	{
-		System.out.println
-		( 
-				"Encoder " + enc.get() + 
-				" : Encode Rate " + getRate() + 
-				" : enc distance " + enc.getDistance() + 
-				" : Top limit switch " + limitTop.get() +
-				" : bot limit switch " + limitBot.get() + 
-				" : brake " + getBrake()
-		);
 	}
 }
