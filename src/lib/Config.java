@@ -189,7 +189,7 @@ public class Config
 		public static final double kUpI = 0.01;
 		public static final double kUpD = 0;
 		
-		// For down PID
+		// For de2own PID
 		public static final double kDownP = 0.33;
 		public static final double kDownI = 0.01;
 		public static final double kDownD = 0;    // 0.0254;
@@ -273,17 +273,17 @@ public class Config
 		public static final double slowCenterSpeedScalar = .5;
 		
 		// Encoder Channel Values
-		public static final int chnEncFrontA = 10; //TODO get correct values
-        public static final int chnEncFrontB = 11; //TODO get correct values
+		public static final int chnEncFrontA = 4; //TODO get correct values
+        public static final int chnEncFrontB = 5; //TODO get correct values
        
-        public static final int chnEncBackA = 12; //TODO get correct values
-        public static final int chnEncBackB = 13; //TODO get correct values
+        public static final int chnEncBackA = 12; //TODO get correct values // 0 on NavX
+        public static final int chnEncBackB = 13; //TODO get correct values // 1 on navX
         
-        public static final int chnEncLeftA = 14; //TODO get correct values
-        public static final int chnEncLeftB = 15; //TODO get correct values
+        public static final int chnEncLeftA = 9; //TODO get correct values
+        public static final int chnEncLeftB = 8; //TODO get correct values
         
-        public static final int chnEncRightA = 16; // TODO get correct values
-        public static final int chnEncRightB = 17; // TODO get correct values
+        public static final int chnEncRightA = 7; // TODO get correct values
+        public static final int chnEncRightB = 6; // TODO get correct values
         
         // PID constansts
         public static final double kStrafeP = 0.0190;

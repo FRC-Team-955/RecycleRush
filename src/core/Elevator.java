@@ -82,10 +82,15 @@ public class Elevator
 	 */
 	public void run()
 	{		
-		System.out.println("Encoder " + enc.getDistance());
-		System.out.println("Limit Top" + limitTop.get());
-		System.out.println("Limit Bot" + limitBot.get());
-		
+		if(contr.getButton(Config.ContrElevator.btToggleBrake))
+		{
+			if(getBrake())
+				unBrake();
+			
+			else
+				brake();
+		}
+
 		if(contr.getRawButton(Config.ContrElevator.btElevatorUp) && !limitTop.get())
 		{
 			// Auto disengages brakes if the brakes are engaged
@@ -447,6 +452,7 @@ public class Elevator
 			newSpeed = Util.ramp(getSpeed(), newSpeed, Config.Elevator.maxRampRate);
 		
 		// Flip the speed direction because negative is actually up on the elevator
+		System.out.println("Speed" + newSpeed);
 		newSpeed = -newSpeed;
 		mtElevatorOne.set(newSpeed);
 		mtElevatorTwo.set(newSpeed);
@@ -506,7 +512,7 @@ public class Elevator
 	{
 		return noidBrake.get() == DoubleSolenoid.Value.kReverse;
 	}
-	
+
 	/**
 	 * Resets the PID
 	 */
@@ -514,5 +520,18 @@ public class Elevator
 	{
 		pidElevator.stop();
 		pidElevator.reset();
+	}
+	
+	public void printValues()
+	{
+		System.out.println
+		( 
+				"Encoder " + enc.get() + 
+				" : Encode Rate " + getRate() + 
+				" : enc distance " + enc.getDistance() + 
+				" : Top limit switch " + limitTop.get() +
+				" : bot limit switch " + limitBot.get() + 
+				" : brake " + getBrake()
+		);
 	}
 }
