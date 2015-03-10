@@ -50,7 +50,7 @@ public class Dashboard
 		SmartDashboard.putData("DriveMode", driveChooser);
 		
 		// Bot Angle Offset for beginning of match
-		SmartDashboard.putNumber("Angle Offset", 0);
+		///SmartDashboard.putNumber("Angle Offset", 0);
 		// TODO: fix the writing before file is created error
 		//fileSaver.write("Angle Offset: 0");
 	}

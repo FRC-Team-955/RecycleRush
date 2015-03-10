@@ -531,4 +531,9 @@ public class Elevator
 	{
 		return limitBot.get();
 	}
+	
+	public boolean getDropoffMode()
+	{
+		
+	}
 }
