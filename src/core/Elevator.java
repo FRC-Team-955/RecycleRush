@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator 
 {
@@ -91,7 +90,7 @@ public class Elevator
 				brake();
 		}
 
-		if(contr.getRawButton(Config.ContrElevator.btElevatorUp) && !limitTop.get())
+		if(contr.getRawButton(Config.ContrElevator.btElevatorUp) && !getLimitSwitchTop())
 		{
 			// Auto disengages brakes if the brakes are engaged
 			if(getBrake())
@@ -104,14 +103,14 @@ public class Elevator
 			// Moves the elevator motor after the brake disengages 
 			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 			{
-				setSpeed(1);
+				setSpeed(.25);
 				//System.out.println("GOING UP");
 			}
 			
 			System.out.println("Up pressed");
 		}
 		
-		else if(contr.getRawButton(Config.ContrElevator.btElevatorDown) && !limitBot.get())
+		else if(contr.getRawButton(Config.ContrElevator.btElevatorDown) && !getLimitSwitchBot())
 		{
 			// Auto disengages brakes if the brakes are engaged
 			if(getBrake())
@@ -124,7 +123,7 @@ public class Elevator
 			// Moves the elevator motor after the brake disengages
 			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
 			{
-				setSpeed(-1);
+				setSpeed(-.25);
 				//System.out.println("GOING DOWN");
 			}
 			
@@ -151,9 +150,6 @@ public class Elevator
 	 */
 	public void runPID()
 	{	
-		SmartDashboard.putBoolean("Limit Top", limitTop.get());
-		SmartDashboard.putBoolean("Limit Bot", limitBot.get());
-		
 		if(contr.getButton(Config.ContrElevator.btDropOff))
 			setDropOffMode(!dropOffMode);
 		
@@ -225,7 +221,7 @@ public class Elevator
 			// set the want position to current height as that means we hit the 
 			// mechanical limits and we should stop trying to go any further
 			// TODO get boundaries working with getRate() 
-			if((limitBot.get() && wantPos < getHeight()) || (limitTop.get() && wantPos > getHeight()))
+			if((getLimitSwitchBot() && wantPos < getHeight()) || (getLimitSwitchTop() && wantPos > getHeight()))
 			{
 				setHeight(getHeight());
 				//wantPos = getHeight();
@@ -524,5 +520,15 @@ public class Elevator
 	{
 		pidElevator.stop();
 		pidElevator.reset();
+	}
+	
+	public boolean getLimitSwitchTop()
+	{
+		return limitTop.get();
+	}
+	
+	public boolean getLimitSwitchBot()
+	{
+		return limitBot.get();
 	}
 }

@@ -9,10 +9,8 @@ import lib.navX.NavX;
 import java.lang.Math;
 
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive 
 {
@@ -51,6 +49,7 @@ public class Drive
 	private double wantFrontPos = 0;
 	private double wantBackPos = 0;
 	private double wantStrafeAng = 0;
+	private double prevTurnSpeed = 0;
 	
 	// Field centric/Slow mode
 	private boolean fieldCentricMode = false;
@@ -87,8 +86,6 @@ public class Drive
         // Enable/Disable slow mode
         if(contr.getButton(Config.ContrDrive.btToggleSlowMode))
         	setSlowMode(!getSlowMode());
-        
-        SmartDashboard.putBoolean("Slow Mode", getSlowMode());
         
         // If field centric, get ang diff, else get joy angle
 		double newAng = fieldCentricMode ? getJoyAng() - getAngle() : getJoyAng();
@@ -130,6 +127,8 @@ public class Drive
 	public void setSpeed(double sideSpeed, double centerSpeed, double turnSpeed, boolean ramp)
 	{
 		turnSpeed = Util.limit(turnSpeed, Config.Drive.minTurnSpeed, Config.Drive.maxTurnSpeed);
+		turnSpeed = Util.ramp(prevTurnSpeed, turnSpeed, Config.Drive.rampTurnRate);
+		prevTurnSpeed = turnSpeed;
 		
 		double leftSpeed = sideSpeed + turnSpeed;
 		double rightSpeed = sideSpeed - turnSpeed;
@@ -288,7 +287,7 @@ public class Drive
 	 */
 	public boolean isRunning()
 	{
-		return pidLeft.isRunning() && pidRight.isRunning() && pidFront.isRunning() && pidBack.isRunning();
+		return pidLeft.isRunning() || pidRight.isRunning() || pidFront.isRunning() || pidBack.isRunning();
 	}
 	
 	/**

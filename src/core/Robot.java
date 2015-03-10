@@ -3,8 +3,6 @@ package core;
 import auto.AutoPID;
 import lib.Config;
 import lib.Controller;
-//import lib.LIDAR;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -60,10 +58,8 @@ public class Robot extends IterativeRobot
     {
     	teleopRan = true;
     	dashboard.openLogFile();
-    	drive.init(Config.Drive.idFieldCentric, dashboard.getBotAngleOffset());
+    	drive.init(dashboard.getDriveType(), dashboard.getBotAngleOffset());
     	elevator.brake();
-    	
-//    	lidar.start(20);
     }
     /**
      * This function is called periodically during operator control
@@ -75,10 +71,6 @@ public class Robot extends IterativeRobot
     	elevator.runPID();
     	claw.run();
         dashboard.update();
-//    	dashboard.displayCurrent();
-    	
-//      System.out.println(lidar.getDistance() / 2.54);
-   
     }
 
     public void disabledInit()

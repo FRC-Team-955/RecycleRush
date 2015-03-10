@@ -45,8 +45,8 @@ public class Dashboard
 //		SmartDashboard.putData("AutoMode", autoChooser);
 		
 		// Drive modes
-		driveChooser.addDefault("Field Centric Drive", new ChooserType(Config.Drive.idFieldCentric));
-		driveChooser.addObject("Robo Centric Drive", new ChooserType(Config.Drive.idRobotCentric));
+		driveChooser.addDefault("Robo Centric Drive", new ChooserType(Config.Drive.idRobotCentric));
+		driveChooser.addObject("Field Centric Drive", new ChooserType(Config.Drive.idFieldCentric));
 		SmartDashboard.putData("DriveMode", driveChooser);
 		
 		// Bot Angle Offset for beginning of match
@@ -59,24 +59,27 @@ public class Dashboard
 	{
 		/** OUTPUT **/
 		// Drive
-		SmartDashboard.putNumber("Right Talon One", pdp.getCurrent(Config.Drive.pdpChnMtRight));
-		SmartDashboard.putNumber("Right Talon Two", pdp.getCurrent(Config.Drive.pdpChnMtRightCAN));
-		SmartDashboard.putNumber("Left Talon One", pdp.getCurrent(Config.Drive.pdpChnMtLeft));
-		SmartDashboard.putNumber("Left Talon Two", pdp.getCurrent(Config.Drive.pdpChnMtLeftCAN));
-		SmartDashboard.putNumber("Front Talon", pdp.getCurrent(Config.Drive.pdpChnMtFrontCAN));
-		SmartDashboard.putNumber("Back Talon", pdp.getCurrent(Config.Drive.pdpChnMtBackCAN));
+//		SmartDashboard.putNumber("Right Talon One", pdp.getCurrent(Config.Drive.pdpChnMtRight));
+//		SmartDashboard.putNumber("Right Talon Two", pdp.getCurrent(Config.Drive.pdpChnMtRightCAN));
+//		SmartDashboard.putNumber("Left Talon One", pdp.getCurrent(Config.Drive.pdpChnMtLeft));
+//		SmartDashboard.putNumber("Left Talon Two", pdp.getCurrent(Config.Drive.pdpChnMtLeftCAN));
+//		SmartDashboard.putNumber("Front Talon", pdp.getCurrent(Config.Drive.pdpChnMtFrontCAN));
+//		SmartDashboard.putNumber("Back Talon", pdp.getCurrent(Config.Drive.pdpChnMtBackCAN));
+        SmartDashboard.putBoolean("Slow Mode", drive.getSlowMode());
 		SmartDashboard.putNumber("Gyro", drive.getAngle());
 		fileSaver.write("Gyro Angle:" + String.valueOf(drive.getAngle()));
 		
 		// Elevator
-		SmartDashboard.putNumber("ELEVATOR 1", pdp.getCurrent(Config.Elevator.pdpChnMtElevatorOneCAN));		
-		SmartDashboard.putNumber("ELEVATOR 2", pdp.getCurrent(Config.Elevator.pdpChnMtElevatorTwoCAN));
+//		SmartDashboard.putNumber("ELEVATOR 1", pdp.getCurrent(Config.Elevator.pdpChnMtElevatorOneCAN));		
+//		SmartDashboard.putNumber("ELEVATOR 2", pdp.getCurrent(Config.Elevator.pdpChnMtElevatorTwoCAN));
 		SmartDashboard.putNumber("Elevator Want Height", elevator.getWantHeight());
 		SmartDashboard.putNumber("Elevator Curr Height", elevator.getHeight());
 		SmartDashboard.putNumber("Elevator Speed", elevator.getSpeed());
 		SmartDashboard.putNumber("Elevator Rate", elevator.getRate());
-		fileSaver.write("Elevator 1 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorOneCAN)));
-		fileSaver.write("Elevator 2 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorTwoCAN)));
+		SmartDashboard.putBoolean("Elevator Limit Switch Top", elevator.getLimitSwitchTop());
+		SmartDashboard.putBoolean("Elevator Limit Switch Bot", elevator.getLimitSwitchBot());
+//		fileSaver.write("Elevator 1 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorOneCAN)));
+//		fileSaver.write("Elevator 2 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorTwoCAN)));
 		
 		// Claw
 		SmartDashboard.putBoolean("Claw", claw.getClaw());

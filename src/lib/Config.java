@@ -265,11 +265,12 @@ public class Config
 		public static final double minLeftJoyMag = 0.1;
 		
 		// Ramping
+		public static final double rampTurnRate = .111;
 		public static final double rampSideRate = .254;
 		public static final double rampCenterRate = .254;
 		public static final double rampSideRateSlow = .01;
 		public static final double rampCenterRateSlow = .01;
-		public static final double slowSideSpeedScalar = .25;
+		public static final double slowSideSpeedScalar = .5;
 		public static final double slowCenterSpeedScalar = .5;
 		
 		// Encoder Channel Values
