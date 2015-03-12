@@ -70,7 +70,7 @@ public class Config
 	{
 		// Ids for SmartDashboard chooser
 		public static final int idDoNothing = 0;
-		public static final int idStackAllTotesLeft = 1;
+		public static final int idStackAllTotesRight = 1;
 		public static final int idToAutoZone = 2;
 		public static final int idMoveOneBin = 3;
 		public static final int idMoveOneBinAndTote = 4;
@@ -88,10 +88,10 @@ public class Config
 //		
 		// TODO: Actual set this values, these aren't legit
 		// Encoder distance values, inches
-		public static final double distInFrontOfBin = 5;
-		public static final double distToNextTote = 10;
-		public static final double distToAutoZone = 10;
-		public static final double distToClearStackedTotes = 2;
+		public static final double distInFrontOfBin = 24.5;
+		public static final double distToNextTote = 81;
+		public static final double distToAutoZone = 100;
+		public static final double distToClearStackedTotes = 10;
 //		public static final double encStrafeDistance = 2;
 //		public static final double encDistanceBetweenTotes = 2;
 //		public static final double encDriveForwardDistance = 2;
@@ -277,8 +277,8 @@ public class Config
 		public static final int chnEncFrontA = 4; //TODO get correct values
         public static final int chnEncFrontB = 5; //TODO get correct values
        
-        public static final int chnEncBackA = 12; //TODO get correct values // 0 on NavX
-        public static final int chnEncBackB = 13; //TODO get correct values // 1 on navX
+        public static final int chnEncBackA = 22; //TODO get correct values // 0 on NavX
+        public static final int chnEncBackB = 23; //TODO get correct values // 1 on navX
         
         public static final int chnEncLeftA = 9; //TODO get correct values
         public static final int chnEncLeftB = 8; //TODO get correct values
@@ -291,19 +291,19 @@ public class Config
         public static final double kStrafeI = 0;
         public static final double kStrafeD = 0;
         
-        public static final double kLeftP = 0;
+        public static final double kLeftP = 0.033;
         public static final double kLeftI = 0;
         public static final double kLeftD = 0;
         
-        public static final double kRightP = 0;
+        public static final double kRightP = 0.033;
         public static final double kRightI = 0;
         public static final double kRightD = 0;
         
-        public static final double kFrontP = 0;
+        public static final double kFrontP = 0.254;
         public static final double kFrontI = 0;
         public static final double kFrontD = 0;
         
-        public static final double kBackP = 0;
+        public static final double kBackP = 0.254;
         public static final double kBackI = 0;
         public static final double kBackD = 0;
         

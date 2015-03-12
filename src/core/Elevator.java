@@ -58,7 +58,7 @@ public class Elevator
 		Config.ContrElevator.btLvlThree,
 		Config.ContrElevator.btLvlFour,
 		Config.ContrElevator.btLvlFive,
-		Config.ContrElevator.btLvlSix
+//		Config.ContrElevator.btLvlSix
 	};
 	
 	/**
@@ -346,8 +346,8 @@ public class Elevator
 		if(dropOffMode)
 			newHeight += (level - 1) > 0 ? Config.Elevator.clearanceHeight : 0;
 			
-			if(heightType == Config.Elevator.heightTypeStep && (level - 1) == 0)
-					newHeight += Config.Elevator.clearanceHeight;
+		if(heightType == Config.Elevator.heightTypeStep && (level - 1) == 0)
+			newHeight += Config.Elevator.clearanceHeight;
 		
 		// Subtract height for the fact that totes stack in eachother, thus losing height
 		newHeight -= (level - 1) * Config.Elevator.toteLossHeight;
@@ -534,6 +534,6 @@ public class Elevator
 	
 	public boolean getDropoffMode()
 	{
-		
+		return dropOffMode;
 	}
 }

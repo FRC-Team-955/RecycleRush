@@ -29,13 +29,18 @@ public class AutoPID
 		claw = newClaw;
 	}
 
+	public void init(int newAutoId)
+	{
+		autoId = newAutoId;
+	}
+	
 	public void run()
 	{
 		switch (autoId)
 		{
-			case Config.AutoPID.idStackAllTotesLeft:
+			case Config.AutoPID.idStackAllTotesRight:
 			{
-				stackAllTotesLeft();
+				stackAllTotesRight();
 				break;
 			}
 	
@@ -58,8 +63,7 @@ public class AutoPID
 			
 			default:
 				doNothing();
-			}
-
+		}
 	}
 
 	private void moveOneBin()
@@ -132,11 +136,11 @@ public class AutoPID
 	 * facing the yellow tote, claw open around the yellow tote, ready to be
 	 * closed immediately
 	 */
-	public void stackAllTotesLeft()
+	public void stackAllTotesRight()
 	{
 		switch (autoStep)
 		{
-		// Close claw, set elevator to drop off level 2 ground mode
+			// Close claw, set elevator to drop off level 2 ground mode
 			case 0:
 			{
 				stepPickupToteFromGround();
@@ -150,10 +154,10 @@ public class AutoPID
 				break;
 			}
 	
-			// Go right, towards next tote
+			// Go left, towards next tote
 			case 2:
 			{
-				stepDriveTo(90, Config.AutoPID.distToNextTote);
+				stepDriveTo(-90, Config.AutoPID.distToNextTote);
 				break;
 			}
 	
@@ -185,10 +189,10 @@ public class AutoPID
 				break;
 			}
 	
-			// Go right towards the next tote
+			// Go left towards the next tote
 			case 7:
 			{
-				stepDriveTo(90, Config.AutoPID.distToNextTote);
+				stepDriveTo(-90, Config.AutoPID.distToNextTote);
 				break;
 			}
 	
@@ -241,7 +245,16 @@ public class AutoPID
 
 	public void toAutoZone()
 	{
-		stepDriveTo(0, Config.AutoPID.distToAutoZone);
+		switch(autoStep)
+		{
+			case 0:
+			{
+				stepDriveTo(90, 5);//Config.AutoPID.distToAutoZone);
+				break;
+			}
+		}
+		
+		drive.update();
 	}
 
 	/**
@@ -321,6 +334,7 @@ public class AutoPID
 		// destination
 		else if (!drive.isRunning())
 		{
+			drive.setSpeed(0, 0, 0, false);
 			drivePosSet = false;
 			autoStep++;
 		}

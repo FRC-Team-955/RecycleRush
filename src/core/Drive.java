@@ -5,6 +5,7 @@ import lib.Util;
 import lib.Config;
 import lib.Controller;
 import lib.navX.NavX;
+import lib.LimitSwitch;
 
 import java.lang.Math;
 
@@ -14,6 +15,15 @@ import edu.wpi.first.wpilibj.Encoder;
 
 public class Drive 
 {
+//	LimitSwitch ls2 = new LimitSwitch(13, false);
+//	LimitSwitch ls3 = new LimitSwitch(14, false);
+//	LimitSwitch ls4 = new LimitSwitch(19, false);
+//	LimitSwitch ls5 = new LimitSwitch(20, false);
+//	LimitSwitch ls6 = new LimitSwitch(21, false);
+//	LimitSwitch ls7 = new LimitSwitch(22, false);
+//	LimitSwitch ls8 = new LimitSwitch(23, false);
+//	LimitSwitch ls9 = new LimitSwitch(24, false);
+	
 	// Encoders connected to drive base
 	private Encoder encFront = new Encoder(Config.Drive.chnEncFrontA, Config.Drive.chnEncFrontB); 
 	private Encoder encBack = new Encoder(Config.Drive.chnEncBackA, Config.Drive.chnEncBackB);
@@ -58,7 +68,11 @@ public class Drive
 	public Drive (Controller newContr) 
 	{
         contr = newContr;
-    }
+        encFront.setDistancePerPulse((4 * Math.PI) / 256);
+        encBack.setDistancePerPulse((4 * Math.PI) / 256);	
+        encLeft.setDistancePerPulse((4 * Math.PI) / 256);
+        encRight.setDistancePerPulse((4 * Math.PI) / 256);
+	}
 	
 	public void init(int driveId, double offsetAng)
 	{
@@ -76,6 +90,11 @@ public class Drive
 	 */	
 	public void run() 
 	{	
+		System.out.println("NEW SET, FRONT BACK LEFT RIGHT");
+		System.out.println(encFront.getRaw());
+		System.out.println(encBack.getRaw());
+		System.out.println(encLeft.getRaw());
+		System.out.println(encRight.getRaw());
 		// Enable/Disable field centric mode
         if(contr.getButton(Config.ContrDrive.btFieldCentricMode))
 			fieldCentricMode = true;
@@ -188,8 +207,8 @@ public class Drive
 		double centerPosition = distance * Math.sin(Math.toRadians(angDiff));
         double sidePosition = distance * Math.cos(Math.toRadians(angDiff));
         wantLeftPos += sidePosition;
-        wantRightPos += centerPosition;
-        wantFrontPos += sidePosition;
+        wantRightPos += sidePosition;
+        wantFrontPos += centerPosition;
         wantBackPos += centerPosition;
         
         if(Math.abs(wantLeftPos - getLeftEncDist()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
@@ -276,7 +295,7 @@ public class Drive
 			backSpeed = pidBack.getOutput();
 		}
 		
-		setSpeed(leftSpeed, rightSpeed, frontSpeed, backSpeed, false);
+		setSpeed(leftSpeed, rightSpeed, frontSpeed, backSpeed, true);
 	}
 	
 	/**
@@ -320,7 +339,7 @@ public class Drive
 	 */
 	public double getFrontEncDist()
 	{
-		return encFront.getDistance();
+		return -encFront.getDistance();
 	}
 
 	/**
@@ -329,7 +348,7 @@ public class Drive
 	 */
 	public double getBackEncDist()
 	{
-		return encBack.getDistance();
+		return -encBack.getDistance();
 	}
 
 	/**
@@ -338,7 +357,7 @@ public class Drive
 	 */
 	public double getLeftEncDist()
 	{
-		return encLeft.getDistance();
+		return -encLeft.getDistance();
 	}
 
 	/**
@@ -347,7 +366,8 @@ public class Drive
 	 */
 	public double getRightEncDist() 
 	{
-		return encRight.getDistance();
+		return -encRight.getDistance();
+		//return encRight.getDistance();
 	}
 	
 	/**

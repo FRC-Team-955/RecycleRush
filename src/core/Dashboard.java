@@ -14,7 +14,7 @@ public class Dashboard
 	private Drive drive;
 	private Elevator elevator;
 	private Claw claw;
-//	private SendableChooser autoChooser = new SendableChooser();
+	private SendableChooser autoChooser = new SendableChooser();
 	private SendableChooser driveChooser = new SendableChooser();
 	private PowerDistributionPanel pdp = new PowerDistributionPanel();
 	private Controller contr;
@@ -29,6 +29,8 @@ public class Dashboard
 		
 		/** INPUT **/
 //		// Autonomous Routines
+		autoChooser.addDefault("To Auto Zone", new ChooserType(Config.AutoPID.idToAutoZone));
+		
 //		chooser.addDefault("Do Nothing", new ChooserType(Config.Auto.idDoNothing));
 //		chooser.addObject("Drive Foward Timer", new ChooserType(Config.Auto.idDriveForwardTimer));
 //		chooser.addObject("Drive Foward Encoder", new ChooserType(Config.Auto.idDriveForwardEnc));
@@ -42,7 +44,7 @@ public class Dashboard
 //		chooser.addObject("Get All Totes Right Encoder", new ChooserType(Config.Auto.idGetAllTotesRightEnc));
 //		chooser.addObject("Get Recycle Bin and Tote Encoder", new ChooserType(Config.Auto.idGetRecycleBinEnc));
 //		chooser.addObject("Get Recycle Bin and Tote Timer", new ChooserType(Config.Auto.idGetRecycleBinTimer));
-//		SmartDashboard.putData("AutoMode", autoChooser);
+		SmartDashboard.putData("AutoMode", autoChooser);
 		
 		// Drive modes
 		driveChooser.addDefault("Robo Centric Drive", new ChooserType(Config.Drive.idRobotCentric));
@@ -65,6 +67,10 @@ public class Dashboard
 //		SmartDashboard.putNumber("Left Talon Two", pdp.getCurrent(Config.Drive.pdpChnMtLeftCAN));
 //		SmartDashboard.putNumber("Front Talon", pdp.getCurrent(Config.Drive.pdpChnMtFrontCAN));
 //		SmartDashboard.putNumber("Back Talon", pdp.getCurrent(Config.Drive.pdpChnMtBackCAN));
+		SmartDashboard.putNumber("Front Encoder", drive.getFrontEncDist());
+		SmartDashboard.putNumber("Back Encoder", drive.getBackEncDist());
+		SmartDashboard.putNumber("Left Encoder", drive.getLeftEncDist());
+		SmartDashboard.putNumber("Right Encoder", drive.getRightEncDist());
         SmartDashboard.putBoolean("Slow Mode", drive.getSlowMode());
 		SmartDashboard.putNumber("Gyro", drive.getAngle());
 		fileSaver.write("Gyro Angle:" + String.valueOf(drive.getAngle()));
@@ -78,6 +84,7 @@ public class Dashboard
 		SmartDashboard.putNumber("Elevator Rate", elevator.getRate());
 		SmartDashboard.putBoolean("Elevator Limit Switch Top", elevator.getLimitSwitchTop());
 		SmartDashboard.putBoolean("Elevator Limit Switch Bot", elevator.getLimitSwitchBot());
+		SmartDashboard.putBoolean("Dropoff Mode", elevator.getDropoffMode());
 //		fileSaver.write("Elevator 1 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorOneCAN)));
 //		fileSaver.write("Elevator 2 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorTwoCAN)));
 		
@@ -93,6 +100,11 @@ public class Dashboard
 	public int getDriveType()
 	{
 		return ((ChooserType) driveChooser.getSelected()).getId();
+	}
+	
+	public int getAutoType()
+	{
+		return ((ChooserType) autoChooser.getSelected()).getId();
 	}
 	
 	/**

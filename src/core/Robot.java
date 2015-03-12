@@ -3,7 +3,10 @@ package core;
 import auto.AutoPID;
 import lib.Config;
 import lib.Controller;
+import lib.LIDAR;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -21,6 +24,7 @@ public class Robot extends IterativeRobot
 	private AutoPID auto = new AutoPID(drive, elevator, claw);
 	private Dashboard dashboard = new Dashboard(drive, elevator, claw, contrDrive);
 	private boolean teleopRan = false;
+//	private LIDAR lidar  = new LIDAR(Port.kMXP);
 	
     /**
      * This function is run when the robot is first started up and should be
@@ -40,6 +44,7 @@ public class Robot extends IterativeRobot
     public void autonomousInit()
     {
     	dashboard.openLogFile();
+    	auto.init(dashboard.getAutoType());
     	drive.init(Config.Drive.idRobotCentric, dashboard.getBotAngleOffset());
     }
     
@@ -48,7 +53,9 @@ public class Robot extends IterativeRobot
      */
     public void autonomousPeriodic() 
     {
-
+    	auto.run();
+    	dashboard.update();
+    	dashboard.displayCurrent();
     }
     
     /**
@@ -71,6 +78,8 @@ public class Robot extends IterativeRobot
     	elevator.runPID();
     	claw.run();
         dashboard.update();
+        dashboard.displayCurrent();
+       // System.out.println(lidar.getDistance());
     }
 
     public void disabledInit()
