@@ -249,7 +249,7 @@ public class AutoPID
 		{
 			case 0:
 			{
-				stepDriveTo(90, 5);//Config.AutoPID.distToAutoZone);
+				stepDriveTo(0, Config.AutoPID.distToAutoZone);
 				break;
 			}
 		}

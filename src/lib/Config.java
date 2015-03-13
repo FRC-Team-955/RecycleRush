@@ -62,7 +62,7 @@ public class Config
 //		public static final int btModeSwitch = 12;
 //		public static final int btUp = 1;
 //		public static final int btDown = 3;
-//		public static final int btBrake = 4;
+//		public static vzfinal int btBrake = 4;
 //		public static final int btUnbrake = 2;
 	}
 	

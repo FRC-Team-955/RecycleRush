@@ -20,7 +20,7 @@ public class Elevator
 	private DoubleSolenoid noidBrake = new DoubleSolenoid(Config.Elevator.chnNoidOne, Config.Elevator.chnNoidTwo);
 	
 	// Limit switches on top/bottom to prevent out of bounds
-	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop, false);
+	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop, true);
 	private LimitSwitch limitBot = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom, false);
 	
 	// Encoder on the elevator for height
