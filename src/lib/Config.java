@@ -66,6 +66,11 @@ public class Config
 //		public static final int btUnbrake = 2;
 	}
 	
+	public class Camera 
+	{	
+		public static final String name = "cam0";
+		public static final int imgQuality = 60;
+	}
 	public class AutoPID
 	{
 		// Ids for SmartDashboard chooser
@@ -75,6 +80,7 @@ public class Config
 		public static final int idMoveOneBin = 3;
 		public static final int idMoveOneBinAndTote = 4;
 		public static final int idMoveOneTote = 5 ;
+		public static final int idToAutoZoneLandfill = 6;
 		//		public static final int idDriveForward = 1;
 //		public static final int idDriveForwardBearing= 2;
 //		public static final int idGetOneTote = 3;
@@ -88,14 +94,17 @@ public class Config
 //		
 		// TODO: Actual set this values, these aren't legit
 		// Encoder distance values, inches
-		public static final double distInFrontOfBin = 24.5;
+		public static final double distInFrontOfBin = 28.5;
 		public static final double distToNextTote = 81;
-		public static final double distToAutoZone = 100;
-		public static final double distToClearStackedTotes = 10;
+//		public static final double distToAutoZone = 100; Actual Value
+		public static final double distToAutoZone = 156; // For pushing bin
+		public static final double distToAutoZoneBin = 132;
+		public static final double distToClearStackedTotes = 20;
+		public static final double distToAutoZoneLandfill = 65;
 //		public static final double encStrafeDistance = 2;
 //		public static final double encDistanceBetweenTotes = 2;
 //		public static final double encDriveForwardDistance = 2;
-		public static final double distToToteFromBin = 2;
+		public static final double distToToteFromBin = 24;
 		
 		
 		
@@ -123,6 +132,7 @@ public class Config
 		public static final int idGetAllTotesRightEnc = 10;
 		public static final int idGetRecycleBinEnc = 11;
 		public static final int idGetRecycleBinTimer = 12;
+		public static final int idToAutoZoneLandfill = 13;
 		
 		// Encoder distance values
 		public static final double encStrafeDistance = 2;
@@ -207,7 +217,7 @@ public class Config
 		
 		// Height constants values, inches
 		public static final double maxHeightDiff = .420; // .3 Blaze it
-		public static final double toteHeight = 13;		   
+		public static final double toteHeight = 12.75;		   
 		public static final double clearanceHeight = 2;
 		public static final double toteLossHeight = 1/2.54;
 		public static final double maxElevatorHeight = 63;
@@ -238,6 +248,12 @@ public class Config
 
 	public class Drive
 	{
+		// IDS FOR DRIVE MOVEMENT IN AUTO
+		public static final int moveLeft = 0;
+		public static final int moveRight = 1;
+		public static final int moveForward = 2;
+		public static final int moveBackward = 3;
+		
 		// REG Talons channels
 		public static final int chnMtLeft = 1;
 		public static final int chnMtRight = 3;
@@ -271,7 +287,7 @@ public class Config
 		public static final double rampSideRateSlow = .01;
 		public static final double rampCenterRateSlow = .01;
 		public static final double slowSideSpeedScalar = .5;
-		public static final double slowCenterSpeedScalar = .5;
+		public static final double slowCenterSpeedScalar = .35;
 		
 		// Encoder Channel Values
 		public static final int chnEncFrontA = 4; //TODO get correct values
@@ -299,11 +315,11 @@ public class Config
         public static final double kRightI = 0;
         public static final double kRightD = 0;
         
-        public static final double kFrontP = 0.254;
+        public static final double kFrontP = 0.15;
         public static final double kFrontI = 0;
         public static final double kFrontD = 0;
         
-        public static final double kBackP = 0.254;
+        public static final double kBackP = 0.15;
         public static final double kBackI = 0;
         public static final double kBackD = 0;
         

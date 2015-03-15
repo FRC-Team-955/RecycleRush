@@ -46,23 +46,53 @@ public class AutoPID
 	
 			case Config.AutoPID.idToAutoZone:
 			{
+				// WARNING GOES FORWARD WHEN BOT FACING FORWARD, THIS USED IN STACK ALL TOTES
 				toAutoZone();
 				break;
 			}
 	
 			case Config.AutoPID.idMoveOneBinAndTote:
 			{
-				moveOneBinAndTote();
+				levelTwo();
+				//moveOneBinAndTote();
 				break;
 			}
 	
 			case Config.AutoPID.idMoveOneBin:
 			{
 				moveOneBin();
+				break;
+			}
+			
+			case Config.AutoPID.idToAutoZoneLandfill:
+			{
+				toAutoZoneLandfill();
+				break;
 			}
 			
 			default:
 				doNothing();
+		}
+	}
+	// DOESNT WORK
+	private void moveOneBinAndTote()
+	{
+		switch (autoId)
+		{
+			case 0:
+			{
+				stepPickupToteFromGround();
+				break;
+			}
+			
+			case 1:
+			{
+				stepDriveTo(90, Config.AutoPID.distToAutoZone);
+				break;
+			}
+			
+			default:
+				break;
 		}
 	}
 
@@ -75,49 +105,17 @@ public class AutoPID
 				stepPickupToteFromGround();
 				break;
 			}
-			
-			case 1:
-			{
-				stepDriveTo(90, Config.AutoPID.distToAutoZone);
-				break;
-			}
-			
-			default:
-				break;
-		}
-	}
-
-	private void moveOneBinAndTote()
-	{
-		switch (autoId)
-		{
-			case 0:
-			{
-				stepPickupToteFromGround();
-				break;
-			}
 
 			case 1:
 			{
-				stepDriveTo(-90, Config.AutoPID.distToToteFromBin);
+				stepDriveTo(0, Config.AutoPID.distToAutoZoneBin);
 				break;
 			}
 			
 			case 2:
 			{
-				stepDropToteOnTote();
-				break;
-			}
-			
-			case 3:
-			{
-				stepPickupToteForScoring();
-				break;
-			}
-			
-			case 4:
-			{
-				stepDriveTo(90, Config.AutoPID.distToAutoZone);
+				if (claw.getClaw())
+					claw.open();
 				break;
 			}
 			
@@ -130,9 +128,29 @@ public class AutoPID
 	{
 		
 	}
+	
+	public void levelTwo()
+	{
+		switch (autoStep)
+		{
+			case 0:
+			{
+				elevator.setHeightType(Config.Elevator.heightTypeGround);
+				elevator.setDropOffMode(true);
+				elevator.setToteLevel(2);
+				autoStep++;
+				break;
+			}
+			
+			default:
+				break;
+		}
+
+		elevator.update();
+	}
 
 	/**
-	 * Stacks all the yellow totes when starting on the left side, the bot
+	 * Stacks all the yellow totes when starting on the right side, the bot
 	 * facing the yellow tote, claw open around the yellow tote, ready to be
 	 * closed immediately
 	 */
@@ -150,21 +168,21 @@ public class AutoPID
 			// Go forward to go around the bin
 			case 1:
 			{
-				stepDriveTo(0, Config.AutoPID.distInFrontOfBin);
+				stepDriveTo(90, Config.AutoPID.distInFrontOfBin);
 				break;
 			}
 	
 			// Go left, towards next tote
 			case 2:
 			{
-				stepDriveTo(-90, Config.AutoPID.distToNextTote);
+				stepDriveTo(0, Config.AutoPID.distToNextTote);
 				break;
 			}
 	
 			// Go backwards towards next tote
 			case 3:
 			{
-				stepDriveTo(180, Config.AutoPID.distInFrontOfBin);
+				stepDriveTo(-90, Config.AutoPID.distInFrontOfBin);
 				break;
 			}
 	
@@ -185,21 +203,21 @@ public class AutoPID
 			// Go forward to go around the bin
 			case 6:
 			{
-				stepDriveTo(0, Config.AutoPID.distInFrontOfBin);
+				stepDriveTo(90, Config.AutoPID.distInFrontOfBin);
 				break;
 			}
 	
 			// Go left towards the next tote
 			case 7:
 			{
-				stepDriveTo(-90, Config.AutoPID.distToNextTote);
+				stepDriveTo(0, Config.AutoPID.distToNextTote);
 				break;
 			}
 	
 			// Go backwards towards next tote
 			case 8:
 			{
-				stepDriveTo(180, Config.AutoPID.distInFrontOfBin);
+				stepDriveTo(-90, Config.AutoPID.distInFrontOfBin);
 				break;
 			}
 	
@@ -220,7 +238,7 @@ public class AutoPID
 			// Drive to auto zone
 			case 11:
 			{
-				stepDriveTo(0, Config.AutoPID.distToAutoZone);
+				stepDriveTo(90, Config.AutoPID.distToAutoZone);
 				break;
 			}
 	
@@ -234,7 +252,7 @@ public class AutoPID
 			// Drive left away totes to clear them
 			case 13:
 			{
-				stepDriveTo(-90, Config.AutoPID.distToClearStackedTotes);
+				stepDriveTo(180, Config.AutoPID.distToClearStackedTotes);
 				break;
 			}
 		}
@@ -243,6 +261,40 @@ public class AutoPID
 		elevator.update();
 	}
 
+	// TODO: WARNING THIS IS NOT THE ACTUAL TO AUTO ZONE ONE
+//	public void toAutoZone()
+//	{
+//		switch(autoStep)
+//		{
+//			case 0:
+//			{
+//				System.out.println(drive.getAngle());
+//				stepDriveTo(90, 30);//Config.AutoPID.distToAutoZone);
+//				break;
+//			}
+//		}
+//		
+//		drive.update();
+//	}
+	
+	/**
+	 * Goes to auto zone from landfill
+	 */
+	public void toAutoZoneLandfill()
+	{
+		switch(autoStep)
+		{
+			case 0:
+			{
+				stepDriveTo(0, Config.AutoPID.distToAutoZoneLandfill);
+				break;
+			}
+		}
+		
+		drive.update();
+	}
+	
+	// TODO: THIS IS THE ACTUAL TO AUTO ZONE THE OTHER ONE IS FOR TESTING PURPOSES
 	public void toAutoZone()
 	{
 		switch(autoStep)
@@ -256,7 +308,7 @@ public class AutoPID
 		
 		drive.update();
 	}
-
+	
 	/**
 	 * Closes claw, set elevator to drop off level 2 ground mode
 	 */

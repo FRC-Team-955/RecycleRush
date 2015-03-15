@@ -201,6 +201,36 @@ public class Drive
 	 * @param heading
 	 * @param distance
 	 */
+//	public void setHeading(double heading, double distance)
+//	{
+//		double angDiff = Util.absoluteAngToRelative(heading - getAngle());
+//		double centerPosition = distance * Math.sin(Math.toRadians(angDiff));
+//        double sidePosition = distance * Math.cos(Math.toRadians(angDiff));
+//        wantLeftPos += sidePosition;
+//        wantRightPos += sidePosition;
+//        wantFrontPos += centerPosition;
+//        wantBackPos += centerPosition;
+//        
+//        if(Math.abs(wantLeftPos - getLeftEncDist()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
+//			pidLeft.start();
+//        
+//        if(Math.abs(wantRightPos - getRightEncDist()) > Config.Drive.maxDistanceDiff && !pidRight.isRunning())
+//			pidRight.start();
+//        
+//        if(Math.abs(wantFrontPos - getFrontEncDist()) > Config.Drive.maxDistanceDiff && !pidFront.isRunning())
+//			pidFront.start();
+//        
+//        if(Math.abs(wantBackPos - getBackEncDist()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
+//			pidBack.start();
+//        
+//        System.out.println(wantLeftPos + " : " + wantRightPos + " : " + wantFrontPos + " : " + wantBackPos);
+//	}
+	
+	/**
+	 * Sets the drive base pid want position at heading at distance
+	 * @param heading
+	 * @param distance
+	 */
 	public void setHeading(double heading, double distance)
 	{
 		double angDiff = Util.absoluteAngToRelative(heading - getAngle());
@@ -222,12 +252,14 @@ public class Drive
         
         if(Math.abs(wantBackPos - getBackEncDist()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
 			pidBack.start();
+        
+        System.out.println(wantLeftPos + " : " + wantRightPos + " : " + wantFrontPos + " : " + wantBackPos);
 	}
 	
 	// TODO: Remove this or fix this if we're gonna use it, has not been looked over
-	public void setHeading(double heading, double bearing, double distance)
-	{
-		return;
+//	public void setHeading(double heading, double bearing, double distance)
+//	{
+//		return;
 //		double centerPosition = distance * Math.sin(Math.toRadians(heading));
 //        double sidePosition = distance * Math.cos(Math.toRadians(heading));
 //		double angDiff = Util.absoluteAngToRelative(bearing - heading);
@@ -235,7 +267,7 @@ public class Drive
 //		wantRightPos += sidePosition - (Config.Drive.robotCircumfrence * angDiff);
 //		wantFrontPos += centerPosition + (Config.Drive.robotCircumfrence * angDiff);
 //		wantBackPos += centerPosition - (Config.Drive.robotCircumfrence * angDiff);
-	}
+//	}
 	
 	/**
 	 * Updates the drive base pid based on wanted positions set by setHeading()

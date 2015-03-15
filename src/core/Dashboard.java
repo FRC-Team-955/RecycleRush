@@ -29,7 +29,12 @@ public class Dashboard
 		
 		/** INPUT **/
 //		// Autonomous Routines
-		autoChooser.addDefault("To Auto Zone", new ChooserType(Config.AutoPID.idToAutoZone));
+		autoChooser.addDefault("Do Nothing", new ChooserType(Config.AutoPID.idDoNothing));
+		autoChooser.addObject("To Auto Zone", new ChooserType(Config.AutoPID.idToAutoZone));
+		autoChooser.addObject("Stack All Totes", new ChooserType(Config.AutoPID.idStackAllTotesRight));
+		autoChooser.addObject("Level Two", new ChooserType(Config.AutoPID.idMoveOneBinAndTote));
+		autoChooser.addObject("To Auto Zone With Bin", new ChooserType(Config.AutoPID.idMoveOneBin));
+		autoChooser.addObject("To Auto Zone From Landfill", new ChooserType(Config.AutoPID.idToAutoZoneLandfill));
 		
 //		chooser.addDefault("Do Nothing", new ChooserType(Config.Auto.idDoNothing));
 //		chooser.addObject("Drive Foward Timer", new ChooserType(Config.Auto.idDriveForwardTimer));
@@ -85,6 +90,7 @@ public class Dashboard
 		SmartDashboard.putBoolean("Elevator Limit Switch Top", elevator.getLimitSwitchTop());
 		SmartDashboard.putBoolean("Elevator Limit Switch Bot", elevator.getLimitSwitchBot());
 		SmartDashboard.putBoolean("Dropoff Mode", elevator.getDropoffMode());
+		SmartDashboard.putBoolean("Elevator Brake", elevator.getBrake());
 //		fileSaver.write("Elevator 1 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorOneCAN)));
 //		fileSaver.write("Elevator 2 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorTwoCAN)));
 		

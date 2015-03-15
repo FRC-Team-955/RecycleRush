@@ -1,6 +1,9 @@
 package core;
 
 import auto.AutoPID;
+//import lib.CameraFeed;
+import lib.Camera;
+import lib.CameraFeed;
 import lib.Config;
 import lib.Controller;
 import lib.LIDAR;
@@ -24,7 +27,9 @@ public class Robot extends IterativeRobot
 	private AutoPID auto = new AutoPID(drive, elevator, claw);
 	private Dashboard dashboard = new Dashboard(drive, elevator, claw, contrDrive);
 	private boolean teleopRan = false;
-//	private LIDAR lidar  = new LIDAR(Port.kMXP);
+//	private CameraFeed cam = new CameraFeed();
+	
+	//	private LIDAR lidar  = new LIDAR(Port.kMXP);
 	
     /**
      * This function is run when the robot is first started up and should be
@@ -36,6 +41,7 @@ public class Robot extends IterativeRobot
     	contrDrive.flipLeftY(true);
     	contrDrive.flipRightX(false);
     	contrDrive.flipRightY(true);
+    
     }
 
     /**
@@ -43,6 +49,7 @@ public class Robot extends IterativeRobot
      */
     public void autonomousInit()
     {
+    	elevator.brake();
     	dashboard.openLogFile();
     	auto.init(dashboard.getAutoType());
     	drive.init(Config.Drive.idRobotCentric, dashboard.getBotAngleOffset());
@@ -56,6 +63,8 @@ public class Robot extends IterativeRobot
     	auto.run();
     	dashboard.update();
     	dashboard.displayCurrent();
+    
+    
     }
     
     /**
@@ -65,8 +74,10 @@ public class Robot extends IterativeRobot
     {
     	teleopRan = true;
     	dashboard.openLogFile();
-    	drive.init(dashboard.getDriveType(), dashboard.getBotAngleOffset());
     	elevator.brake();
+//    	cam.init();
+    
+    
     }
     /**
      * This function is called periodically during operator control
@@ -74,12 +85,13 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic() 
     {
     	contrDrive.update();
-//    	drive.run();
+    	drive.run();
     	elevator.runPID();
     	claw.run();
         dashboard.update();
         dashboard.displayCurrent();
-       // System.out.println(lidar.getDistance());
+//        cam.run();
+        // System.out.println(lidar.getDistance());
     }
 
     public void disabledInit()

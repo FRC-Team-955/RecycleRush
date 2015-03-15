@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator 
 {
@@ -20,7 +21,7 @@ public class Elevator
 	private DoubleSolenoid noidBrake = new DoubleSolenoid(Config.Elevator.chnNoidOne, Config.Elevator.chnNoidTwo);
 	
 	// Limit switches on top/bottom to prevent out of bounds
-	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop, true);
+	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop, false);
 	private LimitSwitch limitBot = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom, false);
 	
 	// Encoder on the elevator for height
@@ -48,7 +49,7 @@ public class Elevator
 	private double maxErrD = 0;
 	
 	// Different modes for the elevator
-	private boolean dropOffMode = true;
+	private boolean dropOffMode = false;
 	private int heightType = Config.Elevator.heightTypeGround;
 	
 	private int [] levels = 
@@ -58,7 +59,7 @@ public class Elevator
 		Config.ContrElevator.btLvlThree,
 		Config.ContrElevator.btLvlFour,
 		Config.ContrElevator.btLvlFive,
-//		Config.ContrElevator.btLvlSix
+		Config.ContrElevator.btLvlSix
 	};
 	
 	/**
@@ -191,6 +192,7 @@ public class Elevator
 			// Unbrake if braked, start timer for disengaging
 			if(getBrake())
 			{
+				SmartDashboard.putBoolean("Brake Disengaged", true);
 				unBrake();
 				tmBrake.reset();
 				tmBrake.start();
@@ -199,7 +201,7 @@ public class Elevator
 			// Reset/Start the pid once the brake has completely disengaged, or if
 			// a new height was chosen when the pid is already running, or if
 			// the brake was not braked to begin with
-			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime || pidElevator.isRunning() || tmBrake.get() == 0)
+			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime || pidElevator.isRunning() || (!getBrake() && !pidElevator.isRunning()))//tmBrake.get() == 0)
 			{
 				tmBrake.stop();
 				tmBrake.reset();
@@ -254,7 +256,7 @@ public class Elevator
 			
 			// If the height diff and rate is small we've reached our destination, thus
 			// activate the brake and turn off the pid AFTER the brake has made physical contact
-			if((Math.abs(wantPos - getHeight()) < Config.Elevator.maxHeightDiff && Math.abs(getRate()) < Config.Elevator.minEncRate) || tmEncRate.get() >= Config.Elevator.maxEncStallTime)
+			if((Math.abs(wantPos - getHeight()) < Config.Elevator.maxHeightDiff && Math.abs(getRate()) < Config.Elevator.minEncRate))
 			{
 				// If not braked brake the elevator, but keep pid running
 				if(!getBrake())
