@@ -6,7 +6,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Claw 
 {
-	private DoubleSolenoid noid = new DoubleSolenoid(Config.Claw.chnSolOne, Config.Claw.chnSolTwo);
+	private DoubleSolenoid clawNoid = new DoubleSolenoid(Config.Claw.chnSolOne, Config.Claw.chnSolTwo);
+	private DoubleSolenoid alignClawNoid = new DoubleSolenoid(Config.Claw.chnAlignClawSolOne, Config.Claw.chnAlignClawSolTwo);
 	private Controller contr;
 	
 	/**
@@ -23,6 +24,15 @@ public class Claw
 	 */
 	public void run()
 	{
+		if(contr.getButton(Config.ContrElevator.btAlignClawToggle))
+		{
+			if(alignClawNoid.get() == DoubleSolenoid.Value.kReverse)
+				alignClawNoid.set(DoubleSolenoid.Value.kForward);
+			
+			else
+				alignClawNoid.set(DoubleSolenoid.Value.kReverse);
+		}
+		
 		if(contr.getButton(Config.ContrElevator.btClawToggle))
 		{
 			if(getClaw())
@@ -38,7 +48,7 @@ public class Claw
 	 */
 	public void open()
 	{
-		noid.set(DoubleSolenoid.Value.kForward);
+		clawNoid.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	/**
@@ -46,7 +56,7 @@ public class Claw
 	 */
 	public void close()
 	{
-		noid.set(DoubleSolenoid.Value.kReverse); 
+		clawNoid.set(DoubleSolenoid.Value.kReverse); 
 	}
 	
 	/**
@@ -57,6 +67,6 @@ public class Claw
 	 */
 	public boolean getClaw() 
 	{
-		return noid.get() == DoubleSolenoid.Value.kReverse;
+		return clawNoid.get() == DoubleSolenoid.Value.kReverse;
 	}
 }

@@ -18,7 +18,7 @@ public class Config
 		
 		// Buttons for controller
 		public static final int btFieldCentricMode = 9;
-		public static final int btRobotCentricMode = 10;
+//		public static final int btRobotCentricMode = 10; TODO: ADD THIS BACK IN AND REMOVE DUPLICATE BUTTON ON TOGGLE ALIGN CLAW
 		public static final int btToggleSlowMode = 8;
 	}
 	
@@ -57,6 +57,7 @@ public class Config
 		public static final int btLvlSix = 7;
 		public static final int btToggleBrake = 5;
 		public static final int btDropOff = 11;
+		public static final int btAlignClawToggle = 10;
 		
 		// TODO: WE'RE NOT ACTUALLY USING THESE YET
 //		public static final int btModeSwitch = 12;
@@ -162,6 +163,8 @@ public class Config
 		// Channels for claw solenoids
 		public static final int chnSolOne = 6;
 		public static final int chnSolTwo = 7;
+		public static final int chnAlignClawSolOne = 2;
+		public static final int chnAlignClawSolTwo = 3;
 	}
 
 	public class Elevator

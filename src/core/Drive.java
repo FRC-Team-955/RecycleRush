@@ -99,8 +99,9 @@ public class Drive
         if(contr.getButton(Config.ContrDrive.btFieldCentricMode))
 			fieldCentricMode = true;
 		
-		else if(contr.getButton(Config.ContrDrive.btRobotCentricMode))
-			fieldCentricMode = false;
+        // TODO: Add this back in after get rid of button conflict in config with align claw toggle
+//		else if(contr.getButton(Config.ContrDrive.btRobotCentricMode))
+//			fieldCentricMode = false;
 		
         // Enable/Disable slow mode
         if(contr.getButton(Config.ContrDrive.btToggleSlowMode))
