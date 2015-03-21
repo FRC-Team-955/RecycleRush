@@ -114,8 +114,8 @@ public class AutoPID
 			
 			case 2:
 			{
-				if (claw.getClaw())
-					claw.open();
+				if (claw.getBotClaw())
+					claw.openBotClaw();
 				break;
 			}
 			
@@ -314,8 +314,8 @@ public class AutoPID
 	 */
 	public void stepPickupToteFromGround()
 	{
-		if (!claw.getClaw())
-			claw.close();
+		if (!claw.getBotClaw())
+			claw.closeBotClaw();
 
 		elevator.setHeightType(Config.Elevator.heightTypeGround);
 		elevator.setDropOffMode(true);
@@ -328,8 +328,8 @@ public class AutoPID
 	 */
 	public void stepPickupToteForScoring()
 	{
-		if (!claw.getClaw())
-			claw.close();
+		if (!claw.getBotClaw())
+			claw.closeBotClaw();
 
 		elevator.setHeightType(Config.Elevator.heightTypeScoring);
 		elevator.setDropOffMode(false);
@@ -342,8 +342,8 @@ public class AutoPID
 	 */
 	public void stepDropToteForScoring()
 	{
-		if (claw.getClaw())
-			claw.open();
+		if (claw.getBotClaw())
+			claw.openBotClaw();
 
 		elevator.setHeightType(Config.Elevator.heightTypeGround);
 		elevator.setDropOffMode(false);
@@ -355,8 +355,8 @@ public class AutoPID
 	 */
 	public void stepDropToteOnTote()
 	{
-		if (claw.getClaw())
-			claw.open();
+		if (claw.getBotClaw())
+			claw.openBotClaw();
 
 		elevator.setHeightType(Config.Elevator.heightTypeGround);
 		elevator.setDropOffMode(false);

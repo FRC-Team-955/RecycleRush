@@ -17,8 +17,6 @@ public class Config
 		public static final int chnRightY = 3;
 		
 		// Buttons for controller
-		public static final int btFieldCentricMode = 9;
-//		public static final int btRobotCentricMode = 10; TODO: ADD THIS BACK IN AND REMOVE DUPLICATE BUTTON ON TOGGLE ALIGN CLAW
 		public static final int btToggleSlowMode = 8;
 	}
 	
@@ -49,15 +47,16 @@ public class Config
 		public static final int btClawToggle = 6;
 		public static final int btElevatorUp = 4;
 		public static final int btElevatorDown = 1;
+		public static final int btLvlHalf = 10; //TODO FINISH THIS
 		public static final int btLvlOne = 3;
 		public static final int btLvlTwo = 2;
 		public static final int btLvlThree = 1;
 		public static final int btLvlFour = 4;
 		public static final int btLvlFive = 12;
-		public static final int btLvlSix = 7;
-		public static final int btToggleBrake = 5;
+		public static final int btLvlSix = 11;
+		public static final int btToggleBrake = 7;
 		public static final int btDropOff = 11;
-		public static final int btAlignClawToggle = 10;
+		public static final int btAlignClawToggle = 5;
 		
 		// TODO: WE'RE NOT ACTUALLY USING THESE YET
 //		public static final int btModeSwitch = 12;
@@ -69,8 +68,8 @@ public class Config
 	
 	public class Camera 
 	{	
-		public static final String name = "cam0";
-		public static final int imgQuality = 60;
+		public static final String name = "cam2";
+		public static final int imgQuality = 10;
 	}
 	public class AutoPID
 	{

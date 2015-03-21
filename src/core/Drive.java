@@ -96,12 +96,11 @@ public class Drive
 		System.out.println(encLeft.getRaw());
 		System.out.println(encRight.getRaw());
 		// Enable/Disable field centric mode
-        if(contr.getButton(Config.ContrDrive.btFieldCentricMode))
+        if(contr.getDpadLeft())
 			fieldCentricMode = true;
 		
-        // TODO: Add this back in after get rid of button conflict in config with align claw toggle
-//		else if(contr.getButton(Config.ContrDrive.btRobotCentricMode))
-//			fieldCentricMode = false;
+		else if(contr.getDpadRight())
+			fieldCentricMode = false;
 		
         // Enable/Disable slow mode
         if(contr.getButton(Config.ContrDrive.btToggleSlowMode))
@@ -169,6 +168,8 @@ public class Drive
 	{
 		rightSpeed = -rightSpeed;
 		frontSpeed = -frontSpeed;
+		frontSpeed = 0;
+		backSpeed = 0;
 		
 		double rampSideRate = Config.Drive.rampSideRate;
 		double rampCenterRate = Config.Drive.rampCenterRate;
@@ -185,8 +186,8 @@ public class Drive
 		{
 			leftSpeed = Util.ramp(mtLeftCAN.get(), leftSpeed, rampSideRate);
 			rightSpeed = Util.ramp(mtRightCAN.get(), rightSpeed, rampSideRate);
-			frontSpeed = Util.ramp(mtFrontCAN.get(), frontSpeed, rampCenterRate);
-			backSpeed = Util.ramp(mtBackCAN.get(), backSpeed, rampCenterRate);
+//			frontSpeed = Util.ramp(mtFrontCAN.get(), frontSpeed, rampCenterRate);
+//			backSpeed = Util.ramp(mtBackCAN.get(), backSpeed, rampCenterRate); 
 		}
 		
 		mtLeftCAN.set(leftSpeed);
@@ -329,6 +330,7 @@ public class Drive
 		}
 		
 		setSpeed(leftSpeed, rightSpeed, frontSpeed, backSpeed, true);
+
 	}
 	
 	/**

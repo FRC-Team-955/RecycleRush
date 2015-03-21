@@ -44,6 +44,9 @@ public class Elevator
 	private boolean changeElevatorHeight = false;
 	private double wantPos = 0;
 	
+	// Elevator
+	private Claw claw = new Claw(contr);
+	
 	// Variables to help tune the PID by holding data about the PID
 	private double maxErrI = 0;
 	private double maxErrD = 0;
@@ -151,14 +154,14 @@ public class Elevator
 	 */
 	public void runPID()
 	{	
-		if(contr.getButton(Config.ContrElevator.btDropOff))
-			setDropOffMode(!dropOffMode);
+//		if(contr.getButton(Config.ContrElevator.btDropOff))
+//			setDropOffMode(!dropOffMode);
 		
 		if(contr.getDpadDown())
 			setHeightType(Config.Elevator.heightTypeGround);
 		
-		if(contr.getDpadRight())
-			setHeightType(Config.Elevator.heightTypeScoring);
+//		if(contr.getDpadRight())
+//			setHeightType(Config.Elevator.heightTypeScoring);
 		
 		if(contr.getDpadUp())
 			setHeightType(Config.Elevator.heightTypeStep);
@@ -323,6 +326,7 @@ public class Elevator
 		{
 			pidElevator.setConsts(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
 			pidElevator.setNeedReset(!downMode);  // Only need to reset when changing directions
+			claw.openAlignClaw();
 			downMode = true;
 			upMode = false;
 		}

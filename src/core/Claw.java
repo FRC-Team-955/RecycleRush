@@ -26,27 +26,27 @@ public class Claw
 	{
 		if(contr.getButton(Config.ContrElevator.btAlignClawToggle))
 		{
-			if(alignClawNoid.get() == DoubleSolenoid.Value.kReverse)
-				alignClawNoid.set(DoubleSolenoid.Value.kForward);
+			if(getAlignClaw())
+				openAlignClaw();
 			
 			else
-				alignClawNoid.set(DoubleSolenoid.Value.kReverse);
+				closeAlignClaw();
 		}
 		
 		if(contr.getButton(Config.ContrElevator.btClawToggle))
 		{
-			if(getClaw())
-				open();
+			if(getBotClaw())
+				openBotClaw();
 			
 			else
-				close();
+				closeBotClaw();
 		}
 	}
 	
 	/**
 	 * Opens the claw
 	 */
-	public void open()
+	public void openBotClaw()
 	{
 		clawNoid.set(DoubleSolenoid.Value.kForward);
 	}
@@ -54,7 +54,7 @@ public class Claw
 	/**
 	 * Closes the claw
 	 */
-	public void close()
+	public void closeBotClaw()
 	{
 		clawNoid.set(DoubleSolenoid.Value.kReverse); 
 	}
@@ -65,8 +65,32 @@ public class Claw
 	 * returns false if open
 	 * @return
 	 */
-	public boolean getClaw() 
+	public boolean getBotClaw() 
 	{
 		return clawNoid.get() == DoubleSolenoid.Value.kReverse;
+	}
+	
+	public void openAlignClaw()
+	{
+		alignClawNoid.set(DoubleSolenoid.Value.kReverse); 
+	}
+	
+	/**
+	 * Closes the claw
+	 */
+	public void closeAlignClaw()
+	{
+		alignClawNoid.set(DoubleSolenoid.Value.kForward);
+	}
+	
+	/**
+	 * Gets the status of claw,
+	 * returns true if closed,
+	 * returns false if open
+	 * @return
+	 */
+	public boolean getAlignClaw() 
+	{
+		return !(alignClawNoid.get() == DoubleSolenoid.Value.kReverse);
 	}
 }
