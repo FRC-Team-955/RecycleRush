@@ -176,6 +176,9 @@ public class Elevator
 		}
 		
 		// Set the want position based on button that was pressed
+		if(contr.getButton(Config.ContrElevator.btLvlHalf))
+			setHeight(Config.Elevator.halfToteHeight);
+			
 		for(int i = 0; i < levels.length; i++)
 			if(contr.getButton(levels[i]))
 				setToteLevel(i + 1);

@@ -223,6 +223,7 @@ public class Config
 		public static final double clearanceHeight = 2;
 		public static final double toteLossHeight = 1/2.54;
 		public static final double maxElevatorHeight = 63;
+		public static final double halfToteHeight = 6;
 				
 		// Minimum encoder rate for elevator to be able to be braked without damage occurring
 		public static final double minEncRate = .6; // .5
