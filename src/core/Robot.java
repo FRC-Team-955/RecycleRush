@@ -62,7 +62,7 @@ public class Robot extends IterativeRobot
     {
     	auto.run();
     	dashboard.update();
-    	dashboard.displayCurrent();
+//    	dashboard.displayCurrent();
     
     
     }
@@ -89,7 +89,7 @@ public class Robot extends IterativeRobot
     	elevator.runPID();
     	claw.run();
         dashboard.update();
-        dashboard.displayCurrent();
+//        dashboard.displayCurrent();
 //        cam.run();
         // System.out.println(lidar.getDistance());
     }

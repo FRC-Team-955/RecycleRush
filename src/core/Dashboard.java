@@ -51,9 +51,9 @@ public class Dashboard
 		SmartDashboard.putData("AutoMode", autoChooser);
 		
 		// Drive modes
-		driveChooser.addDefault("Robo Centric Drive", new ChooserType(Config.Drive.idRobotCentric));
-		driveChooser.addObject("Field Centric Drive", new ChooserType(Config.Drive.idFieldCentric));
-		SmartDashboard.putData("DriveMode", driveChooser);
+//		driveChooser.addDefault("Robo Centric Drive", new ChooserType(Config.Drive.idRobotCentric));
+//		driveChooser.addObject("Field Centric Drive", new ChooserType(Config.Drive.idFieldCentric));
+//		SmartDashboard.putData("DriveMode", driveChooser);
 		
 		// Bot Angle Offset for beginning of match
 		///SmartDashboard.putNumber("Angle Offset", 0);
@@ -71,10 +71,10 @@ public class Dashboard
 //		SmartDashboard.putNumber("Left Talon Two", pdp.getCurrent(Config.Drive.pdpChnMtLeftCAN));
 //		SmartDashboard.putNumber("Front Talon", pdp.getCurrent(Config.Drive.pdpChnMtFrontCAN));
 //		SmartDashboard.putNumber("Back Talon", pdp.getCurrent(Config.Drive.pdpChnMtBackCAN));
-		SmartDashboard.putNumber("Front Encoder", drive.getFrontEncDist());
-		SmartDashboard.putNumber("Back Encoder", drive.getBackEncDist());
-		SmartDashboard.putNumber("Left Encoder", drive.getLeftEncDist());
-		SmartDashboard.putNumber("Right Encoder", drive.getRightEncDist());
+//		SmartDashboard.putNumber("Front Encoder", drive.getFrontEncDist());
+//		SmartDashboard.putNumber("Back Encoder", drive.getBackEncDist());
+//		SmartDashboard.putNumber("Left Encoder", drive.getLeftEncDist());
+//		SmartDashboard.putNumber("Right Encoder", drive.getRightEncDist());
         SmartDashboard.putBoolean("Slow Mode", drive.getSlowMode());
 		SmartDashboard.putNumber("Gyro", drive.getAngle());
 		fileSaver.write("Gyro Angle:" + String.valueOf(drive.getAngle()));
@@ -88,13 +88,14 @@ public class Dashboard
 		SmartDashboard.putNumber("Elevator Rate", elevator.getRate());
 		SmartDashboard.putBoolean("Elevator Limit Switch Top", elevator.getLimitSwitchTop());
 		SmartDashboard.putBoolean("Elevator Limit Switch Bot", elevator.getLimitSwitchBot());
-		SmartDashboard.putBoolean("Dropoff Mode", elevator.getDropoffMode());
+//		SmartDashboard.putBoolean("Dropoff Mode", elevator.getDropoffMode());
 		SmartDashboard.putBoolean("Elevator Brake", elevator.getBrake());
 //		fileSaver.write("Elevator 1 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorOneCAN)));
 //		fileSaver.write("Elevator 2 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorTwoCAN)));
 		
 		// Claw
-		SmartDashboard.putBoolean("Claw", claw.getBotClaw());
+		SmartDashboard.putBoolean("Bot Claw is Open", claw.getBotClaw());
+		SmartDashboard.putBoolean("Align Claw is Open", claw.getAlignClaw());
 		fileSaver.write("Claw Closed" + String.valueOf(claw.getBotClaw())); 
 	}
 	
