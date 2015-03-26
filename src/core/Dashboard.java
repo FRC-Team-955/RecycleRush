@@ -31,9 +31,8 @@ public class Dashboard
 //		// Autonomous Routines
 		autoChooser.addDefault("Do Nothing", new ChooserType(Config.AutoPID.idDoNothing));
 		autoChooser.addObject("To Auto Zone", new ChooserType(Config.AutoPID.idToAutoZone));
-		autoChooser.addObject("Stack All Totes", new ChooserType(Config.AutoPID.idStackAllTotesRight));
-		autoChooser.addObject("Level Two", new ChooserType(Config.AutoPID.idMoveOneBinAndTote));
-		autoChooser.addObject("To Auto Zone With Bin", new ChooserType(Config.AutoPID.idMoveOneBin));
+		autoChooser.addObject("Move Bin to Line Up", new ChooserType(Config.AutoPID.idMoveOneBinLineUp));
+		autoChooser.addObject("Move Bin to Auto Zone", new ChooserType(Config.AutoPID.idMoveOneBinToAutoZone));
 		autoChooser.addObject("To Auto Zone From Landfill", new ChooserType(Config.AutoPID.idToAutoZoneLandfill));
 		
 //		chooser.addDefault("Do Nothing", new ChooserType(Config.Auto.idDoNothing));

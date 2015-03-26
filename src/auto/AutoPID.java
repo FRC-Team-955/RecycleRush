@@ -6,6 +6,7 @@ import core.Claw;
 import core.Drive;
 import core.Elevator;
 import lib.Config;
+import lib.Util;
 import edu.wpi.first.wpilibj.Timer;
 
 public class AutoPID
@@ -20,6 +21,7 @@ public class AutoPID
 	private int autoStep = 0;
 	private int elevatorLevel = 1;
 	private boolean drivePosSet = false;
+	private boolean driveAngSet = false;
 	private boolean elevatorPosSet = false;
 
 	public AutoPID(Drive newDrive, Elevator newElevator, Claw newClaw)
@@ -38,12 +40,6 @@ public class AutoPID
 	{
 		switch (autoId)
 		{
-			case Config.AutoPID.idStackAllTotesRight:
-			{
-				stackAllTotesRight();
-				break;
-			}
-	
 			case Config.AutoPID.idToAutoZone:
 			{
 				// WARNING GOES FORWARD WHEN BOT FACING FORWARD, THIS USED IN STACK ALL TOTES
@@ -51,16 +47,15 @@ public class AutoPID
 				break;
 			}
 	
-			case Config.AutoPID.idMoveOneBinAndTote:
+			case Config.AutoPID.idMoveOneBinToAutoZone:
 			{
-				levelTwo();
-				//moveOneBinAndTote();
+				moveOneBinToAutoZone();
 				break;
 			}
 	
-			case Config.AutoPID.idMoveOneBin:
+			case Config.AutoPID.idMoveOneBinLineUp:
 			{
-				moveOneBin();
+				moveOneBinLineUp();
 				break;
 			}
 			
@@ -70,12 +65,18 @@ public class AutoPID
 				break;
 			}
 			
+			case Config.AutoPID.idDoNothing:
+			{
+				doNothing();
+				break;
+			}
+			
 			default:
 				doNothing();
 		}
 	}
-	// DOESNT WORK
-	private void moveOneBinAndTote()
+
+	private void moveOneBinLineUp()
 	{
 		switch (autoId)
 		{
@@ -84,28 +85,43 @@ public class AutoPID
 				stepPickupToteFromGround();
 				break;
 			}
-			
+
 			case 1:
 			{
-				stepDriveTo(90, Config.AutoPID.distToAutoZone);
+				stepDriveTo(0, Config.AutoPID.distToLineUpFromBin);
+				break;
+			}
+			
+			case 2:
+			{
+				stepRotateToAngle(90);
 				break;
 			}
 			
 			default:
 				break;
 		}
+		
+			elevator.update();
+			drive.update();
+			drive.updateAng();			
 	}
 
-	private void moveOneBin()
+	public void doNothing()
 	{
-		switch (autoId)
+		
+	}
+	
+	public void moveOneBinToAutoZone()
+	{
+		switch (autoStep)
 		{
 			case 0:
 			{
 				stepPickupToteFromGround();
 				break;
 			}
-
+			
 			case 1:
 			{
 				stepDriveTo(0, Config.AutoPID.distToAutoZoneBin);
@@ -114,31 +130,19 @@ public class AutoPID
 			
 			case 2:
 			{
-				if (claw.getBotClaw())
-					claw.openBotClaw();
+				stepRotateToAngle(90);
 				break;
 			}
 			
-			default:
-				break;
-		}	
-	}
-
-	public void doNothing()
-	{
-		
-	}
-	
-	public void levelTwo()
-	{
-		switch (autoStep)
-		{
-			case 0:
+			case 3:
 			{
-				elevator.setHeightType(Config.Elevator.heightTypeGround);
-				elevator.setDropOffMode(true);
-				elevator.setToteLevel(2);
-				autoStep++;
+				stepDriveTo(0, Config.AutoPID.distToAlignAutoZone);
+				break;
+			}
+			
+			case 4:
+			{
+				stepRotateToAngle(90);
 				break;
 			}
 			
@@ -147,6 +151,8 @@ public class AutoPID
 		}
 
 		elevator.update();
+		drive.update();
+		drive.updateAng();
 	}
 
 	/**
@@ -321,6 +327,25 @@ public class AutoPID
 		elevator.setDropOffMode(true);
 		elevator.setToteLevel(2);
 		autoStep++;
+	}
+	
+	public void stepRotateToAngle(double heading)
+	{
+		// Set new driving position if it hasn't been set
+		if (!driveAngSet)
+		{
+			drive.setAng(heading);
+			driveAngSet = true;
+		}
+
+		// Move on to next auto step if drive has finished aka reached its
+		// destination
+		if (!drive.isRunning())
+		{
+			drive.setSpeed(0, 0, 0, false);
+			driveAngSet = false;
+			autoStep++;
+		}
 	}
 
 	/**

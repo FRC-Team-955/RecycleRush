@@ -48,10 +48,11 @@ public class Drive
 	
 	// PID
 	private PID pidStrafe = new PID(Config.Drive.kStrafeP, Config.Drive.kStrafeI, Config.Drive.kStrafeD);
+	private PID pidRotate = new PID(Config.Drive.kRotateP, Config.Drive.kRotateI, Config.Drive.kRotateD);
 	private PID pidLeft= new PID(Config.Drive.kLeftP, Config.Drive.kLeftI, Config.Drive.kLeftD);
 	private PID pidRight = new PID(Config.Drive.kRightP, Config.Drive.kRightI, Config.Drive.kRightD);
-	private PID pidFront = new PID(Config.Drive.kFrontP, Config.Drive.kFrontI, Config.Drive.kFrontD);
-	private PID pidBack = new PID(Config.Drive.kBackP, Config.Drive.kBackI, Config.Drive.kBackD);
+//	private PID pidFront = new PID(Config.Drive.kFrontP, Config.Drive.kFrontI, Config.Drive.kFrontD);
+//	private PID pidBack = new PID(Config.Drive.kBackP, Config.Drive.kBackI, Config.Drive.kBackD);
 	
 	// PID variables
 	private double wantLeftPos = 0;
@@ -60,6 +61,7 @@ public class Drive
 	private double wantBackPos = 0;
 	private double wantStrafeAng = 0;
 	private double prevTurnSpeed = 0;
+	private double wantAng = 0;
 	
 	// Field centric/Slow mode
 	private boolean fieldCentricMode = false;
@@ -249,11 +251,11 @@ public class Drive
         if(Math.abs(wantRightPos - getRightEncDist()) > Config.Drive.maxDistanceDiff && !pidRight.isRunning())
 			pidRight.start();
         
-        if(Math.abs(wantFrontPos - getFrontEncDist()) > Config.Drive.maxDistanceDiff && !pidFront.isRunning())
-			pidFront.start();
-        
-        if(Math.abs(wantBackPos - getBackEncDist()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
-			pidBack.start();
+//        if(Math.abs(wantFrontPos - getFrontEncDist()) > Config.Drive.maxDistanceDiff && !pidFront.isRunning())
+//			pidFront.start();
+//        
+//        if(Math.abs(wantBackPos - getBackEncDist()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
+//			pidBack.start();
         
         System.out.println(wantLeftPos + " : " + wantRightPos + " : " + wantFrontPos + " : " + wantBackPos);
 	}
@@ -293,17 +295,17 @@ public class Drive
 			pidRight.reset();
 		}
 		
-		if(Math.abs(wantFrontPos - getFrontEncDist()) < Config.Drive.maxDistanceDiff)
-		{
-			pidFront.stop();
-			pidFront.reset();
-		}
-		
-		if(Math.abs(wantBackPos - getBackEncDist()) < Config.Drive.maxDistanceDiff)
-		{
-			pidBack.stop();
-			pidBack.reset();
-		}
+//		if(Math.abs(wantFrontPos - getFrontEncDist()) < Config.Drive.maxDistanceDiff)
+//		{
+//			pidFront.stop();
+//			pidFront.reset();
+//		}
+//		
+//		if(Math.abs(wantBackPos - getBackEncDist()) < Config.Drive.maxDistanceDiff)
+//		{
+//			pidBack.stop();
+//			pidBack.reset();
+//		}
 			
 		if(pidLeft.isRunning())
 		{
@@ -317,21 +319,57 @@ public class Drive
 			rightSpeed = pidRight.getOutput();
 		}
 		
-		if(pidFront.isRunning())
-		{
-			pidFront.update(getFrontEncDist(), wantFrontPos);
-			frontSpeed = pidFront.getOutput();
-		}
-		
-		if(pidBack.isRunning())
-		{
-			pidBack.update(getBackEncDist(), wantBackPos);
-			backSpeed = pidBack.getOutput();
-		}
+//		if(pidFront.isRunning())
+//		{
+//			pidFront.update(getFrontEncDist(), wantFrontPos);
+//			frontSpeed = pidFront.getOutput();
+//		}
+//		
+//		if(pidBack.isRunning())
+//		{
+//			pidBack.update(getBackEncDist(), wantBackPos);
+//			backSpeed = pidBack.getOutput();
+//		}
 		
 		setSpeed(leftSpeed, rightSpeed, frontSpeed, backSpeed, true);
 
 	}
+	
+	public void updateAng()
+	{
+		double angleDiff = Util.absoluteAngToRelative(wantAng - getAngle());
+		double turnSpeed = 0;
+			
+		if(Math.abs(getAngle() - wantAng) < Config.Drive.minAngleDiff)
+		{
+			pidRotate.stop();
+			pidRotate.reset();
+		}
+			
+		if(pidRotate.isRunning())
+		{
+			pidRotate.update(getAngle(), angleDiff);
+			turnSpeed = pidRotate.getOutput();
+		}
+		
+		setSpeed(0, 0, turnSpeed, true);
+	}
+	
+	public void setAng(double heading)
+	{
+		wantAng = heading;
+		
+		if(Math.abs(getAngle() - heading) > Config.Drive.minAngleDiff)
+		{
+			if(!pidRotate.isRunning())
+			{
+				pidRotate.reset();
+				pidRotate.start();
+			}
+		}
+	}
+	
+	
 	
 	/**
 	 * Checks if the drive is still working to get to a destination,
@@ -341,7 +379,7 @@ public class Drive
 	 */
 	public boolean isRunning()
 	{
-		return pidLeft.isRunning() || pidRight.isRunning() || pidFront.isRunning() || pidBack.isRunning();
+		return pidLeft.isRunning() || pidRight.isRunning() /*|| pidFront.isRunning() || pidBack.isRunning()*/;
 	}
 	
 	/**

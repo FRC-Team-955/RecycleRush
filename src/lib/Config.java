@@ -77,8 +77,8 @@ public class Config
 		public static final int idDoNothing = 0;
 		public static final int idStackAllTotesRight = 1;
 		public static final int idToAutoZone = 2;
-		public static final int idMoveOneBin = 3;
-		public static final int idMoveOneBinAndTote = 4;
+		public static final int idMoveOneBinLineUp = 3;
+		public static final int idMoveOneBinToAutoZone = 4;
 		public static final int idMoveOneTote = 5 ;
 		public static final int idToAutoZoneLandfill = 6;
 		//		public static final int idDriveForward = 1;
@@ -92,13 +92,17 @@ public class Config
 //		public static final int idGetAllTotesBearingCenter = 9;
 //		public static final int idGetAllTotesBearingRight = 10;
 //		
+		public static final double rotateToAngleTolerance = 5;
+		
 		// TODO: Actual set this values, these aren't legit
 		// Encoder distance values, inches
 		public static final double distInFrontOfBin = 28.5;
 		public static final double distToNextTote = 81;
 //		public static final double distToAutoZone = 100; Actual Value
-		public static final double distToAutoZone = 156; // For pushing bin
-		public static final double distToAutoZoneBin = 132;
+		public static final double distToAutoZone = 100; // For pushing bin
+		public static final double distToAutoZoneBin = 156;
+		public static final double distToAlignAutoZone = 20; // Distance after moving forward and turning so that you can drive straight to the auto zone and align
+		public static final double distToLineUpFromBin = 50;
 		public static final double distToClearStackedTotes = 20;
 		public static final double distToAutoZoneLandfill = 65;
 //		public static final double encStrafeDistance = 2;
@@ -309,6 +313,10 @@ public class Config
         public static final double kStrafeP = 0.0190;
         public static final double kStrafeI = 0;
         public static final double kStrafeD = 0;
+
+        public static final double kRotateP = 0.0190;
+        public static final double kRotateI = 0;
+        public static final double kRotateD = 0;
         
         public static final double kLeftP = 0.033;
         public static final double kLeftI = 0;
@@ -328,6 +336,7 @@ public class Config
         
         public static final double robotCircumfrence = Math.PI * 48; // Inches
         public static final double maxDistanceDiff = 1;              // Inches
+		public static final double minAngleDiff = 5;
         
         // Turn Speed Adjustments
         public static final double minTurnSpeed = -.5;
