@@ -95,6 +95,7 @@ public class AutoPID
 			case 2:
 			{
 				stepRotateToAngle(90);
+				drive.encReset();
 				break;
 			}
 			
@@ -131,6 +132,7 @@ public class AutoPID
 			case 2:
 			{
 				stepRotateToAngle(90);
+				drive.encReset();
 				break;
 			}
 			
@@ -143,6 +145,7 @@ public class AutoPID
 			case 4:
 			{
 				stepRotateToAngle(90);
+				drive.encReset();
 				break;
 			}
 			

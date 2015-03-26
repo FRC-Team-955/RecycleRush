@@ -240,10 +240,10 @@ public class Drive
 		double angDiff = Util.absoluteAngToRelative(heading - getAngle());
 		double centerPosition = distance * Math.sin(Math.toRadians(angDiff));
         double sidePosition = distance * Math.cos(Math.toRadians(angDiff));
-        wantLeftPos += sidePosition;
-        wantRightPos += sidePosition;
-        wantFrontPos += centerPosition;
-        wantBackPos += centerPosition;
+        wantLeftPos = sidePosition;
+        wantRightPos = sidePosition;
+        wantFrontPos = centerPosition;
+        wantBackPos = centerPosition;
         
         if(Math.abs(wantLeftPos - getLeftEncDist()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
 			pidLeft.start();
