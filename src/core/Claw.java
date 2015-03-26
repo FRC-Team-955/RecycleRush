@@ -27,10 +27,10 @@ public class Claw
 		if(contr.getButton(Config.ContrElevator.btAlignClawToggle))
 		{
 			if(getAlignClaw())
-				openAlignClaw();
+				closeAlignClaw();
 			
 			else
-				closeAlignClaw();
+				openAlignClaw();
 		}
 		
 		if(contr.getButton(Config.ContrElevator.btClawToggle))
@@ -72,7 +72,7 @@ public class Claw
 	
 	public void openAlignClaw()
 	{
-		alignClawNoid.set(DoubleSolenoid.Value.kReverse); 
+		alignClawNoid.set(DoubleSolenoid.Value.kForward); 
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class Claw
 	 */
 	public void closeAlignClaw()
 	{
-		alignClawNoid.set(DoubleSolenoid.Value.kForward);
+		alignClawNoid.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	/**
