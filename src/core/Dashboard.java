@@ -94,9 +94,9 @@ public class Dashboard
 //		fileSaver.write("Elevator 2 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorTwoCAN)));
 		
 		// Claw
-		SmartDashboard.putBoolean("Bot Claw is Open", claw.getBotClaw());
+		SmartDashboard.putBoolean("Bot Claw is Open", claw.getTopClaw());
 		SmartDashboard.putBoolean("Align Claw is Open", claw.getAlignClaw());
-		fileSaver.write("Claw Closed" + String.valueOf(claw.getBotClaw())); 
+		fileSaver.write("Claw Closed" + String.valueOf(claw.getTopClaw())); 
 	}
 	
 	/**

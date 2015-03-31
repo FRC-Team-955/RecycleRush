@@ -242,8 +242,8 @@ public class Drive
         double sidePosition = distance * Math.cos(Math.toRadians(angDiff));
         wantLeftPos = sidePosition;
         wantRightPos = sidePosition;
-        wantFrontPos = centerPosition;
-        wantBackPos = centerPosition;
+//        wantFrontPos = centerPosition;
+//        wantBackPos = centerPosition;
         
         if(Math.abs(wantLeftPos - getLeftEncDist()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
 			pidLeft.start();
@@ -471,5 +471,37 @@ public class Drive
 	public boolean getSlowMode()
 	{
 		return slowMode;
+	}
+	
+	public void setLeftCAN()
+	{
+		mtLeftCAN.set(1);
+		mtLeft.set(0);
+		mtRightCAN.set(0);
+		mtRight.set(0);
+	}
+	
+	public void setLeft()
+	{
+		mtLeft.set(1);
+		mtLeftCAN.set(0);
+		mtRightCAN.set(0);
+		mtRight.set(0);
+	}
+	
+	public void setRightCAN()
+	{
+		mtRightCAN.set(-1);
+		mtLeftCAN.set(1);
+		mtLeft.set(0);
+		mtRight.set(0);
+	}
+	
+	public void setRight()
+	{
+		mtRight.set(-1);
+		mtLeftCAN.set(1);
+		mtLeft.set(0);
+		mtRightCAN.set(0);
 	}
 } 

@@ -35,18 +35,18 @@ public class Claw
 		
 		if(contr.getButton(Config.ContrElevator.btClawToggle))
 		{
-			if(getBotClaw())
-				openBotClaw();
+			if(getTopClaw())
+				openTopClaw();
 			
 			else
-				closeBotClaw();
+				closeTopClaw();
 		}
 	}
 	
 	/**
 	 * Opens the claw
 	 */
-	public void openBotClaw()
+	public void openTopClaw()
 	{
 		clawNoid.set(DoubleSolenoid.Value.kForward);
 	}
@@ -54,7 +54,7 @@ public class Claw
 	/**
 	 * Closes the claw
 	 */
-	public void closeBotClaw()
+	public void closeTopClaw()
 	{
 		clawNoid.set(DoubleSolenoid.Value.kReverse); 
 	}
@@ -65,7 +65,7 @@ public class Claw
 	 * returns false if open
 	 * @return
 	 */
-	public boolean getBotClaw() 
+	public boolean getTopClaw() 
 	{
 		return clawNoid.get() == DoubleSolenoid.Value.kReverse;
 	}

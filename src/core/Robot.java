@@ -8,6 +8,7 @@ import lib.Config;
 import lib.Controller;
 import lib.LIDAR;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -27,6 +28,10 @@ public class Robot extends IterativeRobot
 	private AutoPID auto = new AutoPID(drive, elevator, claw);
 	private Dashboard dashboard = new Dashboard(drive, elevator, claw, contrDrive);
 	private boolean teleopRan = false;
+	private Timer tmTest = new Timer();
+	private int testStep = 0;
+	private boolean elevatorUpRan = false;
+	private boolean elevatorDownRan = false;
 //	private CameraFeed cam = new CameraFeed();
 	
 	//	private LIDAR lidar  = new LIDAR(Port.kMXP);
@@ -105,11 +110,101 @@ public class Robot extends IterativeRobot
     	}
     }
     
+    public void testInit()
+    {
+    	elevator.brake();
+    	tmTest.start();
+    }
+    
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic()
     {
-    
+    	switch(testStep)
+    	{
+    		case 0:
+    		{
+    			drive.setLeftCAN();
+    			System.out.println("Ran Left CAN");
+    			break;
+    		}
+    		
+    		case 1:
+    		{
+    			drive.setLeft();
+    			System.out.println("Ran Left");
+    			break;
+    		}
+    		
+    		case 2:
+    		{
+    			drive.setRightCAN();
+    			System.out.println("Ran Right CAN");
+    			break;
+    		}
+    		
+    		case 3:
+    		{
+    			drive.setRight();
+    			System.out.println("Ran Right");
+    			break;
+    		}
+    		
+    		case 4:
+    		{
+    			if(!elevatorUpRan)
+    				elevator.setToteLevel(2);
+    			
+    			elevatorUpRan = true;
+    			System.out.println("Set Tote Level to Two");
+    			drive.setSpeed(0, 0, 0, false);
+    			break;
+    		}
+    		
+    		case 5:
+    		{
+    			if(!elevatorDownRan)
+    				elevator.setToteLevel(0);
+    			
+    			elevatorDownRan = true;
+    			System.out.println("Set Tote Level to One");
+    			break;
+    		}
+    		
+    		case 6:
+    		{
+    			claw.openAlignClaw();
+    			claw.openTopClaw();
+    			elevator.setToteLevel(1);
+    			System.out.println("Open Claws");
+    			break;
+    		}
+    		
+    		case 7:
+    		{
+    			claw.closeAlignClaw();
+    			claw.closeTopClaw();
+    			System.out.println("Close Claws");
+    			break;
+    		}
+    		
+    	}
+	
+		elevator.update();
+		System.out.println(tmTest.get());
+		
+		if(tmTest.get() > .75 && testStep < 4)
+		{
+			testStep++;
+			tmTest.reset();
+		}
+		
+		else if(tmTest.get() > 5 && testStep >= 4 )
+		{
+			testStep++;
+			tmTest.reset();
+		}
+
     }
 }

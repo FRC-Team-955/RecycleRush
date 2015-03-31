@@ -62,7 +62,7 @@ public class Elevator
 		Config.ContrElevator.btLvlThree,
 		Config.ContrElevator.btLvlFour,
 		Config.ContrElevator.btLvlFive,
-		Config.ContrElevator.btLvlSix
+//		Config.ContrElevator.btLvlSix
 	};
 	
 	/**
@@ -94,7 +94,7 @@ public class Elevator
 				brake();
 		}
 
-		if(contr.getRawButton(Config.ContrElevator.btElevatorUp) && !getLimitSwitchTop())
+		if(contr.getRawButton(Config.ContrElevator.btElevatorUp) /*&& !getLimitSwitchTop()*/)
 		{
 			// Auto disengages brakes if the brakes are engaged
 			if(getBrake())
@@ -114,7 +114,7 @@ public class Elevator
 			System.out.println("Up pressed");
 		}
 		
-		else if(contr.getRawButton(Config.ContrElevator.btElevatorDown) && !getLimitSwitchBot())
+		else if(contr.getRawButton(Config.ContrElevator.btElevatorDown)/* && !getLimitSwitchBot()*/)
 		{
 			// Auto disengages brakes if the brakes are engaged
 			if(getBrake())
@@ -229,9 +229,10 @@ public class Elevator
 			// set the want position to current height as that means we hit the 
 			// mechanical limits and we should stop trying to go any further
 			// TODO get boundaries working with getRate() 
-			if((getLimitSwitchBot() && wantPos < getHeight()) || (getLimitSwitchTop() && wantPos > getHeight()))
+			if(/*(getLimitSwitchBot() && wantPos < getHeight()) ||*/ getHeight() > Config.Elevator.maxElevatorHeight)/*getLimitSwitchTop() && wantPos > getHeight())*/
 			{
 				setHeight(getHeight());
+				System.out.println("In limit");
 				//wantPos = getHeight();
 				//pidElevator.reset();
 			}
