@@ -194,13 +194,13 @@ public class Robot extends IterativeRobot
 		elevator.update();
 		System.out.println(tmTest.get());
 		
-		if(tmTest.get() > .75 && testStep < 4)
+		if(tmTest.get() > Config.Test.motorTime && testStep < 4)
 		{
 			testStep++;
 			tmTest.reset();
 		}
 		
-		else if(tmTest.get() > 5 && testStep >= 4 )
+		else if(tmTest.get() > Config.Test.elevatorTime && testStep >= 4 )
 		{
 			testStep++;
 			tmTest.reset();

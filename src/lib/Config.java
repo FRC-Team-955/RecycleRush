@@ -350,4 +350,10 @@ public class Config
 		public static final byte updateRateHz = 50;
 		public static final int baudRate = 57600;
 	}
+	
+	public class Test
+	{
+		public static final double motorTime = 0.75;
+		public static final double elevatorTime = 2;
+	}
 }
