@@ -23,8 +23,11 @@ public class AutoPID
 	private boolean drivePosSet = false;
 	private boolean driveAngSet = false;
 	private boolean elevatorPosSet = false;
-
-	public AutoPID(Drive newDrive, Elevator newElevator, Claw newClaw)
+    private double maxLeftEncDist = 0;
+    private int minLeftEncDist = 0;
+    private double maxRightEncDist = 0;
+    private double minRightEncDist = 0;
+    public AutoPID(Drive newDrive, Elevator newElevator, Claw newClaw)
 	{
 		drive = newDrive;
 		elevator = newElevator;
@@ -71,6 +74,13 @@ public class AutoPID
 				break;
 			}
 			
+			case Config.AutoPID.idStackAllTotesRight:
+			{
+				//stackAllTotesRight();
+				turnOnce();
+				break;
+			}
+					
 			default:
 				doNothing();
 		}
@@ -170,6 +180,7 @@ public class AutoPID
 			// Close claw, set elevator to drop off level 2 ground mode
 			case 0:
 			{
+				claw.closeTopClaw();
 				stepPickupToteFromGround();
 				break;
 			}
@@ -177,7 +188,7 @@ public class AutoPID
 			// Go forward to go around the bin
 			case 1:
 			{
-				stepDriveTo(90, Config.AutoPID.distInFrontOfBin);
+				stepRotateToAngle(-45);
 				break;
 			}
 	
@@ -191,77 +202,133 @@ public class AutoPID
 			// Go backwards towards next tote
 			case 3:
 			{
-				stepDriveTo(-90, Config.AutoPID.distInFrontOfBin);
+				stepRotateToAngle(45);
+				break;
+			}
+			
+			case 4:
+			{
+				stepDriveTo(0, Config.AutoPID.distToNextTote);
 				break;
 			}
 	
 			// Open claw, set elevator to pick up level 1 ground mode
-			case 4:
+			case 5:
 			{
 				stepDropToteOnTote();
 				break;
 			}
 	
 			// Close claw, set elevator to drop off level 2 ground mode
-			case 5:
+			case 6:
+			{
+				stepPickupToteFromGround();
+				break;
+			}
+			// Close claw, set elevator to drop off level 2 ground mode
+			case 7:
 			{
 				stepPickupToteFromGround();
 				break;
 			}
 	
 			// Go forward to go around the bin
-			case 6:
+			case 8:
 			{
-				stepDriveTo(90, Config.AutoPID.distInFrontOfBin);
+				stepRotateToAngle(-45);
 				break;
 			}
 	
-			// Go left towards the next tote
-			case 7:
+			// Go left, towards next tote
+			case 9:
 			{
 				stepDriveTo(0, Config.AutoPID.distToNextTote);
 				break;
 			}
 	
 			// Go backwards towards next tote
-			case 8:
+			case 10:
 			{
-				stepDriveTo(-90, Config.AutoPID.distInFrontOfBin);
+				stepRotateToAngle(45);
+				break;
+			}
+			
+			case 11:
+			{
+				stepDriveTo(0, Config.AutoPID.distToNextTote);
 				break;
 			}
 	
 			// Open claw, set elevator to pick up level 1 ground mode
-			case 9:
+			case 12:
 			{
 				stepDropToteOnTote();
 				break;
 			}
 	
-			// Close claw, set elevator to pick up level 1 scoring mode
-			case 10:
-			{
-				stepPickupToteForScoring();
-				break;
-			}
-	
-			// Drive to auto zone
-			case 11:
-			{
-				stepDriveTo(90, Config.AutoPID.distToAutoZone);
-				break;
-			}
-	
-			// Open claw, set elevator to pick up level 1 scoring mode
-			case 12:
-			{
-				stepDropToteForScoring();
-				break;
-			}
-	
-			// Drive left away totes to clear them
+			// Close claw, set elevator to drop off level 2 ground mode
 			case 13:
 			{
-				stepDriveTo(180, Config.AutoPID.distToClearStackedTotes);
+				stepPickupToteFromGround();
+				break;
+			}
+			// Close claw, set elevator to drop off level 2 ground mode
+			case 14:
+			{
+				stepPickupToteFromGround();
+				break;
+			}
+	
+			// Go forward to go around the bin
+			case 15:
+			{
+				stepRotateToAngle(-45);
+				break;
+			}
+	
+			// Go left, towards next tote
+			case 16:
+			{
+				stepDriveTo(0, Config.AutoPID.distToNextTote);
+				break;
+			}
+	
+			// Go backwards towards next tote
+			case 17:
+			{
+				stepRotateToAngle(45);
+				break;
+			}
+			
+			case 18:
+			{
+				stepDriveTo(0, Config.AutoPID.distToNextTote);
+				break;
+			}
+	
+			// Open claw, set elevator to pick up level 1 ground mode
+			case 19:
+			{
+				stepDropToteOnTote();
+				break;
+			}
+	
+			// Close claw, set elevator to drop off level 2 ground mode
+			case 20:
+			{
+				stepPickupToteFromGround();
+				break;
+			}
+		
+			case 21:
+			{
+				stepRotateToAngle(90);
+				break;
+			}
+			
+			case 22:
+			{
+				stepDriveTo(0, Config.AutoPID.distToAutoZone);
 				break;
 			}
 		}
@@ -270,6 +337,67 @@ public class AutoPID
 		elevator.update();
 	}
 
+	public void turnOnce(){
+		
+		boolean updateAngle = false;
+		
+		switch (autoStep)
+		{	
+			case 0:
+			{
+				stepDriveTo(0, 60);
+				System.out.println("Ran case 0!");
+				//System.out.println(drive.getRightEncDist());
+				
+				if(drive.getLeftEncDist() > maxLeftEncDist)
+					maxLeftEncDist = drive.getLeftEncDist();
+				
+				if(drive.getLeftEncDist() < minLeftEncDist)
+					maxLeftEncDist = drive.getLeftEncDist();
+				
+				if(drive.getRightEncDist() > maxRightEncDist)
+					maxRightEncDist = drive.getRightEncDist();
+		
+				if(drive.getRightEncDist() < minRightEncDist)
+					minRightEncDist = drive.getRightEncDist();
+				
+				System.out.println("Max Enc Left:" + maxLeftEncDist);
+				System.out.println("Min Enc Left" + minLeftEncDist);
+				
+				System.out.println("Max Enc Right:" + maxRightEncDist);
+				System.out.println("Min Enc Right" + minRightEncDist);
+				
+				break;
+			}
+			
+			case 1:
+			{
+				stepDriveTo(180, 12);	
+				System.out.println("Ran case 1!");
+				break;
+			}
+			
+//			case 2: 
+//			{
+//				stepRotateToAngle(10);
+//				System.out.println("Entered case 2: Rotate to 10 degrees");
+//				updateAngle = true;
+//				break;
+//				
+//			}
+			
+			
+			default:
+				break;
+			}
+		
+//		if(updateAngle)	
+//			drive.updateAng();
+		
+		drive.update();
+	}
+	
+	
 	// TODO: WARNING THIS IS NOT THE ACTUAL TO AUTO ZONE ONE
 //	public void toAutoZone()
 //	{
@@ -324,6 +452,7 @@ public class AutoPID
 	public void stepPickupToteFromGround()
 	{
 //		if (!claw.getTopClaw())
+		claw.closeAlignClaw();
 		claw.closeTopClaw();
 
 		elevator.setHeightType(Config.Elevator.heightTypeGround);
@@ -403,6 +532,7 @@ public class AutoPID
 	 */
 	public void stepDriveTo(double heading, double distance)
 	{
+		drive.encReset();
 		// Set new driving position if it hasn't been set
 		if (!drivePosSet)
 		{
@@ -417,6 +547,7 @@ public class AutoPID
 			drive.setSpeed(0, 0, 0, false);
 			drivePosSet = false;
 			autoStep++;
+			System.out.println(autoStep);
 		}
 	}
 

@@ -97,7 +97,7 @@ public class Config
 		// TODO: Actual set this values, these aren't legit
 		// Encoder distance values, inches
 		public static final double distInFrontOfBin = 28.5;
-		public static final double distToNextTote = 81;
+		public static final double distToNextTote = 57;
 //		public static final double distToAutoZone = 100; Actual Value
 		public static final double distToAutoZone = 100; // For pushing bin
 		public static final double distToAutoZoneBin = 156;
@@ -226,7 +226,8 @@ public class Config
 		public static final double toteHeight = 12.75;		   
 		public static final double clearanceHeight = 2;
 		public static final double toteLossHeight = 1/2.54;
-		public static final double maxElevatorHeight = 58;
+		public static final double maxElevatorHeight = 54.5;    // Highest we ever set it
+		public static final double maxElevatorHeightLimit = 56; // Hard Stop, if something goes wrong
 		public static final double halfToteHeight = 6;
 				
 		// Minimum encoder rate for elevator to be able to be braked without damage occurring
@@ -335,7 +336,7 @@ public class Config
         public static final double kBackD = 0;
         
         public static final double robotCircumfrence = Math.PI * 48; // Inches
-        public static final double maxDistanceDiff = 1;              // Inches
+        public static final double maxDistanceDiff = .5; // was 1              // Inches
 		public static final double minAngleDiff = 5;
         
         // Turn Speed Adjustments

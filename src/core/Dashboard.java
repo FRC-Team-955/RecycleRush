@@ -34,6 +34,7 @@ public class Dashboard
 		autoChooser.addObject("Move Bin to Line Up", new ChooserType(Config.AutoPID.idMoveOneBinLineUp));
 		autoChooser.addObject("Move Bin to Auto Zone", new ChooserType(Config.AutoPID.idMoveOneBinToAutoZone));
 		autoChooser.addObject("To Auto Zone From Landfill", new ChooserType(Config.AutoPID.idToAutoZoneLandfill));
+		autoChooser.addObject("Three Tote from Right", new ChooserType(Config.AutoPID.idStackAllTotesRight));
 		
 //		chooser.addDefault("Do Nothing", new ChooserType(Config.Auto.idDoNothing));
 //		chooser.addObject("Drive Foward Timer", new ChooserType(Config.Auto.idDriveForwardTimer));

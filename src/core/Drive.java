@@ -115,7 +115,7 @@ public class Drive
         double sideSpeed = leftJoyMag * Math.cos(Math.toRadians(newAng));
         double turnSpeed = Math.abs(contr.getRawRightX()) * contr.getRawRightX();    
         
-        System.out.println("newAng: " + newAng + " leftJoyMag: " + leftJoyMag + " || " + centerSpeed + " || " + sideSpeed + " || " + turnSpeed);
+//        System.out.println("newAng: " + newAng + " leftJoyMag: " + leftJoyMag + " || " + centerSpeed + " || " + sideSpeed + " || " + turnSpeed);
         
         // Set wantStrafe angle when bot is turning or not moving, stop strafe pid
 		if(Math.abs(turnSpeed) > Config.Drive.minTurnJoyVal || Math.abs(leftJoyMag) <= Config.Drive.minLeftJoyMag)
@@ -235,13 +235,13 @@ public class Drive
 	 * @param heading
 	 * @param distance
 	 */
-	public void setHeading(double heading, double distance)
+	public void setHeading( double heading, double distance)
 	{
-		double angDiff = Util.absoluteAngToRelative(heading - getAngle());
-		double centerPosition = distance * Math.sin(Math.toRadians(angDiff));
-        double sidePosition = distance * Math.cos(Math.toRadians(angDiff));
-        wantLeftPos = sidePosition;
-        wantRightPos = sidePosition;
+//		double angDiff = Util.absoluteAngToRelative(heading - getAngle());
+//		double centerPosition = distance * Math.sin(Math.toRadians(angDiff));
+//        double sidePosition = distance * Math.cos(Math.toRadians(angDiff));
+        wantLeftPos = distance;
+        wantRightPos = distance;
 //        wantFrontPos = centerPosition;
 //        wantBackPos = centerPosition;
         
@@ -257,7 +257,7 @@ public class Drive
 //        if(Math.abs(wantBackPos - getBackEncDist()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
 //			pidBack.start();
         
-        System.out.println(wantLeftPos + " : " + wantRightPos + " : " + wantFrontPos + " : " + wantBackPos);
+//        System.out.println(wantLeftPos + " : " + wantRightPos + " : " + wantFrontPos + " : " + wantBackPos);
 	}
 	
 	// TODO: Remove this or fix this if we're gonna use it, has not been looked over

@@ -229,9 +229,10 @@ public class Elevator
 			// set the want position to current height as that means we hit the 
 			// mechanical limits and we should stop trying to go any further
 			// TODO get boundaries working with getRate() 
-			if(/*(getLimitSwitchBot() && wantPos < getHeight()) ||*/ getHeight() > Config.Elevator.maxElevatorHeight)/*getLimitSwitchTop() && wantPos > getHeight())*/
+			if(/*(getLimitSwitchBot() && wantPos < getHeight()) ||*/ getHeight() > Config.Elevator.maxElevatorHeightLimit)/*getLimitSwitchTop() && wantPos > getHeight())*/
 			{
-				setHeight(getHeight());
+				//setHeight(getHeight());
+				wantPos = getHeight();
 				System.out.println("In limit");
 				//wantPos = getHeight();
 				//pidElevator.reset();
@@ -291,17 +292,17 @@ public class Elevator
 		
 		speed = Util.limit(speed, Config.Elevator.minElevatorSpeed, Config.Elevator.maxElevatorSpeed);
 		
-		System.out.println
-		(
-				"Speed " + Util.round(speed) + 
-				" : Encoder " + Util.round(getHeight()) + 
-				" : Time " + pidElevator.getDeltaT() +
-				" : Time Sys " + pidElevator.getDeltaSysT() +
-				" : Encode Rate " + getRate() + 
-				" : Want Height " + wantPos +
-    			" : Max Error " + maxErrI +
-    			" : Error diff " + pidElevator.getErrD()
-		);
+//		System.out.println
+//		(
+//				"Speed " + Util.round(speed) + 
+//				" : Encoder " + Util.round(getHeight()) + 
+//				" : Time " + pidElevator.getDeltaT() +
+//				" : Time Sys " + pidElevator.getDeltaSysT() +
+//				" : Encode Rate " + getRate() + 
+//				" : Want Height " + wantPos +
+//    			" : Max Error " + maxErrI +
+//    			" : Error diff " + pidElevator.getErrD()
+//		);
 		
 		setSpeed(speed);
 	}
@@ -371,6 +372,8 @@ public class Elevator
 		
 		else if(heightType == Config.Elevator.heightTypeStep)
 			newHeight += Config.Elevator.baseHeightStep;
+		
+		
 		
 		setHeight(Util.limit(newHeight, 0, Config.Elevator.maxElevatorHeight));
 	}
