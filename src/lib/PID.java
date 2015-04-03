@@ -155,22 +155,35 @@ public class PID
     }
     
     /**
-     * Returns true if the pid is running
+     * @return Returns true if the pid is running
      */
     public boolean isRunning()
     {
     	return isRunning;
     }
 
+    
+    /**
+     * 
+     * @return The total accumulation of error, also called the 'I' term
+     */
     public double getErrSum()
     {
     	return errSum;
     }
-    
+    /**
+     * 
+     * @return The 'D' term - the rate of change of error
+     */
     public double getErrD()
     {
     	return errD;
     }
+
+    /**
+     * 
+     * @return The difference in time between the previous sample and current sample in seconds
+     */
     
     public double getDeltaT()
     {
@@ -187,6 +200,10 @@ public class PID
     	return needReset;
     }
     
+    /**
+     * 
+     * @return The difference in time based on the system clock (not the WPI Timer class) in milliseconds
+     */
     public double getDeltaSysT()
     {
     	return deltaSysT;

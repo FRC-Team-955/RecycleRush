@@ -2,11 +2,9 @@ package core;
 
 import auto.AutoPID;
 //import lib.CameraFeed;
-import lib.Camera;
 import lib.CameraFeed;
 import lib.Config;
 import lib.Controller;
-import lib.LIDAR;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -33,9 +31,7 @@ public class Robot extends IterativeRobot
 	private boolean elevatorUpRan = false;
 	private boolean elevatorDownRan = false;
 //	private CameraFeed cam = new CameraFeed();
-	
-	//	private LIDAR lidar  = new LIDAR(Port.kMXP);
-	
+		
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.

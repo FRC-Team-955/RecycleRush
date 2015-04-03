@@ -65,7 +65,7 @@ public class Drive
 	
 	// Field centric/Slow mode
 	private boolean fieldCentricMode = false;
-	private boolean slowMode = false;
+	private boolean isSlowMode = false;
 	
 	public Drive (Controller newContr) 
 	{
@@ -200,78 +200,27 @@ public class Drive
 		mtBackCAN.set(backSpeed);
 	}
 	
-	/**
-	 * Sets the drive base pid want position at heading at distance
-	 * @param heading
-	 * @param distance
-	 */
-//	public void setHeading(double heading, double distance)
-//	{
-//		double angDiff = Util.absoluteAngToRelative(heading - getAngle());
-//		double centerPosition = distance * Math.sin(Math.toRadians(angDiff));
-//        double sidePosition = distance * Math.cos(Math.toRadians(angDiff));
-//        wantLeftPos += sidePosition;
-//        wantRightPos += sidePosition;
-//        wantFrontPos += centerPosition;
-//        wantBackPos += centerPosition;
-//        
-//        if(Math.abs(wantLeftPos - getLeftEncDist()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
-//			pidLeft.start();
-//        
-//        if(Math.abs(wantRightPos - getRightEncDist()) > Config.Drive.maxDistanceDiff && !pidRight.isRunning())
-//			pidRight.start();
-//        
-//        if(Math.abs(wantFrontPos - getFrontEncDist()) > Config.Drive.maxDistanceDiff && !pidFront.isRunning())
-//			pidFront.start();
-//        
-//        if(Math.abs(wantBackPos - getBackEncDist()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
-//			pidBack.start();
-//        
-//        System.out.println(wantLeftPos + " : " + wantRightPos + " : " + wantFrontPos + " : " + wantBackPos);
-//	}
 	
 	/**
 	 * Sets the drive base pid want position at heading at distance
 	 * @param heading
 	 * @param distance
 	 */
-	public void setHeading( double heading, double distance)
+	public void setDistance(double distance)
 	{
-//		double angDiff = Util.absoluteAngToRelative(heading - getAngle());
-//		double centerPosition = distance * Math.sin(Math.toRadians(angDiff));
-//        double sidePosition = distance * Math.cos(Math.toRadians(angDiff));
         wantLeftPos = distance;
         wantRightPos = distance;
-//        wantFrontPos = centerPosition;
-//        wantBackPos = centerPosition;
+
         
         if(Math.abs(wantLeftPos - getLeftEncDist()) > Config.Drive.maxDistanceDiff && !pidLeft.isRunning())
 			pidLeft.start();
         
         if(Math.abs(wantRightPos - getRightEncDist()) > Config.Drive.maxDistanceDiff && !pidRight.isRunning())
-			pidRight.start();
-        
-//        if(Math.abs(wantFrontPos - getFrontEncDist()) > Config.Drive.maxDistanceDiff && !pidFront.isRunning())
-//			pidFront.start();
-//        
-//        if(Math.abs(wantBackPos - getBackEncDist()) > Config.Drive.maxDistanceDiff && !pidBack.isRunning())
-//			pidBack.start();
+			pidRight.start();        
         
 //        System.out.println(wantLeftPos + " : " + wantRightPos + " : " + wantFrontPos + " : " + wantBackPos);
+
 	}
-	
-	// TODO: Remove this or fix this if we're gonna use it, has not been looked over
-//	public void setHeading(double heading, double bearing, double distance)
-//	{
-//		return;
-//		double centerPosition = distance * Math.sin(Math.toRadians(heading));
-//        double sidePosition = distance * Math.cos(Math.toRadians(heading));
-//		double angDiff = Util.absoluteAngToRelative(bearing - heading);
-//		wantLeftPos += sidePosition + (Config.Drive.robotCircumfrence * angDiff);
-//		wantRightPos += sidePosition - (Config.Drive.robotCircumfrence * angDiff);
-//		wantFrontPos += centerPosition + (Config.Drive.robotCircumfrence * angDiff);
-//		wantBackPos += centerPosition - (Config.Drive.robotCircumfrence * angDiff);
-//	}
 	
 	/**
 	 * Updates the drive base pid based on wanted positions set by setHeading()
@@ -295,18 +244,6 @@ public class Drive
 			pidRight.reset();
 		}
 		
-//		if(Math.abs(wantFrontPos - getFrontEncDist()) < Config.Drive.maxDistanceDiff)
-//		{
-//			pidFront.stop();
-//			pidFront.reset();
-//		}
-//		
-//		if(Math.abs(wantBackPos - getBackEncDist()) < Config.Drive.maxDistanceDiff)
-//		{
-//			pidBack.stop();
-//			pidBack.reset();
-//		}
-			
 		if(pidLeft.isRunning())
 		{
 			pidLeft.update(getLeftEncDist(), wantLeftPos);
@@ -318,19 +255,7 @@ public class Drive
 			pidRight.update(getRightEncDist(), wantRightPos);
 			rightSpeed = pidRight.getOutput();
 		}
-		
-//		if(pidFront.isRunning())
-//		{
-//			pidFront.update(getFrontEncDist(), wantFrontPos);
-//			frontSpeed = pidFront.getOutput();
-//		}
-//		
-//		if(pidBack.isRunning())
-//		{
-//			pidBack.update(getBackEncDist(), wantBackPos);
-//			backSpeed = pidBack.getOutput();
-//		}
-		
+				
 		setSpeed(leftSpeed, rightSpeed, frontSpeed, backSpeed, true);
 
 	}
@@ -463,14 +388,14 @@ public class Drive
 		encBack.reset();
 	}
 	
-	public void setSlowMode(boolean newMode)
+	public void setSlowMode(boolean slowMode)
 	{
-		slowMode = newMode;
+		isSlowMode = slowMode;
 	}
 	
 	public boolean getSlowMode()
 	{
-		return slowMode;
+		return isSlowMode;
 	}
 	
 	public void setLeftCAN()

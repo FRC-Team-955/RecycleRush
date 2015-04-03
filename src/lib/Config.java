@@ -315,7 +315,7 @@ public class Config
         public static final double kStrafeI = 0;
         public static final double kStrafeD = 0;
 
-        public static final double kRotateP = 0.0190;
+        public static final double kRotateP = 0.0190;//TODO revise constants
         public static final double kRotateI = 0;
         public static final double kRotateD = 0;
         
@@ -357,4 +357,5 @@ public class Config
 		public static final double motorTime = 0.75;
 		public static final double elevatorTime = 2;
 	}
+	
 }

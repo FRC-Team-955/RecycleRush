@@ -62,7 +62,6 @@ public class Elevator
 		Config.ContrElevator.btLvlThree,
 		Config.ContrElevator.btLvlFour,
 		Config.ContrElevator.btLvlFive,
-//		Config.ContrElevator.btLvlSix
 	};
 	
 	/**
@@ -527,7 +526,7 @@ public class Elevator
 	}
 
 	/**
-	 * Resets the PID
+	 * Resets the Elevator PID
 	 */
 	public void resetPID()
 	{

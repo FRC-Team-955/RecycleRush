@@ -10,6 +10,7 @@ public class LimitSwitch
 	/**
 	 * Constructor
 	 * @param chn the channel for the limit switch
+	 * @param isFlipped if the true/false is flipped (electronic property)
 	 */
 	public LimitSwitch(int chn, boolean isFlipped)
 	{
