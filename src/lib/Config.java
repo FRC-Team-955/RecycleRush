@@ -48,15 +48,21 @@ public class Config
 		public static final int btElevatorUp = 4;
 		public static final int btElevatorDown = 1;
 		public static final int btLvlHalf = 10; //TODO FINISH THIS
-		public static final int btLvlOne = 3;
-		public static final int btLvlTwo = 2;
-		public static final int btLvlThree = 1;
-		public static final int btLvlFour = 4;
+//		public static final int btLvlOne = 3;    For Silver
+//		public static final int btLvlTwo = 2;
+//		public static final int btLvlThree = 1;
+//		public static final int btLvlFour = 4;
 		public static final int btLvlFive = 12;
 		public static final int btLvlSix = 11;
 		public static final int btToggleBrake = 7;
 		public static final int btDropOff = 11;
 		public static final int btAlignClawToggle = 5;
+		
+		// For Red Rock Candy Contr
+		public static final int btLvlOne = 2;
+		public static final int btLvlTwo = 3;
+		public static final int btLvlThree = 4;
+		public static final int btLvlFour = 1;
 		
 		// TODO: WE'RE NOT ACTUALLY USING THESE YET
 //		public static final int btModeSwitch = 12;
@@ -226,7 +232,7 @@ public class Config
 		public static final double toteHeight = 12.75;		   
 		public static final double clearanceHeight = 2;
 		public static final double toteLossHeight = 1/2.54;
-		public static final double maxElevatorHeight = 54.5;    // Highest we ever set it
+		public static final double maxElevatorHeight = 54;    // Highest we ever set it
 		public static final double maxElevatorHeightLimit = 56; // Hard Stop, if something goes wrong
 		public static final double halfToteHeight = 6;
 				
@@ -319,11 +325,11 @@ public class Config
         public static final double kRotateI = 0;
         public static final double kRotateD = 0;
         
-        public static final double kLeftP = 0.033;
+        public static final double kLeftP = 0.02475;
         public static final double kLeftI = 0;
         public static final double kLeftD = 0;
         
-        public static final double kRightP = 0.033;
+        public static final double kRightP = 0.02475;
         public static final double kRightI = 0;
         public static final double kRightD = 0;
         
@@ -336,7 +342,7 @@ public class Config
         public static final double kBackD = 0;
         
         public static final double robotCircumfrence = Math.PI * 48; // Inches
-        public static final double maxDistanceDiff = .5; // was 1              // Inches
+        public static final double maxDistanceDiff = 1; // was 1              // Inches
 		public static final double minAngleDiff = 5;
         
         // Turn Speed Adjustments
@@ -357,5 +363,5 @@ public class Config
 		public static final double motorTime = 0.75;
 		public static final double elevatorTime = 2;
 	}
-	
-}
+			
+		}

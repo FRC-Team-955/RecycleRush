@@ -22,6 +22,7 @@ public class AutoPID
 	//Variables for changing the angle
 	private boolean drivePosSet = false;
 	private boolean driveAngSet = false;
+	private boolean updateAngle = false;
     
 	//Test Variables
 	//TODO Remove when done 
@@ -29,6 +30,8 @@ public class AutoPID
     private double minLeftEncDist = 0;
     private double maxRightEncDist = 0;
     private double minRightEncDist = 0;
+	private double maxAngle;
+	private double minAngle;
     
     /**
      * 
@@ -365,44 +368,76 @@ public class AutoPID
 	
 	public void turnOnce(){
 		
-		boolean updateAngle = false;
-		
 		switch (autoStep)
 		{	
 			case 0:
 			{
-				stepDriveTo(60);
-				System.out.println("Ran case 0!");
-				//System.out.println(drive.getRightEncDist());
+//				stepDriveTo(60);
+//				System.out.println("Ran case 0!");
+//				//System.out.println(drive.getRightEncDist());
+	
+				stepRotateToAngle(90);
 				
-				if(drive.getLeftEncDist() > maxLeftEncDist)
-					maxLeftEncDist = drive.getLeftEncDist();
+				if(drive.getAngle() > maxAngle)
+					maxAngle = drive.getAngle();
+
+				if(drive.getAngle() < minAngle)
+					minAngle = drive.getAngle();
 				
-				if(drive.getLeftEncDist() < minLeftEncDist)
-					maxLeftEncDist = drive.getLeftEncDist();
+				System.out.println("Max Angle" + maxAngle);
+				System.out.println("Min Angle" + minAngle);
 				
-				if(drive.getRightEncDist() > maxRightEncDist)
-					maxRightEncDist = drive.getRightEncDist();
-		
-				if(drive.getRightEncDist() < minRightEncDist)
-					minRightEncDist = drive.getRightEncDist();
 				
-				System.out.println("Max Enc Left:" + maxLeftEncDist);
-				System.out.println("Min Enc Left" + minLeftEncDist);
 				
-				System.out.println("Max Enc Right:" + maxRightEncDist);
-				System.out.println("Min Enc Right" + minRightEncDist);
+//				if(drive.getLeftEncDist() > maxLeftEncDist)
+//					maxLeftEncDist = drive.getLeftEncDist();
+//				
+//				if(drive.getLeftEncDist() < minLeftEncDist)
+//					maxLeftEncDist = drive.getLeftEncDist();
+//				
+//				if(drive.getRightEncDist() > maxRightEncDist)
+//					maxRightEncDist = drive.getRightEncDist();
+//		
+//				if(drive.getRightEncDist() < minRightEncDist)
+//					minRightEncDist = drive.getRightEncDist();
+//				
+//				System.out.println("Max Enc Left:" + maxLeftEncDist);
+//				System.out.println("Min Enc Left" + minLeftEncDist);
+//				
+//				System.out.println("Max Enc Right:" + maxRightEncDist);
+//				System.out.println("Min Enc Right" + minRightEncDist);
 				
 				break;
 			}
 			
-			case 1:
-			{
-				stepDriveTo(-12);	
-				System.out.println("Ran case 1!");
-				break;
-			}
-			
+//			case 1:
+//			{
+//				stepDriveTo(-60);	
+//				System.out.println("Ran case 1!");
+//				
+////				if(drive.getLeftEncDist() > maxLeftEncDist)
+////					maxLeftEncDist = drive.getLeftEncDist();
+////				
+////				if(drive.getLeftEncDist() < minLeftEncDist)
+////					maxLeftEncDist = drive.getLeftEncDist();
+////				
+////				if(drive.getRightEncDist() > maxRightEncDist)
+////					maxRightEncDist = drive.getRightEncDist();
+////		
+////				if(drive.getRightEncDist() < minRightEncDist)
+////					minRightEncDist = drive.getRightEncDist();
+////				
+////				System.out.println("Max Enc Left:" + maxLeftEncDist);
+////				System.out.println("Min Enc Left" + minLeftEncDist);
+////				
+////				System.out.println("Max Enc Right:" + maxRightEncDist);
+////				System.out.println("Min Enc Right" + minRightEncDist);
+////				
+//				
+//				break;
+//				
+//			}
+//			
 //			case 2: 
 //			{
 //				stepRotateToAngle(10);
@@ -417,8 +452,8 @@ public class AutoPID
 				break;
 			}
 		
-//		if(updateAngle)	
-//			drive.updateAng();
+		if(updateAngle)	
+			drive.updateAng();
 		
 		drive.update();
 	}
@@ -477,6 +512,7 @@ public class AutoPID
 	
 	public void stepRotateToAngle(double heading)
 	{
+		updateAngle = true;
 		// Set new driving position if it hasn't been set
 		if (!driveAngSet)
 		{
@@ -486,10 +522,11 @@ public class AutoPID
 
 		// Move on to next auto step if drive has finished aka reached its
 		// destination
-		if (!drive.isRunning())
+		else if (!drive.isRotating())
 		{
 			drive.setSpeed(0, 0, 0, false);
 			driveAngSet = false;
+			updateAngle = false;
 			autoStep++;
 		}
 	}
@@ -546,10 +583,10 @@ public class AutoPID
 	 */
 	public void stepDriveTo(double distance)
 	{
-		drive.encReset();
 		// Set new driving position if it hasn't been set
 		if (!drivePosSet)
 		{
+			drive.encReset();
 			drive.setDistance(distance);
 			drivePosSet = true;
 		}

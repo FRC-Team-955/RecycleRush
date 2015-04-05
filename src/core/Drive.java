@@ -398,6 +398,11 @@ public class Drive
 		return isSlowMode;
 	}
 	
+	public boolean isRotating()
+	{
+		return pidRotate.isRunning();
+	}
+	
 	public void setLeftCAN()
 	{
 		mtLeftCAN.set(1);
@@ -417,7 +422,7 @@ public class Drive
 	public void setRightCAN()
 	{
 		mtRightCAN.set(-1);
-		mtLeftCAN.set(1);
+		mtLeftCAN.set(0);
 		mtLeft.set(0);
 		mtRight.set(0);
 	}
@@ -425,7 +430,7 @@ public class Drive
 	public void setRight()
 	{
 		mtRight.set(-1);
-		mtLeftCAN.set(1);
+		mtLeftCAN.set(0);
 		mtLeft.set(0);
 		mtRightCAN.set(0);
 	}

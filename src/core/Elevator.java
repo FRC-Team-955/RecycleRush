@@ -231,7 +231,7 @@ public class Elevator
 			if(/*(getLimitSwitchBot() && wantPos < getHeight()) ||*/ getHeight() > Config.Elevator.maxElevatorHeightLimit)/*getLimitSwitchTop() && wantPos > getHeight())*/
 			{
 				//setHeight(getHeight());
-				wantPos = getHeight();
+				wantPos = Config.Elevator.maxElevatorHeight;
 				System.out.println("In limit");
 				//wantPos = getHeight();
 				//pidElevator.reset();
