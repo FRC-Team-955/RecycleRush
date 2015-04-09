@@ -7,7 +7,7 @@ import lib.Config.ContrElevator;
 import lib.FileSaver;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import lib.PDP;
 
 public class Dashboard 
 {
@@ -16,7 +16,7 @@ public class Dashboard
 	private Claw claw;
 	private SendableChooser autoChooser = new SendableChooser();
 	private SendableChooser driveChooser = new SendableChooser();
-	private PowerDistributionPanel pdp = new PowerDistributionPanel();
+	private PDP pdp = new PDP();
 	private Controller contr;
 	private FileSaver fileSaver;
 	
@@ -89,6 +89,7 @@ public class Dashboard
 		SmartDashboard.putNumber("Elevator Rate", elevator.getRate());
 		SmartDashboard.putBoolean("Elevator Limit Switch Top", elevator.getLimitSwitchTop());
 		SmartDashboard.putBoolean("Elevator Limit Switch Bot", elevator.getLimitSwitchBot());
+		SmartDashboard.putNumber("Elevator Current Usage", pdp.getElevatorPowerUsage());
 //		SmartDashboard.putBoolean("Dropoff Mode", elevator.getDropoffMode());
 		SmartDashboard.putBoolean("Elevator Brake", elevator.getBrake());
 //		fileSaver.write("Elevator 1 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorOneCAN)));
@@ -141,6 +142,12 @@ public class Dashboard
 			fileSaver = new FileSaver(System.currentTimeMillis() + ".txt");
 	}
 	
+//	public void displayCurrent()
+//	{
+//		for(int i = 0; i < 16; i++)
+//			SmartDashboard.putNumber("Port " + i, pdp.getCurrent(i));
+//	}
+	
 	/**
 	 * Closed the log file
 	 */
@@ -149,11 +156,6 @@ public class Dashboard
 		fileSaver.close();
 	}
 	
-	public void displayCurrent()
-	{
-		for(int i = 0; i < 16; i++)
-			SmartDashboard.putNumber("Port " + i, pdp.getCurrent(i));
-	}
 	
 	public void displayDpad()
 	{
