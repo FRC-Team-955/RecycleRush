@@ -54,6 +54,7 @@ public class Elevator
 	// Different modes for the elevator
 	private boolean dropOffMode = false;
 	private int heightType = Config.Elevator.heightTypeGround;
+
 	
 	private int [] levels = 
 	{
