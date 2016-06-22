@@ -49,6 +49,19 @@ public class Controller extends Joystick
         }
     }
     
+    public double[] getRTheta() {
+		double x = this.getRawRightX()*-1;
+		double y = this.getRawLeftY();
+		
+		double r = Math.sqrt((x * x) + (y * y));
+		double theta = Math.atan2(y, x);
+
+		double[] rTheta = { r, theta };
+		
+		return rTheta;
+		
+	}
+    
     /**
      * Gives button value
      * @param button the button number on the controller

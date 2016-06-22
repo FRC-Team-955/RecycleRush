@@ -2,7 +2,6 @@ package core;
 
 import lib.Config;
 import lib.Controller;
-import lib.LimitSwitch;
 import lib.PID;
 import lib.Util;
 import edu.wpi.first.wpilibj.CANTalon;
@@ -20,10 +19,6 @@ public class Elevator
 	// Solenoid for brake
 	private DoubleSolenoid noidBrake = new DoubleSolenoid(Config.Elevator.chnNoidOne, Config.Elevator.chnNoidTwo);
 	
-	// Limit switches on top/bottom to prevent out of bounds
-	private LimitSwitch limitTop = new LimitSwitch(Config.Elevator.chnLimitSwitchTop, false);
-	private LimitSwitch limitBot = new LimitSwitch(Config.Elevator.chnLimitSwitchBottom, false);
-	
 	// Encoder on the elevator for height
 	private Encoder enc = new Encoder(Config.Elevator.chnEncA, Config.Elevator.chnEncB);
 	
@@ -38,14 +33,10 @@ public class Elevator
 	private Controller contr;
 	
 	// PID variables
-	private boolean pidMode = true;
 	private boolean upMode = false;
 	private boolean downMode = false;
 	private boolean changeElevatorHeight = false;
 	private double wantPos = 0;
-	
-	// Elevator
-	private Claw claw = new Claw(contr);
 	
 	// Variables to help tune the PID by holding data about the PID
 	private double maxErrI = 0;
@@ -78,89 +69,14 @@ public class Elevator
 		pidElevator.setErrLimitMode(true);
 		pidElevator.setErrLimits(Config.Elevator.minErrorSum, Config.Elevator.maxErrorSum);
 	}
-
-	/**
-	 * Runs the elevator motor depending on button inputs
-	 */
-	public void run()
-	{		
-		if(contr.getButton(Config.ContrElevator.btToggleBrake))
-		{
-			if(getBrake())
-				unBrake();
-			
-			else
-				brake();
-		}
-
-		if(contr.getRawButton(Config.ContrElevator.btElevatorUp) /*&& !getLimitSwitchTop()*/)
-		{
-			// Auto disengages brakes if the brakes are engaged
-			if(getBrake())
-			{
-				tmBrake.reset();
-				tmBrake.start();
-				unBrake();
-			}
-			
-			// Moves the elevator motor after the brake disengages 
-			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
-			{
-				setSpeed(.25);
-				//System.out.println("GOING UP");
-			}
-			
-			System.out.println("Up pressed");
-		}
-		
-		else if(contr.getRawButton(Config.ContrElevator.btElevatorDown)/* && !getLimitSwitchBot()*/)
-		{
-			// Auto disengages brakes if the brakes are engaged
-			if(getBrake())
-			{
-				tmBrake.reset();
-				tmBrake.start();
-				unBrake();
-			}
-			
-			// Moves the elevator motor after the brake disengages
-			else if(tmBrake.get() > Config.Elevator.brakeDisengageTime)
-			{
-				setSpeed(-.25);
-				//System.out.println("GOING DOWN");
-			}
-			
-			System.out.println("Down pressed");
-		}
-		
-		else
-		{		
-			setSpeed(0);
-			
-			// Auto brakes after the motor stops
-			if(!getBrake())
-			{
-				tmBrake.stop();
-//				brake();
-			}
-		
-			//System.out.println("0 SPEED");
-		}
-	}
 	
 	/**
 	 * Tests the PID for the elevator
 	 */
 	public void runPID()
 	{	
-//		if(contr.getButton(Config.ContrElevator.btDropOff))
-//			setDropOffMode(!dropOffMode);
-		
 		if(contr.getDpadDown())
 			setHeightType(Config.Elevator.heightTypeGround);
-		
-//		if(contr.getDpadRight())
-//			setHeightType(Config.Elevator.heightTypeScoring);
 		
 		if(contr.getDpadUp())
 			setHeightType(Config.Elevator.heightTypeStep);
@@ -178,9 +94,10 @@ public class Elevator
 		if(contr.getButton(Config.ContrElevator.btLvlHalf))
 			setHeight(Config.Elevator.halfToteHeight);
 			
-		for(int i = 0; i < levels.length; i++)
+		for(int i = 0; i < levels.length; i++) {
 			if(contr.getButton(levels[i]))
 				setToteLevel(i + 1);
+		}
 		
 		update();
 	}
@@ -248,19 +165,6 @@ public class Elevator
 			if(Math.abs(pidElevator.getErrD()) > Math.abs(maxErrD))
 				maxErrD = pidElevator.getErrD();
 			
-			// TODO: Get getting current from the pdp working so that finding out whether a motor is stalling
-			// would be easier and more effective that way
-			// If the encoder rate is continuously less than than a certain value for a certain time, engage the break
-			// we don't want to stall out the motors too long even if we haven't reached are wanted height
-//			if(Math.abs(getRate()) < Config.Elevator.minEncRate)
-//				tmEncRate.start();
-//			
-//			else
-//			{
-//				tmEncRate.stop();
-//				tmEncRate.reset();
-//			}
-			
 			// If the height diff and rate is small we've reached our destination, thus
 			// activate the brake and turn off the pid AFTER the brake has made physical contact
 			if((Math.abs(wantPos - getHeight()) < Config.Elevator.maxHeightDiff && Math.abs(getRate()) < Config.Elevator.minEncRate))
@@ -290,19 +194,6 @@ public class Elevator
 		}
 		
 		speed = Util.limit(speed, Config.Elevator.minElevatorSpeed, Config.Elevator.maxElevatorSpeed);
-		
-//		System.out.println
-//		(
-//				"Speed " + Util.round(speed) + 
-//				" : Encoder " + Util.round(getHeight()) + 
-//				" : Time " + pidElevator.getDeltaT() +
-//				" : Time Sys " + pidElevator.getDeltaSysT() +
-//				" : Encode Rate " + getRate() + 
-//				" : Want Height " + wantPos +
-//    			" : Max Error " + maxErrI +
-//    			" : Error diff " + pidElevator.getErrD()
-//		);
-		
 		setSpeed(speed);
 	}
 	
@@ -330,7 +221,6 @@ public class Elevator
 		{
 			pidElevator.setConsts(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
 			pidElevator.setNeedReset(!downMode);  // Only need to reset when changing directions
-			claw.openAlignClaw();
 			downMode = true;
 			upMode = false;
 		}
@@ -532,16 +422,6 @@ public class Elevator
 	{
 		pidElevator.stop();
 		pidElevator.reset();
-	}
-	
-	public boolean getLimitSwitchTop()
-	{
-		return limitTop.get();
-	}
-	
-	public boolean getLimitSwitchBot()
-	{
-		return limitBot.get();
 	}
 	
 	public boolean getDropoffMode()

@@ -72,101 +72,6 @@ public class Config
 //		public static final int btUnbrake = 2;
 	}
 	
-	public class Camera 
-	{	
-		public static final String name = "cam2";
-		public static final int imgQuality = 10;
-	}
-	public class AutoPID
-	{
-		// Ids for SmartDashboard chooser
-		public static final int idDoNothing = 0;
-		public static final int idStackAllTotesRight = 1;
-		public static final int idToAutoZone = 2;
-		public static final int idMoveOneBinLineUp = 3;
-		public static final int idMoveOneBinToAutoZone = 4;
-		public static final int idMoveOneTote = 5 ;
-		public static final int idToAutoZoneLandfill = 6;
-		//		public static final int idDriveForward = 1;
-//		public static final int idDriveForwardBearing= 2;
-//		public static final int idGetOneTote = 3;
-//		public static final int idGetOneToteBearing = 4;
-//		public static final int idGetAllTotesLeft = 5;
-//		public static final int idGetAllTotesCenter = 6;
-//		public static final int idGetAllTotesRight = 7;
-//		public static final int idGetAllTotesBearingLeft = 8;
-//		public static final int idGetAllTotesBearingCenter = 9;
-//		public static final int idGetAllTotesBearingRight = 10;
-//		
-		public static final double rotateToAngleTolerance = 5;
-		
-		// TODO: Actual set this values, these aren't legit
-		// Encoder distance values, inches
-		public static final double distInFrontOfBin = 28.5;
-		public static final double distToNextTote = 57;
-//		public static final double distToAutoZone = 100; Actual Value
-		public static final double distToAutoZone = 100; // For pushing bin
-		public static final double distToAutoZoneBin = 156;
-		public static final double distToAlignAutoZone = 20; // Distance after moving forward and turning so that you can drive straight to the auto zone and align
-		public static final double distToLineUpFromBin = 50;
-		public static final double distToClearStackedTotes = 20;
-		public static final double distToAutoZoneLandfill = 65;
-//		public static final double encStrafeDistance = 2;
-//		public static final double encDistanceBetweenTotes = 2;
-//		public static final double encDriveForwardDistance = 2;
-		public static final double distToToteFromBin = 24;
-		
-		
-		
-//		public static final double encTolerance = 10;
-		
-		// Timer values
-//		public static final double timeIntakeClose = .5; 
-//		public static final double timeElevatorStack = timeIntakeClose + 1;
-//		public static final double timeIntakeOpen = timeElevatorStack + .5;
-	}
-	
-	public class Auto
-	{
-		// Ids for SmartDashboard chooser
-		public static final int idDoNothing = 0;
-		public static final int idDriveForwardTimer = 1;
-		public static final int idDriveForwardEnc = 2;
-		public static final int idGetOneToteTimer = 3;
-		public static final int idGetOneToteEnc = 4;
-		public static final int idGetAllTotesLeftTimer = 5;
-		public static final int idGetAllTotesCenterTimer = 6;
-		public static final int idGetAllTotesRightTimer = 7;
-		public static final int idGetAllTotesLeftEnc = 8;
-		public static final int idGetAllTotesCenterEnc = 9;
-		public static final int idGetAllTotesRightEnc = 10;
-		public static final int idGetRecycleBinEnc = 11;
-		public static final int idGetRecycleBinTimer = 12;
-		public static final int idToAutoZoneLandfill = 13;
-		
-		// Encoder distance values
-		public static final double encStrafeDistance = 2;
-		public static final double encDistanceBetweenTotes = 2;
-		public static final double encDriveForwardDistance = 2;
-		
-		public static final double encTolerance = 10;
-		
-		// Timer values
-		public static final double timeIntakeOpen = .5;
-		public static final double timeIntakeClose = timeIntakeOpen + .5;
-		public static final double timeStrafe = .75;
-		public static final double timeDriveTowardTote = timeStrafe + 1;
-		public static final double timeStrafeBackwards = timeDriveTowardTote + .75;
-		public static final double timeDriveForward = 1;
-		public static final double timeElevatorStack = .5;
-		
-		// Speeds for timerbased Auto
-		public static final double driveForwardSpeed = 1;
-		public static final double strafeSpeed = 1;
-		public static final double driveTowardToteSpeed = .5;
-		
-	}
-	
 	public class Claw 
 	{
 		// Channels for claw solenoids
@@ -254,12 +159,6 @@ public class Config
 		public static final int maxToteLevel = 6;
 	}
 
-	public class FileSaver 
-	{
-		// Save directory for all the log files
-		public static final String saveDir = "/logFiles";
-	}
-
 	public class Drive
 	{
 		// IDS FOR DRIVE MOVEMENT IN AUTO
@@ -267,101 +166,16 @@ public class Config
 		public static final int moveRight = 1;
 		public static final int moveForward = 2;
 		public static final int moveBackward = 3;
-		
-		// REG Talons channels
-		public static final int chnMtLeft = 1;
-		public static final int chnMtRight = 3;
 
 		// CAN Talons ids, access from roborio online
-		public static final int idMtLeft = 2;
-		public static final int idMtRight = 4;
-		public static final int idMtFront = 5;
-		public static final int idMtBack = 6;
-		
-		// TODO Check values
-		public static final int pdpChnMtLeft = 1;
-		public static final int pdpChnMtLeftCAN = 2;
-		public static final int pdpChnMtRight = 3;
-		public static final int pdpChnMtRightCAN = 4;
-		public static final int pdpChnMtFrontCAN = 5;
-		public static final int pdpChnMtBackCAN = 6;
-
-		// Ids for SmartDashboard
-		public static final int idFieldCentric = 0;
-		public static final int idRobotCentric = 1;	
-
-		// Minimum values for joysticks
-		public static final double minTurnJoyVal = 0.025;
-		public static final double minLeftJoyMag = 0.1;
-		
-		// Ramping
-		public static final double rampTurnRate = .111;
-		public static final double rampSideRate = .254;
-		public static final double rampCenterRate = .254;
-		public static final double rampSideRateSlow = .01;
-		public static final double rampCenterRateSlow = .01;
-		public static final double slowSideSpeedScalar = .5;
-		public static final double slowCenterSpeedScalar = .35;
-		
-		// Encoder Channel Values
-		public static final int chnEncFrontA = 4; //TODO get correct values
-        public static final int chnEncFrontB = 5; //TODO get correct values
-       
-        public static final int chnEncBackA = 22; //TODO get correct values // 0 on NavX
-        public static final int chnEncBackB = 23; //TODO get correct values // 1 on navX
+		public static final int leftC1Chn = 2;
+		public static final int leftC2Chn = 4;
+		public static final int rightC1Chn = 5;
+		public static final int rightC2Chn = 6;
         
-        public static final int chnEncLeftA = 9; //TODO get correct values
-        public static final int chnEncLeftB = 8; //TODO get correct values
-        
-        public static final int chnEncRightA = 7; // TODO get correct values
-        public static final int chnEncRightB = 6; // TODO get correct values
-        
-        // PID constansts
-        public static final double kStrafeP = 0.0190;
-        public static final double kStrafeI = 0;
-        public static final double kStrafeD = 0;
-
-        public static final double kRotateP = 0.0190;//TODO revise constants
-        public static final double kRotateI = 0;
-        public static final double kRotateD = 0;
-        
-        public static final double kLeftP = 0.02475;
-        public static final double kLeftI = 0;
-        public static final double kLeftD = 0;
-        
-        public static final double kRightP = 0.02475;
-        public static final double kRightI = 0;
-        public static final double kRightD = 0;
-        
-        public static final double kFrontP = 0.15;
-        public static final double kFrontI = 0;
-        public static final double kFrontD = 0;
-        
-        public static final double kBackP = 0.15;
-        public static final double kBackI = 0;
-        public static final double kBackD = 0;
-        
-        public static final double robotCircumfrence = Math.PI * 48; // Inches
-        public static final double maxDistanceDiff = 1; // was 1              // Inches
-		public static final double minAngleDiff = 5;
-        
-        // Turn Speed Adjustments
-        public static final double minTurnSpeed = -.5;
-        public static final double maxTurnSpeed = .5;
-        public static final double turnRampRate = .254;
-	}
-	
-	public class NavX
-	{
-		// Update rate for navX, baud rate for navX
-		public static final byte updateRateHz = 50;
-		public static final int baudRate = 57600;
-	}
-	
-	public class Test
-	{
-		public static final double motorTime = 0.75;
-		public static final double elevatorTime = 2;
-	}
-			
-		}
+		public static final boolean leftC1IsFlipped = false;
+		public static final boolean leftC2IsFlipped = false;
+		public static final boolean rightC1IsFlipped = false;
+		public static final boolean rightC2IsFlipped = false;
+	}		
+}
