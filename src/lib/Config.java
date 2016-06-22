@@ -86,14 +86,6 @@ public class Config
 		// CAN Talons ids, access from roborio online
 		public static final int idMtElevatorOne = 3;
 		public static final int idMtElevatorTwo = 1;
-		
-		// TODO Check values
-		public static final int pdpChnMtElevatorOneCAN = 1;
-		public static final int pdpChnMtElevatorTwoCAN = 2;
-				
-		// Limit switch channels
-		public static final int chnLimitSwitchTop = 0;
-		public static final int chnLimitSwitchBottom = 1;
 
 		// Elevator speeds for manual control, -value = up on elevator
 		public static final double elevatorUpSpeed = 1;
@@ -161,12 +153,6 @@ public class Config
 
 	public class Drive
 	{
-		// IDS FOR DRIVE MOVEMENT IN AUTO
-		public static final int moveLeft = 0;
-		public static final int moveRight = 1;
-		public static final int moveForward = 2;
-		public static final int moveBackward = 3;
-
 		// CAN Talons ids, access from roborio online
 		public static final int leftC1Chn = 2;
 		public static final int leftC2Chn = 4;
