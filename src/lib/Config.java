@@ -156,8 +156,8 @@ public class Config
 		// CAN Talons ids, access from roborio online
 		public static final int leftC1Chn = 2;
 		public static final int leftC2Chn = 1;
-		public static final int rightC1Chn = 3;
-		public static final int rightC2Chn = 4;
+		public static final int rightC1Chn = 4;
+		public static final int rightC2Chn = 3;
         
 		public static final boolean leftC1IsFlipped = false;
 		public static final boolean leftC2IsFlipped = false;

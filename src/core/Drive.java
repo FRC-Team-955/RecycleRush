@@ -18,8 +18,8 @@ public class Drive {
 	
 	private Encoder encLeft;
 	private Encoder encRight;
-	public TwoCimGroup leftCimGroup = new TwoCimGroup(Config.Drive.leftC1Chn, Config.Drive.leftC2Chn, Config.Drive.leftC1IsFlipped, Config.Drive.leftC2IsFlipped);
-	public TwoCimGroup rightCimGroup = new TwoCimGroup(Config.Drive.rightC1Chn, Config.Drive.rightC2Chn, Config.Drive.rightC1IsFlipped, Config.Drive.rightC2IsFlipped);
+	public TwoCimGroup leftCimGroup = new TwoCimGroup(Config.Drive.leftC1Chn, Config.Drive.leftC2Chn, Config.Drive.leftC1IsFlipped);
+	public TwoCimGroup rightCimGroup = new TwoCimGroup(Config.Drive.rightC1Chn, Config.Drive.rightC2Chn, Config.Drive.rightC1IsFlipped);
 	
 	double xPos;
 	double yPos;

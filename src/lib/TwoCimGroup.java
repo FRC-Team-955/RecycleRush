@@ -1,5 +1,7 @@
 package lib;
 
+import edu.wpi.first.wpilibj.Talon;
+
 /**
  * Wraps set of two motors that make up one side of the robot
  * @author Trevor
@@ -8,7 +10,7 @@ package lib;
 public class TwoCimGroup {
 
 	public CIM c1;
-	public CIM c2;
+	public Talon c2;
 	boolean m1IsReverse;
 	boolean m2IsReverse;
 	
@@ -19,9 +21,9 @@ public class TwoCimGroup {
 	 * @param m1IsFlipped
 	 * @param m2IsFlipped
 	 */
-	public TwoCimGroup(int m1Chn, int m2Chn, boolean m1IsFlipped, boolean m2IsFlipped){
+	public TwoCimGroup(int m1Chn, int m2Chn, boolean m1IsFlipped){
 		c1 = new CIM(m1Chn, m1IsFlipped);
-		c2 = new CIM(m2Chn, m2IsFlipped);
+		c2 = new Talon(m2Chn);
 	}
 	
 	/**
