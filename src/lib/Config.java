@@ -84,16 +84,16 @@ public class Config
 	public class Elevator
 	{
 		// CAN Talons ids, access from roborio online
-		public static final int idMtElevatorOne = 3;
-		public static final int idMtElevatorTwo = 1;
+		public static final int idMtElevatorOne = 5;
+		public static final int idMtElevatorTwo = 6;
 
 		// Elevator speeds for manual control, -value = up on elevator
 		public static final double elevatorUpSpeed = 1;
 		public static final double elevatorDownSpeed = -.25;
 
 		// Brake solenoid channels
-		public static final int chnNoidOne = 4;
-		public static final int chnNoidTwo = 5;
+		public static final int chnNoidOne = 6;
+		public static final int chnNoidTwo = 7;
 		
 		// Encoder channels
 		public static final int chnEncA = 3;
@@ -155,9 +155,9 @@ public class Config
 	{
 		// CAN Talons ids, access from roborio online
 		public static final int leftC1Chn = 2;
-		public static final int leftC2Chn = 4;
-		public static final int rightC1Chn = 5;
-		public static final int rightC2Chn = 6;
+		public static final int leftC2Chn = 1;
+		public static final int rightC1Chn = 3;
+		public static final int rightC2Chn = 4;
         
 		public static final boolean leftC1IsFlipped = false;
 		public static final boolean leftC2IsFlipped = false;
