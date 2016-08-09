@@ -9,9 +9,13 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import lib.SocketCore;
 
 public class Elevator 
 {
+	// Sockets
+	public SocketCore socket = new SocketCore();
+	
 	// CAN Talons for controlling the elevator
 	private CANTalon mtElevatorOne = new CANTalon(Config.Elevator.idMtElevatorOne);
 	private CANTalon mtElevatorTwo = new CANTalon(Config.Elevator.idMtElevatorTwo);
@@ -65,23 +69,22 @@ public class Elevator
 		enc.setDistancePerPulse(Config.Elevator.distancePerPulse);
 		enc.reset();
 		
+		// Start socket thread
+		new Thread(socket).start();		
+		
 		// Enable min/max limits for pid, set min/max limits for pid 
 		pidElevator.setErrLimitMode(true);
 		pidElevator.setErrLimits(Config.Elevator.minErrorSum, Config.Elevator.maxErrorSum);
 	}
 	
 	/**
-	 * Tests the PID for the elevator
+	 * Runs the PID for the elevator
 	 */
 	public void runPID()
-	{	
-		if(contr.getDpadDown())
-			setHeightType(Config.Elevator.heightTypeGround);
+	{			
+		double visionHeight = (socket.getDistance() * Config.Sockets.distanceMultiplier) - Config.Sockets.distanceOffset;
 		
-		if(contr.getDpadUp())
-			setHeightType(Config.Elevator.heightTypeStep);
-			
-		else if(contr.getButton(Config.ContrElevator.btToggleBrake))
+		if(contr.getButton(Config.ContrElevator.btToggleBrake))
 		{
 			if(getBrake())
 				unBrake();
@@ -91,12 +94,8 @@ public class Elevator
 		}
 		
 		// Set the want position based on button that was pressed
-		if(contr.getButton(Config.ContrElevator.btLvlHalf))
-			setHeight(Config.Elevator.halfToteHeight);
-			
-		for(int i = 0; i < levels.length; i++) {
-			if(contr.getButton(levels[i]))
-				setToteLevel(i + 1);
+		if(contr.getButton(Config.ContrElevator.btLvlOne)) {
+			setHeight(visionHeight);
 		}
 		
 		update();
@@ -206,6 +205,12 @@ public class Elevator
 		// If the new height is already where we are and we're braked don't move the elevator again
 		if(Math.abs(newHeight - getHeight()) < Config.Elevator.maxHeightDiff && getBrake())
 			return;
+		
+		if(newHeight < 0) {
+			newHeight = 0;
+		} else if (newHeight > Config.Elevator.maxHeight) {
+			newHeight = Config.Elevator.maxHeight;
+		}
 		
 		// If the new height is > current height, use the pid constants for up
 		if(newHeight > getHeight())

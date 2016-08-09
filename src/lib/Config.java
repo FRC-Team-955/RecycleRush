@@ -6,6 +6,14 @@ package lib;
  */
 public class Config 
 {
+	public class Sockets
+	{
+		public static final int port = 5805;
+		public static final String hostName = "10.9.55.20";
+		public static final double distanceOffset = 10;
+		public static final double distanceMultiplier = 0.5;
+	}
+	
 	public class ContrDrive 
 	{
 		// Channels, max buttons
@@ -126,6 +134,7 @@ public class Config
 		
 		// Height constants values, inches
 		public static final double maxHeightDiff = .420; // .3 Blaze it
+		public static final double maxHeight = 60;
 		public static final double toteHeight = 12.75;		   
 		public static final double clearanceHeight = 2;
 		public static final double toteLossHeight = 1/2.54;

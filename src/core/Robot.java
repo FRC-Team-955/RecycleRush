@@ -47,8 +47,8 @@ public class Robot extends IterativeRobot
     	contrDrive.update();
     	double[] rTheta = contrDrive.getRTheta();
     	drive.move(rTheta[0], rTheta[1]);
-    	elevator.runPID();
-    	claw.run();
+    	//elevator.runPID();
+    	//claw.run();
         dashboard.update();
     }
 
