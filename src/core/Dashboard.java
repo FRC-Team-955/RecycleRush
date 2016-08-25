@@ -9,18 +9,16 @@ public class Dashboard
 {
 	private Drive drive;
 	private Elevator elevator;
-	private Claw claw;
 	private SendableChooser autoChooser = new SendableChooser();
 	private SendableChooser driveChooser = new SendableChooser();
 	private PowerDistributionPanel pdp = new PowerDistributionPanel();
 	private Controller contr;
 	
-	public Dashboard(Drive newDrive, Elevator newElevator, Claw newClaw, Controller newContr)
+	public Dashboard(Drive newDrive, Elevator newElevator, Controller newContr)
 	{
 		contr = newContr;
 		drive = newDrive;
 		elevator = newElevator;
-		claw = newClaw;
 	}
 	
 	public void update()
@@ -37,8 +35,5 @@ public class Dashboard
 //		fileSaver.write("Elevator 1 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorOneCAN)));
 //		fileSaver.write("Elevator 2 Current:" + String.valueOf(pdp.getCurrent(Config.Elevator.pdpChnMtElevatorTwoCAN)));
 		
-		// Claw
-		SmartDashboard.putBoolean("Bot Claw is Open", claw.getTopClaw());
-		SmartDashboard.putBoolean("Align Claw is Open", claw.getAlignClaw());
 	}
 }

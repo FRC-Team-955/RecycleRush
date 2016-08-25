@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import lib.SocketCore;
 
 public class Elevator 
 {
@@ -83,7 +82,8 @@ public class Elevator
 	public void runPID()
 	{			
 		double visionHeight = (socket.getDistance() * Config.Sockets.distanceMultiplier) - Config.Sockets.distanceOffset;
-		
+		System.out.println(socket.getDistance());
+		/*
 		if(contr.getButton(Config.ContrElevator.btToggleBrake))
 		{
 			if(getBrake())
@@ -99,6 +99,7 @@ public class Elevator
 		}
 		
 		update();
+		*/
 	}
 	
 	/**

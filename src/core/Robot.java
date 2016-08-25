@@ -15,9 +15,8 @@ public class Robot extends IterativeRobot
 {
 	private Controller contrDrive = new Controller(Config.ContrDrive.chn, Config.ContrDrive.maxButtons);
 	private Drive drive = new Drive();
-	private Claw claw = new Claw (contrDrive);
 	private Elevator elevator = new Elevator(contrDrive);
-	private Dashboard dashboard = new Dashboard(drive, elevator, claw, contrDrive);
+	private Dashboard dashboard = new Dashboard(drive, elevator, contrDrive);
 		
     /**
      * This function is run when the robot is first started up and should be
@@ -44,11 +43,10 @@ public class Robot extends IterativeRobot
      */
     public void teleopPeriodic() 
     {
-    	contrDrive.update();
-    	double[] rTheta = contrDrive.getRTheta();
-    	drive.move(rTheta[0], rTheta[1]);
-    	//elevator.runPID();
-    	//claw.run();
+    	//contrDrive.update();
+    	//double[] rTheta = contrDrive.getRTheta();
+    	//drive.move(rTheta[0], rTheta[1]);
+    	elevator.runPID();
         dashboard.update();
     }
 
