@@ -9,9 +9,9 @@ public class Config
 	public class Sockets
 	{
 		public static final int port = 5805;
-		public static final String hostName = "10.9.55.20";
-		public static final double distanceOffset = 10;
-		public static final double distanceMultiplier = 0.5;
+		public static final String hostName = "10.9.55.3";
+		public static final double distanceOffset = 850;
+		public static final double distanceMultiplier = 0.1;
 	}
 	
 	public class ContrDrive 
@@ -108,17 +108,17 @@ public class Config
 		public static final int chnEncB = 2;
 		
 		// Encoder distance per pulse
-		public static final double distancePerPulse = 63.0 / 1350;   
+		public static final double distancePerPulse = 0.93;	//63.0 / 1350;   
 		
 		/** PID constants **/
 		// For up PID
-		public static final double kUpP = 0.33;
-		public static final double kUpI = 0.01;
+		public static final double kUpP = 0.0033;
+		public static final double kUpI = 0.0;
 		public static final double kUpD = 0;
 		
 		// For de2own PID
-		public static final double kDownP = 0.33;
-		public static final double kDownI = 0.01;
+		public static final double kDownP = 0.0033;
+		public static final double kDownI = 0.0;
 		public static final double kDownD = 0;    // 0.0254;
 		
 		// PID max and min Errors

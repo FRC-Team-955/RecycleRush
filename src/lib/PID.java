@@ -91,7 +91,8 @@ public class PID
 	        	errSum = minErr;
         }
         
-        errD = (errP - prevErr) / deltaT;   	    // derivative of err aka change in err
+        errD = 0;
+        //errD = (errP - prevErr) / deltaT;   	    // derivative of err aka change in err
         prevErr = errP;
         output = (errP * kP) + (errSum * kI) + (errD * kD);
     

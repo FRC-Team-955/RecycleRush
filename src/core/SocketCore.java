@@ -20,7 +20,7 @@ public class SocketCore implements Runnable {
 	int updateNumber = 0;
 	private boolean init = false;
 	
-	double distance = 0;
+	double distance = 1000;
 	
 	/**
 	 * Runs in separate thread to handle communication efficiently 
@@ -28,11 +28,24 @@ public class SocketCore implements Runnable {
 	public void run() {
 		if(!init){
 			try {
+				System.out.println("starting init");
+				visionSocket = new Socket(Config.Sockets.hostName, Config.Sockets.port);
+				System.out.println("socket created");
+				out = new PrintWriter(visionSocket.getOutputStream(), true);
+				System.out.println("out created");
+				in = new BufferedReader(new InputStreamReader(visionSocket.getInputStream()));	
+				System.out.println("in created.connected");
+				out.println("connected");
+			
+				/*
+				System.out.println("starting init");
 				visionServer = new ServerSocket(Config.Sockets.port);
+				System.out.println("server started");
 				clientSocket = visionServer.accept();
-				init=true;
+				System.out.println("server accepted");
 				out = new PrintWriter(clientSocket.getOutputStream(), true);
-				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));*/
+				init=true;
 				System.out.println("connected");
 			} catch(Exception e) {
 				System.out.println("visionServer initialization threw exception");
@@ -42,10 +55,17 @@ public class SocketCore implements Runnable {
 		try {
 			while(true) {
 				out.println(Integer.toString(updateNumber));
-				distance = Double.parseDouble(in.readLine());
-				System.out.println(distance);
+				try {
+					String input = in.readLine();
+					distance = Double.parseDouble(input);
+					//String test = in.readLine();					
+				} catch (Exception e) {
+					System.out.println("not a double");
+				}
+				//System.out.println(test);
+				//System.out.println(distance);
 				updateNumber++;
-				Thread.sleep(50);
+				//Thread.sleep(50);
 			} 
 		} catch(Exception e) {
 			

@@ -81,9 +81,10 @@ public class Elevator
 	 */
 	public void runPID()
 	{			
-		double visionHeight = (socket.getDistance() * Config.Sockets.distanceMultiplier) - Config.Sockets.distanceOffset;
-		System.out.println(socket.getDistance());
-		/*
+		double visionHeight = (socket.getDistance());
+		System.out.println("vision: " + socket.getDistance());
+		//System.out.println(socket.getDistance());
+		
 		if(contr.getButton(Config.ContrElevator.btToggleBrake))
 		{
 			if(getBrake())
@@ -94,12 +95,19 @@ public class Elevator
 		}
 		
 		// Set the want position based on button that was pressed
-		if(contr.getButton(Config.ContrElevator.btLvlOne)) {
+		//if(contr.getButton(Config.ContrElevator.btLvlOne)) {
 			setHeight(visionHeight);
-		}
+		//}
 		
-		update();
-		*/
+		pidElevator.update(visionHeight, 800);
+		
+		double speed = pidElevator.getOutput();
+		System.out.println("SPEED:    " + speed);
+		speed = Util.limit(speed, Config.Elevator.minElevatorSpeed, Config.Elevator.maxElevatorSpeed);
+		setSpeed(speed);
+			
+		//update();
+		
 	}
 	
 	/**
@@ -204,7 +212,7 @@ public class Elevator
 	public void setHeight(double newHeight)
 	{
 		// If the new height is already where we are and we're braked don't move the elevator again
-		if(Math.abs(newHeight - getHeight()) < Config.Elevator.maxHeightDiff && getBrake())
+		if(Math.abs(newHeight - 800) < Config.Elevator.maxHeightDiff && getBrake())
 			return;
 		
 		if(newHeight < 0) {
@@ -214,7 +222,7 @@ public class Elevator
 		}
 		
 		// If the new height is > current height, use the pid constants for up
-		if(newHeight > getHeight())
+		if(newHeight >= 800)
 		{
 			pidElevator.setConsts(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
 			pidElevator.setNeedReset(!upMode);  // Only need to reset when changing directions
@@ -223,7 +231,7 @@ public class Elevator
 		}
 		
 		// If the new height is < current height, use the pid constants for down
-		if(newHeight < getHeight())
+		if(newHeight < 800)
 		{
 			pidElevator.setConsts(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
 			pidElevator.setNeedReset(!downMode);  // Only need to reset when changing directions
