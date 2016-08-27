@@ -113,12 +113,12 @@ public class Config
 		
 		/** PID constants **/
 		// For up PID
-		public static final double kUpP = 0.0033;
+		public static final double kUpP = 0.0043;
 		public static final double kUpI = 0.0;
 		public static final double kUpD = 0;
 		
 		// For de2own PID
-		public static final double kDownP = 0.0033;
+		public static final double kDownP = 0.0043;
 		public static final double kDownI = 0.0;
 		public static final double kDownD = 0;    // 0.0254;
 		

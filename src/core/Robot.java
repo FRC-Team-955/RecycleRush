@@ -3,6 +3,7 @@ package core;
 import lib.Config;
 import lib.Controller;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -17,6 +18,7 @@ public class Robot extends IterativeRobot
 	private Drive drive = new Drive();
 	private Elevator elevator = new Elevator(contrDrive);
 	private Dashboard dashboard = new Dashboard(drive, elevator, contrDrive);
+	private Timer timer = new Timer();
 		
     /**
      * This function is run when the robot is first started up and should be
@@ -37,6 +39,7 @@ public class Robot extends IterativeRobot
     public void teleopInit()
     {
     	elevator.brake();
+    	timer.start();
     }
     /**
      * This function is called periodically during operator control
@@ -48,6 +51,11 @@ public class Robot extends IterativeRobot
     	//drive.move(rTheta[0], rTheta[1]);
     	elevator.runPID();
         dashboard.update();
+        if(timer.get() < 10) {
+        	drive.move(0.5, Math.PI/2);        	
+        } else {
+        	drive.move(0, 0);
+        }
     }
 
     public void disabledInit()
