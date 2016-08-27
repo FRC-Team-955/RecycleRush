@@ -11,7 +11,8 @@ public class Config
 		public static final int port = 5805;
 		public static final String hostName = "10.9.55.3";
 		public static final double distanceOffset = 850;
-		public static final double wantHeight = 800;
+		public static final double wantHeight = 1000;
+		public static final double maxHeight = 2000;
 		public static final double distanceMultiplier = 0.1;
 	}
 	
@@ -113,12 +114,12 @@ public class Config
 		
 		/** PID constants **/
 		// For up PID
-		public static final double kUpP = 0.0043;
+		public static final double kUpP = 0.0033;
 		public static final double kUpI = 0.0;
 		public static final double kUpD = 0;
 		
 		// For de2own PID
-		public static final double kDownP = 0.0043;
+		public static final double kDownP = 0.0033;
 		public static final double kDownI = 0.0;
 		public static final double kDownD = 0;    // 0.0254;
 		

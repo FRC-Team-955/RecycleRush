@@ -52,9 +52,9 @@ public class Robot extends IterativeRobot
     	elevator.runPID();
         dashboard.update();
         if(timer.get() < 10) {
-        	drive.move(0.5, Math.PI/2);        	
+        	//drive.move(0.5, Math.PI/2);        	
         } else {
-        	drive.move(0, 0);
+        	//drive.move(0, 0);
         }
     }
 

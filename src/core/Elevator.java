@@ -82,27 +82,27 @@ public class Elevator
 	public void runPID()
 	{			
 		double visionHeight = (socket.getDistance());
-		System.out.println("vision: " + socket.getDistance());
 		//System.out.println(socket.getDistance());
 		
-		if(contr.getButton(Config.ContrElevator.btToggleBrake))
+		if(visionHeight == 1000)
 		{
-			if(getBrake())
-				unBrake();
-			
-			else
-				setHeight(getHeight());
+			brake();
+		} else {
+			unBrake();
 		}
 		
 		// Set the want position based on button that was pressed
 		//if(contr.getButton(Config.ContrElevator.btLvlOne)) {
 			setHeight(visionHeight);
 		//}
-		
-		pidElevator.update(visionHeight, Config.Sockets.wantHeight);
+		if(visionHeight < Config.Sockets.maxHeight) {
+			pidElevator.update(visionHeight, Config.Sockets.wantHeight);			
+		}else {
+			pidElevator.update(Config.Sockets.wantHeight, Config.Sockets.wantHeight);
+		}
 		
 		double speed = pidElevator.getOutput();
-		System.out.println("SPEED:    " + speed);
+		System.out.println("vision: " + socket.getDistance() + " | Speed: " + speed);
 		speed = Util.limit(speed, Config.Elevator.minElevatorSpeed, Config.Elevator.maxElevatorSpeed);
 		setSpeed(speed);
 			
@@ -364,11 +364,11 @@ public class Elevator
 		// acceleration matches the direction of the velocity, 
 		// direction, because that means we want the elevator
 		// to go faster thus we need to ramp it
-		if(Math.signum(getRate()) == Math.signum(newSpeed - getSpeed()))
-			newSpeed = Util.ramp(getSpeed(), newSpeed, Config.Elevator.maxRampRate);
+		//if(Math.signum(getRate()) == Math.signum(newSpeed - getSpeed()))
+			//newSpeed = Util.ramp(getSpeed(), newSpeed, Config.Elevator.maxRampRate);
 		
 		// Flip the speed direction because negative is actually up on the elevator
-		System.out.println("Speed" + newSpeed);
+		//System.out.println("Speed" + newSpeed);
 		newSpeed = -newSpeed;
 		mtElevatorOne.set(newSpeed);
 		mtElevatorTwo.set(newSpeed);

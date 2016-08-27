@@ -57,10 +57,12 @@ public class SocketCore implements Runnable {
 				out.println(Integer.toString(updateNumber));
 				try {
 					String input = in.readLine();
-					distance = Double.parseDouble(input);
+					if(!input.contains("Info")) {
+						distance = Double.parseDouble(input);						
+					}
 					//String test = in.readLine();					
 				} catch (Exception e) {
-					System.out.println("not a double");
+					//System.out.println("not a double");
 				}
 				//System.out.println(test);
 				//System.out.println(distance);
