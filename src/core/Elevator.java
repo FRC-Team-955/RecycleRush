@@ -99,7 +99,7 @@ public class Elevator
 			setHeight(visionHeight);
 		//}
 		
-		pidElevator.update(visionHeight, 800);
+		pidElevator.update(visionHeight, Config.Sockets.wantHeight);
 		
 		double speed = pidElevator.getOutput();
 		System.out.println("SPEED:    " + speed);
@@ -212,7 +212,7 @@ public class Elevator
 	public void setHeight(double newHeight)
 	{
 		// If the new height is already where we are and we're braked don't move the elevator again
-		if(Math.abs(newHeight - 800) < Config.Elevator.maxHeightDiff && getBrake())
+		if(Math.abs(newHeight - Config.Sockets.wantHeight) < Config.Elevator.maxHeightDiff && getBrake())
 			return;
 		
 		if(newHeight < 0) {
@@ -222,7 +222,7 @@ public class Elevator
 		}
 		
 		// If the new height is > current height, use the pid constants for up
-		if(newHeight >= 800)
+		if(newHeight >= Config.Sockets.wantHeight)
 		{
 			pidElevator.setConsts(Config.Elevator.kUpP, Config.Elevator.kUpI, Config.Elevator.kUpD);
 			pidElevator.setNeedReset(!upMode);  // Only need to reset when changing directions
@@ -231,7 +231,7 @@ public class Elevator
 		}
 		
 		// If the new height is < current height, use the pid constants for down
-		if(newHeight < 800)
+		if(newHeight < Config.Sockets.wantHeight)
 		{
 			pidElevator.setConsts(Config.Elevator.kDownP, Config.Elevator.kDownI, Config.Elevator.kDownD);
 			pidElevator.setNeedReset(!downMode);  // Only need to reset when changing directions

@@ -11,6 +11,7 @@ public class Config
 		public static final int port = 5805;
 		public static final String hostName = "10.9.55.3";
 		public static final double distanceOffset = 850;
+		public static final double wantHeight = 800;
 		public static final double distanceMultiplier = 0.1;
 	}
 	
