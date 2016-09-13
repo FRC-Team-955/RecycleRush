@@ -110,7 +110,7 @@ public class Config
 		public static final int chnEncB = 2;
 		
 		// Encoder distance per pulse
-		public static final double distancePerPulse = 0.93;	//63.0 / 1350;   
+		public static final double distancePerPulse = 63.0 / (1350 * 25.4);   
 		
 		/** PID constants **/
 		// For up PID
