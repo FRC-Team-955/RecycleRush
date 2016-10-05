@@ -82,11 +82,13 @@ public class Elevator
 	 * Runs the PID for the elevator
 	 */
 	public void runPID()
-	{			
+	{		
+		//double visionHeight = (500);
 		double visionHeight = (socket.getDistance());
-		double distChange = visionHeight - Config.Sockets.wantHeight;
+		double distChange = Config.Sockets.wantHeight - visionHeight;
 		if(visionHeight != prevHeight) {
 			setHeight(getHeight() + distChange);
+			System.out.println("updating");
 		}
 		
 		if(visionHeight < Config.Sockets.maxHeight) {
@@ -96,7 +98,9 @@ public class Elevator
 		}
 		
 		double speed = pidElevator.getOutput();
-		System.out.println("vision: " + socket.getDistance() + " | Speed: " + speed);
+		System.out.println("want: " + getWantHeight());
+		System.out.println("diff: " + distChange);
+		System.out.println("height: " + getHeight());
 		speed = Util.limit(speed, Config.Elevator.minElevatorSpeed, Config.Elevator.maxElevatorSpeed);
 		setSpeed(speed); 
 		
@@ -145,7 +149,14 @@ public class Elevator
 	public double getHeight()
 	{
 		// Flip the direction because negative is actually up on the elevator
-		return -enc.getDistance();
+		double height = enc.getDistance();
+		System.out.println("raw height: " + height);
+		if(height > Config.Elevator.maxElevatorHeight) {
+			return Config.Elevator.maxElevatorHeight;
+		} else if(height <= Config.Elevator.minElevatorHeight) {
+			return Config.Elevator.minElevatorHeight;
+		}
+		return height;
 	}
 	
 	/**

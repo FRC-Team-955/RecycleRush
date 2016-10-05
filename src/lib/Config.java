@@ -106,20 +106,20 @@ public class Config
 		public static final int chnNoidTwo = 7;
 		
 		// Encoder channels
-		public static final int chnEncA = 3;
-		public static final int chnEncB = 2;
+		public static final int chnEncA = 1;
+		public static final int chnEncB = 0;
 		
 		// Encoder distance per pulse
-		public static final double distancePerPulse = 63.0 / (1350 * 25.4);   
+		public static final double distancePerPulse = (63.0*25.4) / (1600);   
 		
 		/** PID constants **/
 		// For up PID
-		public static final double kUpP = 0.0033;
+		public static final double kUpP = 0.0050; // .0033
 		public static final double kUpI = 0.0;
 		public static final double kUpD = 0;
 		
 		// For de2own PID
-		public static final double kDownP = 0.0033;
+		public static final double kDownP = 0.0050;
 		public static final double kDownI = 0.0;
 		public static final double kDownD = 0;    // 0.0254;
 		
@@ -136,11 +136,12 @@ public class Config
 		
 		// Height constants values, inches
 		public static final double maxHeightDiff = .420; // .3 Blaze it
-		public static final double maxHeight = 60;
+		public static final double maxHeight = 1300;
 		public static final double toteHeight = 12.75;		   
 		public static final double clearanceHeight = 2;
 		public static final double toteLossHeight = 1/2.54;
-		public static final double maxElevatorHeight = 54;    // Highest we ever set it
+		public static final double maxElevatorHeight = 1300;    // Highest we ever set it
+		public static final double minElevatorHeight = -100;    // Lowest we ever set it
 		public static final double maxElevatorHeightLimit = 56; // Hard Stop, if something goes wrong
 		public static final double halfToteHeight = 6;
 				
